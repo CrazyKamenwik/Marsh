@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TicketSystem.Data;
 using TicketSystem.Models;
 
 namespace TicketSystem.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly ApplicationContext _context;
         private readonly ILogger<MessageController> _logger;
+        private readonly ApplicationContext _context;
 
         public MessageController(ILogger<MessageController> logger)
         {
@@ -15,7 +18,7 @@ namespace TicketSystem.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "PostMessage")]
+        [HttpPost(Name = "PostMessage")]
         public Message Post(Message postMessage)
         {
             _context.Messages.Add(postMessage);
