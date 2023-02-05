@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Models;
+using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
@@ -9,20 +10,18 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly IMessageService _messageService;
 
-        public MessageController()
+        public MessageController(IMessageService messageService)
         {
-            _context = new ApplicationContext();
+            _messageService = messageService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(Message message)
+        [HttpPost("{userId}")]
+        public async Task<IActionResult> Post(int userId, Message message)
         {
-            var messageDB = await _context.Messages.AddAsync(message);
-            await _context.SaveChangesAsync();
-
-            return Ok(messageDB);
+            var addResult = await _messageService.AddMessageAsync(userId, message);
+            return addResult ? Ok() : NotFound();
         }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Models;
+using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
@@ -9,17 +10,17 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class TicketContoller : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly ITicketService _ticketService;
 
-        public TicketContoller()
+        public TicketContoller(TicketService ticketService)
         {
-            _context = new ApplicationContext();
+            _ticketService = ticketService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var tickets = await _context.Tickets.ToListAsync();
+            var tickets = await _ticketService.GetTicketsAsync();
 
             return Ok(tickets);
         }
@@ -27,7 +28,7 @@ namespace TicketSystem.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _ticketService.GetTicketByIdAsync(id);
             if (ticket == null)
                 return NotFound();
 

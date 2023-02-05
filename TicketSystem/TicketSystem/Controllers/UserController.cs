@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Models;
+using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
@@ -9,64 +10,45 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly IUserService _userService;
 
-        public UserController()
+        public UserController(IUserService userService)
         {
-            _context = new ApplicationContext();
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var users = await _context.Users.ToListAsync();
-
+            var users = await _userService.GetUsersAsync();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
+            var user = await _userService.GetUserByIdAsync(id);
             return Ok(user);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(User user)
         {
-            var userDB = await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-
+            var userDB = await _userService.AddUserAsync(user);
             return Ok(userDB);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, User user)
         {
-            if(id != user.Id)
-                return BadRequest();
-
-            bool userExist = _context.Users.Any(x => x.Id == id);
-            if(!userExist)
-                return NotFound();
-
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync(); //DbUpdateConcurrencyException
-
-            return NoContent();
+            var userDB = await _userService.UpdateUserAsync(id, user);
+            return Ok(userDB);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if(user == null)
-                return NotFound();
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
+            var user = await _userService.DeleteUserAsync(id);
             return Ok(user);
         }
     }
