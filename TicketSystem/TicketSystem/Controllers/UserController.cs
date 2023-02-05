@@ -9,12 +9,10 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
         private readonly ApplicationContext _context;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController()
         {
-            _logger = logger;
             _context = new ApplicationContext();
         }
 
@@ -22,6 +20,7 @@ namespace TicketSystem.Controllers
         public async Task<IActionResult> Get()
         {
             var users = await _context.Users.ToListAsync();
+
             return Ok(users);
         }
 
@@ -29,13 +28,46 @@ namespace TicketSystem.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var user = await _context.Users.FindAsync(id);
+
             return Ok(user);
         }
 
         [HttpPost]
-        public IEnumerable<User> Post()
+        public async Task<IActionResult> Post(User user)
         {
-            return _context.Users.ToList();
+            var userDB = await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(userDB);
+        }
+
+        [HttpPut("id")]
+        public async Task<IActionResult> Put(int id, User user)
+        {
+            if(id != user.Id)
+                return BadRequest();
+
+            bool userExist = _context.Users.Any(x => x.Id == id);
+            if(!userExist)
+                return NotFound();
+
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync(); //DbUpdateConcurrencyException
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if(user == null)
+                return NotFound();
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
         }
     }
 }

@@ -9,12 +9,10 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class TicketContoller : ControllerBase
     {
-        private readonly ILogger<TicketContoller> _logger;
         private readonly ApplicationContext _context;
 
-        public TicketContoller(ILogger<TicketContoller> logger)
+        public TicketContoller()
         {
-            _logger = logger;
             _context = new ApplicationContext();
         }
 
@@ -22,13 +20,14 @@ namespace TicketSystem.Controllers
         public async Task<IActionResult> Get()
         {
             var tickets = await _context.Tickets.ToListAsync();
+
             return Ok(tickets);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id);
+            var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
                 return NotFound();
 
