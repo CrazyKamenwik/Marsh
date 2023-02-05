@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Models;
 
 namespace TicketSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TicketContoller : ControllerBase
     {
         private readonly ILogger<TicketContoller> _logger;
@@ -17,10 +18,21 @@ namespace TicketSystem.Controllers
             _context = new ApplicationContext();
         }
 
-        [HttpGet(Name = "GetTickets")]
-        public IEnumerable<Ticket> Get()
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-             return _context.Tickets.ToList();
+            var tickets = await _context.Tickets.ToListAsync();
+            return Ok(tickets);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id);
+            if (ticket == null)
+                return NotFound();
+
+            return Ok(ticket);
         }
     }
 }

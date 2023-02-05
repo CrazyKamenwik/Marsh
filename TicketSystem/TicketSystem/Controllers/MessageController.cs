@@ -21,9 +21,14 @@ namespace TicketSystem.Controllers
         [HttpPost(Name = "PostMessage")]
         public Message Post(Message postMessage)
         {
-            _context.Messages.Add(postMessage);
-            _context.SaveChanges();
-            return postMessage;
+            if (postMessage.Ticket == null)
+                throw new BadHttpRequestException("Ticket can't be null", 400);
+            else
+            {
+                _context.Messages.Add(postMessage);
+                _context.SaveChanges();
+                return postMessage;
+            }
         }
     }
 }
