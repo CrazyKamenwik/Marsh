@@ -10,6 +10,6 @@ namespace TicketSystem.Data.Repositories
         Task<Ticket?> DeleteAsync(int id);
         Task<IEnumerable<Ticket>> GetAllAsync();
         IQueryable<Ticket> GetUsersByConditionsAsync(Expression<Func<Ticket, bool>> conditions);
-        Task<int> CloseOpenTickets(int minutesToClose);
+        Task CloseOpenTickets(int minutesToClose);
     }
 }

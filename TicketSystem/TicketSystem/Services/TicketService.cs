@@ -41,9 +41,9 @@ namespace TicketSystem.Services
             return await _ticketRepository.DeleteAsync(id);
         }
 
-        public async Task<int> CloseOpenTickets(int minutesToClose)
+        public async Task CloseOpenTickets(int minutesToClose)
         {
-            return await _ticketRepository.CloseOpenTickets(minutesToClose);
+            await _ticketRepository.CloseOpenTickets(minutesToClose);
         }
     }
 }

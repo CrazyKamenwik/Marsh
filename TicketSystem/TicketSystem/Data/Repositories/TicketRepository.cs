@@ -56,7 +56,7 @@ namespace TicketSystem.Data.Repositories
             return _context.Tickets.AsNoTracking().Where(conditions);
         }
 
-        public async Task<int> CloseOpenTickets(int minutesToClose)
+        public async Task CloseOpenTickets(int minutesToClose)
         {
             var tickets = _context.Tickets.Where(t => t.TicketStatus == TicketStatus.Open &&
                                                       t.Messages.OrderByDescending(m => m.CreatedAt)
@@ -69,7 +69,7 @@ namespace TicketSystem.Data.Repositories
                     ticket.TicketStatus = TicketStatus.Closed;
             }
 
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }
