@@ -9,9 +9,9 @@ namespace TicketSystem.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        private readonly ILogger _logger;
+        private readonly ILogger<MessageController> _logger;
 
-        public MessageController(IMessageService messageService, ILogger logger)
+        public MessageController(IMessageService messageService, ILogger<MessageController> logger)
         {
             _messageService = messageService;
             _logger = logger;
