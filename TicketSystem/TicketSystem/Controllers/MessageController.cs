@@ -10,19 +10,22 @@ namespace TicketSystem.Controllers
     public class MessageController : ControllerBase
     {
         private readonly ApplicationContext _context;
+        private readonly ILogger<MessageController> _logger;
 
-        public MessageController()
+        public MessageController(ILogger<MessageController> logger)
         {
+            _logger = logger;
             _context = new ApplicationContext();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Message message)
+        public async Task<Message> Post(Message message)
         {
-            var messageDB = await _context.Messages.AddAsync(message);
+            _logger.LogDebug("Post message");
+            await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
 
-            return Ok(messageDB);
+            return message;
         }
     }
 }

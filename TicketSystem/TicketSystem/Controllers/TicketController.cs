@@ -7,31 +7,30 @@ namespace TicketSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TicketContoller : ControllerBase
+    public class TicketController : ControllerBase
     {
         private readonly ApplicationContext _context;
+        private readonly Logger<TicketController> _logger;
 
-        public TicketContoller()
+        public TicketController(Logger<TicketController> logger)
         {
             _context = new ApplicationContext();
+            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IEnumerable<Ticket>> Get()
         {
+            _logger.LogDebug("Get all tickets");
             var tickets = await _context.Tickets.ToListAsync();
-
-            return Ok(tickets);
+            return tickets;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<Ticket?> Get(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-                return NotFound();
-
-            return Ok(ticket);
+            _logger.LogDebug("Find ticket by id {id}", id);
+            return await _context.Tickets.FindAsync(id);
         }
     }
 }
