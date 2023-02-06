@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace TicketSystem.Extensions

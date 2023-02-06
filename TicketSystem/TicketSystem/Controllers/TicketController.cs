@@ -1,18 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
 using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TicketContoller : ControllerBase
+    public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
 
-        public TicketContoller(TicketService ticketService)
+        public TicketController(TicketService ticketService)
         {
             _ticketService = ticketService;
         }

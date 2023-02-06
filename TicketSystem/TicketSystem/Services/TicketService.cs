@@ -1,33 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
+using TicketSystem.Data.Models;
+using TicketSystem.Data.Repositories;
 
 namespace TicketSystem.Services
 {
     public class TicketService : ITicketService
     {
-        private readonly ApplicationContext _context;
+        private readonly ITicketRepository _ticketRepository;
 
-        public TicketService(ApplicationContext context)
+        public TicketService(ITicketRepository ticketRepository)
         {
-            _context = context;
+            _ticketRepository = ticketRepository;
         }
 
         public async Task<Ticket> AddTicketAsync(Ticket ticket)
         {
-            _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
-            return ticket;
+            return await _ticketRepository.CreateAsync(ticket);
         }
 
         public async Task<Ticket?> GetTicketByIdAsync(int id)
         {
-            return await _context.Tickets.FindAsync(id);
+            return await _ticketRepository.GetUsersByConditionsAsync(t => t.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Ticket>> GetTicketsAsync()
         {
-            return await _context.Tickets.ToListAsync();
+            return await _ticketRepository.GetAllAsync();
         }
 
         public async Task<Ticket?> UpdateTicketAsync(int id, Ticket ticket)
@@ -35,26 +33,17 @@ namespace TicketSystem.Services
             if (id != ticket.Id)
                 return null;
 
-            bool ticketExist = _context.Tickets.Any(x => x.Id == id);
-            if (!ticketExist)
-                return null;
-
-            _context.Entry(ticket).State = EntityState.Modified;
-            await _context.SaveChangesAsync(); // DbUpdateConcurrencyException
-
-            return ticket;
+            return await _ticketRepository.UpdateAsync(id, ticket);
         }
 
         public async Task<Ticket?> DeleteTicketAsync(int id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-                return null;
+            return await _ticketRepository.DeleteAsync(id);
+        }
 
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
-
-            return ticket;
+        public async Task<int> CloseOpenTickets(int minutesToClose)
+        {
+            return await _ticketRepository.CloseOpenTickets(minutesToClose);
         }
     }
 }

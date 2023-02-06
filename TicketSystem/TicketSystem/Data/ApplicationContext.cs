@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using TicketSystem.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using TicketSystem.Data.Models;
 
 namespace TicketSystem.Data
 {
@@ -11,14 +9,10 @@ namespace TicketSystem.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Message> Messages { get; set; }
 
-        public ApplicationContext()
+        public ApplicationContext(DbContextOptions options)
+        : base(options)
         {
             Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ticketsystem;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

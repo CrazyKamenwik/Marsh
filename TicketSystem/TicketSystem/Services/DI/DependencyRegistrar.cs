@@ -1,13 +1,12 @@
-﻿using TicketSystem.Data;
-using TicketSystem.Services;
+﻿using TicketSystem.Data.DI;
 
-namespace TicketSystem.Extensions
+namespace TicketSystem.Services.DI
 {
     public static class DependencyRegistrar
     {
-        public static void AddBusinessLogicLayerServices(this IServiceCollection serviceCollection)
+        public static void AddBusinessLogicLayerServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            serviceCollection.AddDbContext<ApplicationContext>();
+            serviceCollection.AddDataAccessLevelServices(configuration);
             serviceCollection.AddTransient<IUserService, UserService>();
             serviceCollection.AddTransient<ITicketService, TicketService>();
             serviceCollection.AddTransient<IMessageService, MessageService>();

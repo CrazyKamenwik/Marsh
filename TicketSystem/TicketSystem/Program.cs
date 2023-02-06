@@ -1,8 +1,10 @@
 using TicketSystem.Extensions;
+using TicketSystem.Services.DI;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-builder.Services.AddBusinessLogicLayerServices();
+builder.Services.AddBusinessLogicLayerServices(configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

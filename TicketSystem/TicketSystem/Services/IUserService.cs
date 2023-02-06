@@ -1,4 +1,4 @@
-﻿using TicketSystem.Models;
+﻿using TicketSystem.Data.Models;
 
 namespace TicketSystem.Services
 {

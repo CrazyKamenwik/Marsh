@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.Models
+﻿namespace TicketSystem.Data.Models
 {
     public enum TicketStatus
     {

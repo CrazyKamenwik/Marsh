@@ -1,19 +1,16 @@
-﻿using TicketSystem.Data;
-using TicketSystem.Models;
+﻿using TicketSystem.Data.Models;
 
 namespace TicketSystem.Services
 {
     public class MessageService : IMessageService
     {
-        private readonly ApplicationContext _context;
-        private readonly ITicketService _ticketService;
         private readonly IUserService _userService;
+        private readonly ITicketService _ticketService;
 
-        public MessageService(ApplicationContext context, ITicketService ticketService, IUserService userService)
+        public MessageService(IUserService userService, ITicketService ticketService)
         {
-            _context = context;
-            _ticketService = ticketService;
             _userService = userService;
+            _ticketService = ticketService;
         }
 
         public async Task<bool> AddMessageAsync(int userId, Message message)
@@ -32,7 +29,7 @@ namespace TicketSystem.Services
             }
             else
             {
-                ticket = new Ticket(_context, user, freeOperator);
+                ticket = new Ticket(_ticketService, user, freeOperator);
                 await _ticketService.AddTicketAsync(ticket);
             }
 

@@ -1,4 +1,4 @@
-﻿using TicketSystem.Models;
+﻿using TicketSystem.Data.Models;
 
 namespace TicketSystem.Services
 {
@@ -9,5 +9,6 @@ namespace TicketSystem.Services
         Task<IEnumerable<Ticket>> GetTicketsAsync();
         Task<Ticket?> UpdateTicketAsync(int id, Ticket ticket);
         Task<Ticket?> DeleteTicketAsync(int id);
+        Task<int> CloseOpenTickets(int minutesToClose);
     }
 }
