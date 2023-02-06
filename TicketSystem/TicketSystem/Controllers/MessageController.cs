@@ -15,7 +15,6 @@ namespace TicketSystem.Controllers
         {
             _messageService = messageService;
             _logger = logger;
-            _context = new ApplicationContext();
         }
 
         [HttpPost("{userId}")]

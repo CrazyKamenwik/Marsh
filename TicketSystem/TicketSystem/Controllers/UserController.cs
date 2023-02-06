@@ -50,27 +50,12 @@ namespace TicketSystem.Controllers
             if (id != user.Id)
                 return null;
 
-            bool userExist = _context.Users.Any(x => x.Id == id);
-            if (!userExist)
-                return null;
-
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync(); //DbUpdateConcurrencyException
-
             return await _userService.UpdateUserAsync(id, user);
         }
 
         [HttpDelete("{id}")]
         public async Task<User?> Delete(int id)
         {
-            _logger.LogDebug("Delete user by id {id}", id);
-            var user = await _context.Users.FindAsync(id);
-            if(user == null)
-                return null;
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
             return await _userService.DeleteUserAsync(id);
         }
     }
