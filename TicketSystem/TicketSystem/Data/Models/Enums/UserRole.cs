@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.Data.Models
+﻿namespace TicketSystem.Data.Models.Enums
 {
     public enum UserRole
     {

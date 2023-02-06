@@ -1,4 +1,6 @@
-﻿namespace TicketSystem.Data.Models
+﻿using TicketSystem.Data.Models.Enums;
+
+namespace TicketSystem.Data.Models
 {
     public class User
     {

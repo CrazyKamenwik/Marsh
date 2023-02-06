@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data.Models;
-using TicketSystem.Data.Repositories;
+using TicketSystem.Data.Models.Enums;
+using TicketSystem.Data.Repositories.Abstractions;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Services
 {
@@ -28,12 +30,9 @@ namespace TicketSystem.Services
             return await _userRepository.GetUsersByConditionsAsync(u => u.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<User?> UpdateUserAsync(int id, User user)
+        public async Task<User?> UpdateUserAsync(User user)
         {
-            if (id != user.Id)
-                return null;
-
-            return await _userRepository.UpdateAsync(id, user);
+            return await _userRepository.UpdateAsync(user);
         }
 
         public async Task<User?> DeleteUserAsync(int id)

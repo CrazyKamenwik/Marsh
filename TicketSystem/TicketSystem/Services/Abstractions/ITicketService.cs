@@ -1,14 +1,13 @@
 ﻿using TicketSystem.Data.Models;
 
-namespace TicketSystem.Services
+namespace TicketSystem.Services.Abstractions
 {
     public interface ITicketService
     {
         Task<Ticket> AddTicketAsync(Ticket ticket);
         Task<Ticket?> GetTicketByIdAsync(int id);
         Task<IEnumerable<Ticket>> GetTicketsAsync();
-        Task<Ticket?> UpdateTicketAsync(int id, Ticket ticket);
+        Task<Ticket?> UpdateTicketAsync(Ticket ticket);
         Task<Ticket?> DeleteTicketAsync(int id);
-        Task CloseOpenTickets(int minutesToClose);
     }
 }

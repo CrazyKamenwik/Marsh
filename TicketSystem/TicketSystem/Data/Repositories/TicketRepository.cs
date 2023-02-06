@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using TicketSystem.Data;
 using TicketSystem.Data.Models;
+using TicketSystem.Data.Models.Enums;
+using TicketSystem.Data.Repositories.Abstractions;
 
 namespace TicketSystem.Data.Repositories
 {
@@ -22,9 +23,9 @@ namespace TicketSystem.Data.Repositories
             return ticket;
         }
 
-        public async Task<Ticket?> UpdateAsync(int id, Ticket ticket)
+        public async Task<Ticket?> UpdateAsync(Ticket ticket)
         {
-            var ticketExist = _context.Tickets.Any(x => x.Id == id);
+            var ticketExist = _context.Tickets.Any(x => x.Id == ticket.Id);
             if (!ticketExist)
                 return null;
 

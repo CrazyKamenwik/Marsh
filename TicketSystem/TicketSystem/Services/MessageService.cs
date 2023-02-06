@@ -1,4 +1,6 @@
 ﻿using TicketSystem.Data.Models;
+using TicketSystem.Data.Models.Enums;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Services
 {
@@ -13,9 +15,9 @@ namespace TicketSystem.Services
             _ticketService = ticketService;
         }
 
-        public async Task<bool> AddMessageAsync(int userId, Message message)
+        public async Task<bool> AddMessageAsync(Message message)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await _userService.GetUserByIdAsync(message.UserId);
             if (user == null)
                 return false;
 
@@ -29,14 +31,18 @@ namespace TicketSystem.Services
             }
             else
             {
-                ticket = new Ticket(_ticketService, user, freeOperator);
+                ticket = new Ticket()
+                {
+                    TicketCreator = user,
+                    Operator = freeOperator
+                };
                 await _ticketService.AddTicketAsync(ticket);
             }
 
             message.Ticket = ticket;
             message.CreatedAt = DateTime.UtcNow;
             ticket.Messages!.Add(message);
-            await _ticketService.UpdateTicketAsync(ticket.Id, ticket);
+            await _ticketService.UpdateTicketAsync(ticket);
 
             return true;
         }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Data.Models;
-using TicketSystem.Services;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Controllers
 {
@@ -38,7 +38,7 @@ namespace TicketSystem.Controllers
         [HttpPost]
         public async Task<User> Post(User user)
         {
-            _logger.LogDebug("Put new user");
+            _logger.LogDebug("Post new user");
 
             return await _userService.AddUserAsync(user);
         }
@@ -47,15 +47,15 @@ namespace TicketSystem.Controllers
         public async Task<User?> Put(int id, User user)
         {
             _logger.LogDebug("Put user by id {id}", id);
-            if (id != user.Id)
-                return null;
+            user.Id = id;
 
-            return await _userService.UpdateUserAsync(id, user);
+            return await _userService.UpdateUserAsync(user);
         }
 
         [HttpDelete("{id}")]
         public async Task<User?> Delete(int id)
         {
+            _logger.LogDebug("Delete user by id {id}", id);
             return await _userService.DeleteUserAsync(id);
         }
     }

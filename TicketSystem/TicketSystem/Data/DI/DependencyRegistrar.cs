@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TicketSystem.Data.Repositories;
+using TicketSystem.Data.Repositories.Abstractions;
 
 namespace TicketSystem.Data.DI
 {

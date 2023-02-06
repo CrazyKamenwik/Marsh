@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Data.Models;
-using TicketSystem.Services;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Controllers
 {

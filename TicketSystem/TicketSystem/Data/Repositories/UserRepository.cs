@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Data.Models;
+using TicketSystem.Data.Repositories.Abstractions;
 
 namespace TicketSystem.Data.Repositories
 {
@@ -44,9 +45,9 @@ namespace TicketSystem.Data.Repositories
             return _context.Users.AsNoTracking().Where(conditions);
         }
 
-        public async Task<User?> UpdateAsync(int id, User user)
+        public async Task<User?> UpdateAsync(User user)
         {
-            var userExist = _context.Users.Any(x => x.Id == id);
+            var userExist = _context.Users.Any(x => x.Id == user.Id);
             if (!userExist)
                 return null;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Data.Models;
-using TicketSystem.Services;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Controllers
 {
@@ -21,7 +21,8 @@ namespace TicketSystem.Controllers
         public async Task<Message> Post(int userId, Message message)
         {
             _logger.LogDebug("Post message bu userId {userId}", userId);
-            await _messageService.AddMessageAsync(userId, message);
+            message.UserId = userId;
+            await _messageService.AddMessageAsync(message);
 
             return message;
         }

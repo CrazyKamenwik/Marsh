@@ -1,4 +1,5 @@
 ﻿using TicketSystem.Data.DI;
+using TicketSystem.Services.Abstractions;
 
 namespace TicketSystem.Services.DI
 {
