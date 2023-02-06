@@ -1,26 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data;
 using TicketSystem.Models;
 
 namespace TicketSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class TicketContoller : ControllerBase
+    [Route("api/[controller]")]
+    public class TicketController : ControllerBase
     {
-        private readonly ILogger<TicketContoller> _logger;
         private readonly ApplicationContext _context;
+        private readonly Logger<TicketController> _logger;
 
-        public TicketContoller(ILogger<TicketContoller> logger)
+        public TicketController(Logger<TicketController> logger)
         {
-            _logger = logger;
             _context = new ApplicationContext();
+            _logger = logger;
         }
 
-        [HttpGet(Name = "GetTickets")]
-        public IEnumerable<Ticket> Get()
+        [HttpGet]
+        public async Task<IEnumerable<Ticket>> Get()
         {
-             return _context.Tickets.ToList();
+            _logger.LogDebug("Get all tickets");
+            var tickets = await _context.Tickets.ToListAsync();
+            return tickets;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<Ticket?> Get(int id)
+        {
+            _logger.LogDebug("Find ticket by id {id}", id);
+            return await _context.Tickets.FindAsync(id);
         }
     }
 }

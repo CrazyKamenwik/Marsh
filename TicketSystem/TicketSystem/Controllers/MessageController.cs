@@ -6,24 +6,26 @@ using TicketSystem.Models;
 namespace TicketSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly ILogger<MessageController> _logger;
         private readonly ApplicationContext _context;
+        private readonly ILogger<MessageController> _logger;
 
         public MessageController(ILogger<MessageController> logger)
         {
-            _context = new ApplicationContext();
             _logger = logger;
+            _context = new ApplicationContext();
         }
 
-        [HttpPost(Name = "PostMessage")]
-        public Message Post(Message postMessage)
+        [HttpPost]
+        public async Task<Message> Post(Message message)
         {
-            _context.Messages.Add(postMessage);
-            _context.SaveChanges();
-            return postMessage;
+            _logger.LogDebug("Post message");
+            await _context.Messages.AddAsync(message);
+            await _context.SaveChangesAsync();
+
+            return message;
         }
     }
 }
