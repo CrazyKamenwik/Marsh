@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.Data.Models;
 using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
@@ -8,28 +9,26 @@ namespace TicketSystem.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _ticketService;
+        private readonly ILogger<TicketController> _logger;
 
-        public TicketController(TicketService ticketService)
+        public TicketController(ITicketService ticketService, ILogger<TicketController> logger)
         {
             _ticketService = ticketService;
+            _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IEnumerable<Ticket>> Get()
         {
-            var tickets = await _ticketService.GetTicketsAsync();
-
-            return Ok(tickets);
+            _logger.LogDebug("Get all Tickets");
+            return await _ticketService.GetTicketsAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<Ticket?> Get(int id)
         {
-            var ticket = await _ticketService.GetTicketByIdAsync(id);
-            if (ticket == null)
-                return NotFound();
-
-            return Ok(ticket);
+            _logger.LogDebug("Get Ticket by id {id}", id);
+            return await _ticketService.GetTicketByIdAsync(id);
         }
     }
 }

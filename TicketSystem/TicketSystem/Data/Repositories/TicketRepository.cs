@@ -18,6 +18,7 @@ namespace TicketSystem.Data.Repositories
         {
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
+
             return ticket;
         }
 

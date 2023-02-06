@@ -9,17 +9,21 @@ namespace TicketSystem.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
+        private readonly ILogger _logger;
 
-        public MessageController(IMessageService messageService)
+        public MessageController(IMessageService messageService, ILogger logger)
         {
             _messageService = messageService;
+            _logger = logger;
         }
 
         [HttpPost("{userId}")]
-        public async Task<IActionResult> Post(int userId, Message message)
+        public async Task<Message> Post(int userId, Message message)
         {
-            var addResult = await _messageService.AddMessageAsync(userId, message);
-            return addResult ? Ok() : NotFound();
+            _logger.LogDebug("Post message bu userId {userId}", userId);
+            await _messageService.AddMessageAsync(userId, message);
+
+            return message;
         }
     }
 }
