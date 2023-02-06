@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
+using TicketSystem.Data.Models;
+using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
@@ -10,39 +9,41 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _context = new ApplicationContext();
+            _userService = userService;
             _logger = logger;
         }
 
         [HttpGet]
         public async Task<IEnumerable<User>> Get()
         {
-            return await _context.Users.ToListAsync();
+            _logger.LogDebug("Get all users");
+            var users = await _userService.GetUsersAsync();
+
+            return users;
         }
 
         [HttpGet("{id}")]
         public async Task<User?> Get(int id)
         {
-            _logger.LogDebug("Find user by id {id}", id);
-            return await _context.Users.FindAsync(id);
+            _logger.LogDebug("Get user by id {id}", id);
+
+            return await _userService.GetUserByIdAsync(id);
         }
 
         [HttpPost]
         public async Task<User> Post(User user)
         {
-            _logger.LogDebug("Post user");
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            _logger.LogDebug("Put new user");
 
-            return user;
+            return await _userService.AddUserAsync(user);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<User?> Put(int id, User user)
         {
             _logger.LogDebug("Put user by id {id}", id);
@@ -56,7 +57,7 @@ namespace TicketSystem.Controllers
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync(); //DbUpdateConcurrencyException
 
-            return user;
+            return await _userService.UpdateUserAsync(id, user);
         }
 
         [HttpDelete("{id}")]
@@ -70,7 +71,7 @@ namespace TicketSystem.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return await _userService.DeleteUserAsync(id);
         }
     }
 }

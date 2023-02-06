@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
+using TicketSystem.Data.Models;
+using TicketSystem.Services;
 
 namespace TicketSystem.Controllers
 {
@@ -9,21 +8,21 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly ApplicationContext _context;
-        private readonly ILogger<MessageController> _logger;
+        private readonly IMessageService _messageService;
+        private readonly ILogger _logger;
 
-        public MessageController(ILogger<MessageController> logger)
+        public MessageController(IMessageService messageService, ILogger logger)
         {
+            _messageService = messageService;
             _logger = logger;
             _context = new ApplicationContext();
         }
 
-        [HttpPost]
-        public async Task<Message> Post(Message message)
+        [HttpPost("{userId}")]
+        public async Task<Message> Post(int userId, Message message)
         {
-            _logger.LogDebug("Post message");
-            await _context.Messages.AddAsync(message);
-            await _context.SaveChangesAsync();
+            _logger.LogDebug("Post message bu userId {userId}", userId);
+            await _messageService.AddMessageAsync(userId, message);
 
             return message;
         }
