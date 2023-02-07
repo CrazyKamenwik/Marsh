@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
+using TicketSystem.Data.Models;
+using TicketSystem.Services.Abstractions;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace TicketSystem.Controllers
 {
@@ -10,67 +11,53 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
-            _context = new ApplicationContext();
+            _userService = userService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get()
+        public async Task<IEnumerable<User>> Get(CancellationToken cancellationToken)
         {
-            return await _context.Users.ToListAsync();
+            _logger.LogInformation("Get all users");
+            var users = await _userService.GetUsersAsync(cancellationToken);
+
+            return users;
         }
 
         [HttpGet("{id}")]
-        public async Task<User?> Get(int id)
+        public async Task<User?> Get(int id, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Find user by id {id}", id);
-            return await _context.Users.FindAsync(id);
+            _logger.LogInformation("Get user by id {id}", id);
+
+            return await _userService.GetUserByIdAsync(id, cancellationToken);
         }
 
         [HttpPost]
-        public async Task<User> Post(User user)
+        public async Task<User> Post(User user, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Post user");
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
 
-            return user;
+            return await _userService.AddUserAsync(user, cancellationToken);
         }
 
-        [HttpPut("id")]
-        public async Task<User?> Put(int id, User user)
+        [HttpPut("{id}")]
+        public async Task<User?> Put(int id, User user, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Put user by id {id}", id);
-            if (id != user.Id)
-                return null;
-
-            bool userExist = _context.Users.Any(x => x.Id == id);
-            if (!userExist)
-                return null;
-
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync(); //DbUpdateConcurrencyException
-
-            return user;
+            _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
+            user.Id = id;
+            return await _userService.UpdateUserAsync(user, cancellationToken);
         }
 
         [HttpDelete("{id}")]
-        public async Task<User?> Delete(int id)
+        public async Task<User?> Delete(int id, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Delete user by id {id}", id);
-            var user = await _context.Users.FindAsync(id);
-            if(user == null)
-                return null;
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return user;
+            _logger.LogInformation("Delete user by id {id}", id);
+            return await _userService.DeleteUserAsync(id, cancellationToken);
         }
     }
 }

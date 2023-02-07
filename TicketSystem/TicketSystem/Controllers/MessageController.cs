@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Models;
+using TicketSystem.Data.Models;
+using TicketSystem.Services.Abstractions;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace TicketSystem.Controllers
 {
@@ -9,22 +10,21 @@ namespace TicketSystem.Controllers
     [Route("api/[controller]")]
     public class MessageController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly IMessageService _messageService;
         private readonly ILogger<MessageController> _logger;
 
-        public MessageController(ILogger<MessageController> logger)
+        public MessageController(IMessageService messageService, ILogger<MessageController> logger)
         {
+            _messageService = messageService;
             _logger = logger;
-            _context = new ApplicationContext();
         }
 
-        [HttpPost]
-        public async Task<Message> Post(Message message)
+        [HttpPost("{userId}")]
+        public async Task<Message> Post(int userId, Message message, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Post message");
-            await _context.Messages.AddAsync(message);
-            await _context.SaveChangesAsync();
-
+            _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(message));
+            await _messageService.AddMessageAsync(message, cancellationToken);
+            message.UserId = userId;
             return message;
         }
     }
