@@ -52,27 +52,17 @@ namespace TicketSystem.Data.Repositories
             return await _context.Tickets.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task CloseOpenTickets(int minutesToClose, CancellationToken cancellationToken)
-        {
-            var tickets = _context.Tickets.Where(t => t.TicketStatus == TicketStatus.Open &&
-                                                      t.Messages.OrderByDescending(m => m.CreatedAt)
-                                                          .First().User.UserRole == UserRole.Operator);
+        //public async Task CloseOpenTickets(int minutesToClose, CancellationToken cancellationToken)
+        //{
 
-            foreach (var ticket in tickets)
-            {
-                if (ticket.CreatedAt.AddMinutes(minutesToClose) < DateTime.Now)
-                    ticket.TicketStatus = TicketStatus.Closed;
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-        }
+        //}
 
         public async Task<IEnumerable<Ticket>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,
             Expression<Func<Ticket, bool>>? filter = null,
             Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>>? orderBy = null,
             string includeProperties = "")
         {
-            var query = _context.Tickets.AsNoTracking();
+            IQueryable<Ticket> query = _context.Tickets;
 
             if (filter != null)
             {
@@ -92,6 +82,11 @@ namespace TicketSystem.Data.Repositories
             {
                 return await query.ToListAsync(cancellationToken);
             }
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -9,5 +9,6 @@ namespace TicketSystem.Services.Abstractions
         Task<IEnumerable<Ticket>> GetTicketsAsync(CancellationToken cancellationToken);
         Task<Ticket?> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken);
         Task<Ticket?> DeleteTicketAsync(int id, CancellationToken cancellationToken);
+        Task CloseOpenTickets(CancellationToken cancellationToken = default);
     }
 }
