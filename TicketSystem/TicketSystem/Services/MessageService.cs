@@ -22,7 +22,7 @@ namespace TicketSystem.Services
                 return false;
 
             Ticket ticket;
-            var freeOperator = await _userService.GetFreeOperator(cancellationToken);
+            var freeOperator = await _userService.GetNotBusyOperator(cancellationToken);
 
             // If the user has an open ticket, the message will be written into it
             if (user.Tickets == null || user.Tickets.Count == 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatus.Open)

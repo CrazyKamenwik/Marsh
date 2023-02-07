@@ -40,7 +40,7 @@ namespace TicketSystem.Controllers
         [HttpPost]
         public async Task<User> Post(User user, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Post new User {JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
+            _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
 
             return await _userService.AddUserAsync(user, cancellationToken);
         }
@@ -48,7 +48,7 @@ namespace TicketSystem.Controllers
         [HttpPut("{id}")]
         public async Task<User?> Put(int id, User user, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Put User with id {id}, user: {JsonConvert.SerializeObject(user)}",id, JsonConvert.SerializeObject(user));
+            _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
             user.Id = id;
             return await _userService.UpdateUserAsync(user, cancellationToken);
         }

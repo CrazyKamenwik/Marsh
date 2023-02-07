@@ -44,7 +44,7 @@ namespace TicketSystem.Services
             return await _userRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<User?> GetFreeOperator(CancellationToken cancellationToken)
+        public async Task<User?> GetNotBusyOperator(CancellationToken cancellationToken)
         {
             var operators = await _userRepository.GetUsersByConditionsAsync(cancellationToken, includeProperties: "Tickets",
                 orderBy: u => u.OrderBy(users => users.Tickets));

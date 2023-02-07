@@ -9,6 +9,6 @@ namespace TicketSystem.Services.Abstractions
         Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken);
         Task<User?> UpdateUserAsync(User user, CancellationToken cancellationToken);
         Task<User?> DeleteUserAsync(int id, CancellationToken cancellationToken);
-        Task<User?> GetFreeOperator(CancellationToken cancellationToken);
+        Task<User?> GetNotBusyOperator(CancellationToken cancellationToken);
     }
 }

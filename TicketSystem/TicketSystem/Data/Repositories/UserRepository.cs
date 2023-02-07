@@ -41,12 +41,6 @@ namespace TicketSystem.Data.Repositories
             return await _context.Users.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        //public async Task<IEnumerable<User>> GetUsersByConditionsAsync(Expression<Func<User, bool>> conditions,
-        //    CancellationToken cancellationToken)
-        //{
-        //    return await _context.Users.AsNoTracking().Where(conditions).ToListAsync(cancellationToken);
-        //}
-
         public async Task<User?> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             var userExist = _context.Users.Any(x => x.Id == user.Id);

@@ -14,6 +14,5 @@ namespace TicketSystem.Data.Repositories.Abstractions
             Expression<Func<User, bool>>? filter = null,
             Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
             string includeProperties = "");
-        //Task<IEnumerable<User>> GetUsersByConditionsAsync(Expression<Func<User, bool>> conditions, CancellationToken cancellationToken);
     }
 }
