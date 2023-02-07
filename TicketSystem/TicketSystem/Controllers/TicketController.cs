@@ -18,17 +18,17 @@ namespace TicketSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Ticket>> Get()
+        public async Task<IEnumerable<Ticket>> Get(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Get all Tickets");
-            return await _ticketService.GetTicketsAsync();
+            _logger.LogInformation("Get all Tickets");
+            return await _ticketService.GetTicketsAsync(cancellationToken);
         }
 
         [HttpGet("{id}")]
-        public async Task<Ticket?> Get(int id)
+        public async Task<Ticket?> Get(int id, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Get Ticket by id {id}", id);
-            return await _ticketService.GetTicketByIdAsync(id);
+            _logger.LogInformation("Get Ticket by id {id}", id);
+            return await _ticketService.GetTicketByIdAsync(id, cancellationToken);
         }
     }
 }

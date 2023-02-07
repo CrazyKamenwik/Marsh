@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data.Models;
+using TicketSystem.Data.Models.Enums;
 using TicketSystem.Data.Repositories.Abstractions;
 using TicketSystem.Services.Abstractions;
 
@@ -31,29 +32,31 @@ namespace TicketSystem.Services
             }
         }
 
-        public async Task<Ticket> AddTicketAsync(Ticket ticket)
+        public async Task<Ticket> AddTicketAsync(Ticket ticket, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.CreateAsync(ticket);
+            return await _ticketRepository.CreateAsync(ticket, cancellationToken);
         }
 
-        public async Task<Ticket?> GetTicketByIdAsync(int id)
+        public async Task<Ticket?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.GetUsersByConditionsAsync(t => t.Id == id).FirstOrDefaultAsync();
+            var ticketsByConditions =
+                await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
+            return  ticketsByConditions.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Ticket>> GetTicketsAsync()
+        public async Task<IEnumerable<Ticket>> GetTicketsAsync(CancellationToken cancellationToken)
         {
-            return await _ticketRepository.GetAllAsync();
+            return await _ticketRepository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Ticket?> UpdateTicketAsync(Ticket ticket)
+        public async Task<Ticket?> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.UpdateAsync(ticket);
+            return await _ticketRepository.UpdateAsync(ticket, cancellationToken);
         }
 
-        public async Task<Ticket?> DeleteTicketAsync(int id)
+        public async Task<Ticket?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.DeleteAsync(id);
+            return await _ticketRepository.DeleteAsync(id, cancellationToken);
         }
     }
 }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.Data.Models;
 using TicketSystem.Services.Abstractions;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace TicketSystem.Controllers
 {
@@ -19,44 +21,43 @@ namespace TicketSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get()
+        public async Task<IEnumerable<User>> Get(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Get all users");
-            var users = await _userService.GetUsersAsync();
+            _logger.LogInformation("Get all users");
+            var users = await _userService.GetUsersAsync(cancellationToken);
 
             return users;
         }
 
         [HttpGet("{id}")]
-        public async Task<User?> Get(int id)
+        public async Task<User?> Get(int id, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Get user by id {id}", id);
+            _logger.LogInformation("Get user by id {id}", id);
 
-            return await _userService.GetUserByIdAsync(id);
+            return await _userService.GetUserByIdAsync(id, cancellationToken);
         }
 
         [HttpPost]
-        public async Task<User> Post(User user)
+        public async Task<User> Post(User user, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Post new user");
+            _logger.LogInformation("Post new User {JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
 
-            return await _userService.AddUserAsync(user);
+            return await _userService.AddUserAsync(user, cancellationToken);
         }
 
         [HttpPut("{id}")]
-        public async Task<User?> Put(int id, User user)
+        public async Task<User?> Put(int id, User user, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Put user by id {id}", id);
+            _logger.LogInformation("Put User with id {id}, user: {JsonConvert.SerializeObject(user)}",id, JsonConvert.SerializeObject(user));
             user.Id = id;
-
-            return await _userService.UpdateUserAsync(user);
+            return await _userService.UpdateUserAsync(user, cancellationToken);
         }
 
         [HttpDelete("{id}")]
-        public async Task<User?> Delete(int id)
+        public async Task<User?> Delete(int id, CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Delete user by id {id}", id);
-            return await _userService.DeleteUserAsync(id);
+            _logger.LogInformation("Delete user by id {id}", id);
+            return await _userService.DeleteUserAsync(id, cancellationToken);
         }
     }
 }

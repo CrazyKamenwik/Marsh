@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TicketSystem.Data.Models;
 using TicketSystem.Data.Models.Enums;
 using TicketSystem.Data.Repositories.Abstractions;
@@ -15,36 +16,40 @@ namespace TicketSystem.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> AddUserAsync(User user)
+        public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
         {
-            return await _userRepository.CreateAsync(user);
+            return await _userRepository.CreateAsync(user, cancellationToken);
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken)
         {
-            return await _userRepository.GetAllAsync();
+            return await _userRepository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public async Task<User?> GetUserByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _userRepository.GetUsersByConditionsAsync(u => u.Id == id).FirstOrDefaultAsync();
+            var userByCondition =
+                await _userRepository.GetUsersByConditionsAsync(cancellationToken, user => user.Id == id);
+
+            return userByCondition.FirstOrDefault();
         }
 
-        public async Task<User?> UpdateUserAsync(User user)
+        public async Task<User?> UpdateUserAsync(User user, CancellationToken cancellationToken)
         {
-            return await _userRepository.UpdateAsync(user);
+            return await _userRepository.UpdateAsync(user, cancellationToken);
         }
 
-        public async Task<User?> DeleteUserAsync(int id)
+        public async Task<User?> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
-            return await _userRepository.DeleteAsync(id);
+            return await _userRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<User?> GetFreeOperator()
+        public async Task<User?> GetFreeOperator(CancellationToken cancellationToken)
         {
-            return await _userRepository.GetUsersByConditionsAsync(u => u.UserRole == UserRole.Operator)
-                .OrderBy(u => u.Tickets)
-                .FirstOrDefaultAsync();
+            var operators = await _userRepository.GetUsersByConditionsAsync(cancellationToken, includeProperties: "Tickets",
+                orderBy: u => u.OrderBy(users => users.Tickets));
+            return operators.FirstOrDefault();
         }
+
     }
 }

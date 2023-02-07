@@ -15,14 +15,14 @@ namespace TicketSystem.Services
             _ticketService = ticketService;
         }
 
-        public async Task<bool> AddMessageAsync(Message message)
+        public async Task<bool> AddMessageAsync(Message message, CancellationToken cancellationToken)
         {
-            var user = await _userService.GetUserByIdAsync(message.UserId);
+            var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
             if (user == null)
                 return false;
 
             Ticket ticket;
-            var freeOperator = await _userService.GetFreeOperator();
+            var freeOperator = await _userService.GetFreeOperator(cancellationToken);
 
             // If the user has an open ticket, the message will be written into it
             if (user.Tickets == null || user.Tickets.Count == 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatus.Open)
@@ -36,13 +36,13 @@ namespace TicketSystem.Services
                     TicketCreator = user,
                     Operator = freeOperator
                 };
-                await _ticketService.AddTicketAsync(ticket);
+                await _ticketService.AddTicketAsync(ticket, cancellationToken);
             }
 
             message.Ticket = ticket;
             message.CreatedAt = DateTime.UtcNow;
             ticket.Messages!.Add(message);
-            await _ticketService.UpdateTicketAsync(ticket);
+            await _ticketService.UpdateTicketAsync(ticket, cancellationToken);
 
             return true;
         }
