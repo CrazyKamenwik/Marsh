@@ -36,6 +36,11 @@ namespace TicketSystem.Services
 
         public async Task<User?> UpdateUserAsync(User user, CancellationToken cancellationToken)
         {
+            var usersByCondition =
+                await _userRepository.GetUsersByConditionsAsync(cancellationToken, u => u.Id == user.Id);
+            if (!usersByCondition.Any())
+                return null;
+
             return await _userRepository.UpdateAsync(user, cancellationToken);
         }
 

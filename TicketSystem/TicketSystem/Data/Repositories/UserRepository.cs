@@ -43,10 +43,6 @@ namespace TicketSystem.Data.Repositories
 
         public async Task<User?> UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            var userExist = _context.Users.Any(x => x.Id == user.Id);
-            if (!userExist)
-                return null;
-
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException
 
