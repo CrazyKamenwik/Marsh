@@ -4,7 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-
-        public UserRoleViewModel UserRole { get; set; } = null!;
+        public string UserRole { get; set; } = null!;
     }
 }
