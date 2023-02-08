@@ -1,4 +1,4 @@
-using TicketSystem.BackgroundService;
+using TicketSystem.BackgroundServices;
 using TicketSystem.Extensions;
 using TicketSystem.Services.DI;
 

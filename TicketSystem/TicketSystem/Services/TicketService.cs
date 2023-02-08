@@ -47,7 +47,9 @@ namespace TicketSystem.Services
         public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
         {
             var tickets = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
-                t => t.TicketStatus == TicketStatus.Open && t.Messages.OrderByDescending(m => m.CreatedAt).First().User.UserRole == UserRole.Operator);
+                t => t.TicketStatus == TicketStatus.Open
+                     && t.Messages.Any()
+                     && t.Messages.Last().User.UserRole == UserRole.Operator);
 
             foreach (var ticket in tickets)
             {
