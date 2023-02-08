@@ -20,14 +20,15 @@ namespace TicketSystem.BLL.Services
         public async Task<UserModel> AddUserAsync(UserModel user, CancellationToken cancellationToken)
         {
             var userEntity = _mapper.Map<UserEntity>(user);
-            await _userRepository.CreateAsync(userEntity, cancellationToken);
+            userEntity = await _userRepository.CreateAsync(userEntity, cancellationToken);
             return _mapper.Map<UserModel>(userEntity);
         }
 
         public async Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken)
         {
-            var usersEntity = await _userRepository.GetAllAsync(cancellationToken);
-            return _mapper.Map<IEnumerable<UserModel>>(usersEntity);
+            var allUsers = await _userRepository.GetUsersByConditionsAsync(cancellationToken, includeProperties: "UserRole");
+
+            return _mapper.Map<IEnumerable<UserModel>>(allUsers);
         }
 
         public async Task<UserModel?> GetUserByIdAsync(int id, CancellationToken cancellationToken)
@@ -55,8 +56,10 @@ namespace TicketSystem.BLL.Services
 
         public async Task<UserModel?> GetNotBusyOperator(CancellationToken cancellationToken)
         {
-            var operatorsEntityByCondition = await _userRepository.GetUsersByConditionsAsync(cancellationToken, includeProperties: "Tickets",
-                orderBy: u => u.OrderBy(users => users.Tickets));
+            var operatorsEntityByCondition = await _userRepository.GetUsersByConditionsAsync(cancellationToken,
+                filter: u => u.UserRole.Name == "Operator",
+                orderBy: u => u.OrderBy(users => users.Tickets!.Count),
+                includeProperties: "Tickets");
             var operatorEntity = operatorsEntityByCondition.FirstOrDefault();
             return operatorEntity == null ? null : _mapper.Map<UserModel>(operatorEntity);
         }

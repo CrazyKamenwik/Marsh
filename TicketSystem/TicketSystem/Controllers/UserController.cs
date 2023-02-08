@@ -48,7 +48,7 @@ namespace TicketSystem.Controllers
             _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(shortUser));
             
             var userModel = _mapper.Map<UserModel>(shortUser);
-            await _userService.AddUserAsync(userModel, cancellationToken);
+            userModel = await _userService.AddUserAsync(userModel, cancellationToken);
 
             return _mapper.Map<UserVm>(userModel);
         }
@@ -61,8 +61,8 @@ namespace TicketSystem.Controllers
 
             _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(userModel));
 
-            var userModelFromBll = await _userService.UpdateUserAsync(userModel, cancellationToken);
-            return userModelFromBll == null ? null : _mapper.Map<UserVm>(userModelFromBll);
+            userModel = await _userService.UpdateUserAsync(userModel, cancellationToken);
+            return userModel == null ? null : _mapper.Map<UserVm>(userModel);
         }
 
         [HttpDelete("{id}")]

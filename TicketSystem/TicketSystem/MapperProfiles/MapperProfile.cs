@@ -10,12 +10,23 @@ namespace TicketSystem.MapperProfiles
     {
         public MapperProfile()
         {
-            CreateMap<ShortMessage, MessageModel>();
-            CreateMap<ShortUser, UserModel>();
+            CreateMap<ShortMessage, MessageModel>()
+                .ForMember(mm => mm.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
+            CreateMap<ShortUser, UserModel>()
+                .ForMember(um => um.UserRole, opt => opt.MapFrom(src => new UserRoleModel() { Name = src.UserRole }));
 
-            CreateMap<UserModel, UserVm>();
-            CreateMap<TicketModel, TicketVm>();
-            CreateMap<MessageModel, MessageVm>();
+            CreateMap<UserModel, UserVm>()
+                .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole.Name))
+                .ReverseMap();
+
+            CreateMap<TicketModel, TicketVm>()
+                .ForMember(dest => dest.TicketCreator, opt => opt.MapFrom(src => src.TicketCreator))
+                .ForMember(dest => dest.Operator, opt => opt.MapFrom(src => src.Operator))
+                .ReverseMap();
+
+            CreateMap<MessageModel, MessageVm>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+                .ReverseMap();
         }
     }
 }

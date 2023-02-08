@@ -37,7 +37,12 @@ namespace TicketSystem.DAL.Repositories
 
         public async Task<TicketEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets
+                .Include(t => t.TicketCreator)
+                .Include(t => t.Operator)
+                .Include(t => t.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
             if (ticket == null)
                 return null;
 
@@ -45,11 +50,6 @@ namespace TicketSystem.DAL.Repositories
             await _context.SaveChangesAsync(cancellationToken);
 
             return ticket;
-        }
-
-        public async Task<IEnumerable<TicketEntity>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Tickets.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<TicketEntity>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,

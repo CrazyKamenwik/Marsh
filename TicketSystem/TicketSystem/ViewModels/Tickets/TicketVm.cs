@@ -8,7 +8,7 @@ namespace TicketSystem.ViewModels.Tickets
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
-        public TicketStatusEnumViewModel TicketStatus { get; set; }
+        public TicketStatusEnumVm TicketStatus { get; set; }
 
         public UserVm TicketCreator { get; set; } = null!;
         public UserVm? Operator { get; set; }

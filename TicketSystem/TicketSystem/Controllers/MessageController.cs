@@ -31,9 +31,9 @@ namespace TicketSystem.Controllers
 
             _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(messageModel));
 
-            var messageModelFromBll = await _messageService.AddMessageAsync(messageModel, cancellationToken);
+            messageModel = await _messageService.AddMessageAsync(messageModel, cancellationToken);
 
-            return messageModelFromBll == null ? null : _mapper.Map<MessageVm>(messageModel);
+            return messageModel == null ? null : _mapper.Map<MessageVm>(messageModel);
         }
     }
 }

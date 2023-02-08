@@ -9,15 +9,14 @@ namespace TicketSystem.BLL.Services
     {
         private readonly IUserService _userService;
         private readonly ITicketService _ticketService;
-        private readonly IMapper _mapper;
 
-        public MessageService(IUserService userService, ITicketService ticketService, IMapper mapper)
+        public MessageService(IUserService userService, ITicketService ticketService)
         {
-            _mapper = mapper;
             _userService = userService;
             _ticketService = ticketService;
         }
 
+        // TODO #2: Change that method (SOLID)
         public async Task<MessageModel?> AddMessageAsync(MessageModel message, CancellationToken cancellationToken)
         {
             var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
@@ -28,7 +27,7 @@ namespace TicketSystem.BLL.Services
             var freeOperator = await _userService.GetNotBusyOperator(cancellationToken);
 
             // If the user has an open ticket, the message will be written into it
-            if (user.Tickets == null || user.Tickets.Count == 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatusEnumModel.Open)
+            if (user.Tickets != null && user.Tickets!.Count != 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatusEnumModel.Open)
             {
                 ticket = user.Tickets!.OrderByDescending(t => t.CreatedAt).First();
             }
@@ -36,16 +35,20 @@ namespace TicketSystem.BLL.Services
             {
                 ticket = new TicketModel()
                 {
-                    TicketCreator = user,
-                    Operator = freeOperator
+                    //TicketCreator = user,
+                    TicketCreatorId = user.Id,
+                    //Operator = freeOperator,
+                    OperatorId = freeOperator?.Id ?? null,
+                    CreatedAt = DateTime.UtcNow
+                    //Messages = new List<MessageModel>() { message }
                 };
-                await _ticketService.AddTicketAsync(ticket, cancellationToken);
+                ticket = await _ticketService.AddTicketAsync(ticket, cancellationToken);
             }
 
             message.Ticket = ticket;
             message.CreatedAt = DateTime.UtcNow;
             ticket.Messages!.Add(message);
-            await _ticketService.UpdateTicketAsync(ticket, cancellationToken);
+            ticket = await _ticketService.UpdateTicketAsync(ticket, cancellationToken);
 
             return message;
         }

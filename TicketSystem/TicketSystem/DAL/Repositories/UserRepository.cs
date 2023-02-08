@@ -25,7 +25,10 @@ namespace TicketSystem.DAL.Repositories
 
         public async Task<UserEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var user = await _context.Users.FindAsync(id, cancellationToken);
+            var user = await _context.Users
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
             if (user == null)
                 return null;
 
@@ -33,11 +36,6 @@ namespace TicketSystem.DAL.Repositories
             await _context.SaveChangesAsync(cancellationToken);
 
             return user;
-        }
-
-        public async Task<IEnumerable<UserEntity>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Users.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task<UserEntity?> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
@@ -53,7 +51,7 @@ namespace TicketSystem.DAL.Repositories
             Func<IQueryable<UserEntity>, IOrderedQueryable<UserEntity>>? orderBy = null,
             string includeProperties = "")
         {
-            var query = _context.Users.AsNoTracking();
+            IQueryable<UserEntity> query = _context.Users;
 
             if (filter != null)
             {

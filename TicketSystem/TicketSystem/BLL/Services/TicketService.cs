@@ -4,6 +4,7 @@ using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories.Abstractions;
 using TicketSystem.DAL.Entities.Enums;
+using Microsoft.VisualBasic;
 
 namespace TicketSystem.BLL.Services
 {
@@ -21,15 +22,16 @@ namespace TicketSystem.BLL.Services
 
         public async Task<TicketModel> AddTicketAsync(TicketModel ticket, CancellationToken cancellationToken)
         {
+            ticket.Messages = new List<MessageModel>();
             var ticketEntity = _mapper.Map<TicketEntity>(ticket);
-            await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
+            ticketEntity = await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
             return _mapper.Map<TicketModel>(ticketEntity);
         }
 
         public async Task<TicketModel?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
         {
             var ticketsEntityByConditions =
-                await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
+                await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id, includeProperties: "TicketCreator, Operator, Messages");
             var ticketEntity = ticketsEntityByConditions.FirstOrDefault();
 
             return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
@@ -37,7 +39,7 @@ namespace TicketSystem.BLL.Services
 
         public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
         {
-            var ticketsEntity = await _ticketRepository.GetAllAsync(cancellationToken);
+            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, includeProperties: "TicketCreator, Operator, Messages");
             return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
         }
 
