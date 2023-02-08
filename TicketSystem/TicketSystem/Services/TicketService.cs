@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TicketSystem.Data.Models;
 using TicketSystem.Data.Models.Enums;
 using TicketSystem.Data.Repositories.Abstractions;
@@ -9,27 +10,11 @@ namespace TicketSystem.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
-        private static Timer? _timer;
-        private readonly object _updateLock;
+        private const int MinutesToClose = 60;
 
         public TicketService(ITicketRepository ticketRepository)
         {
             _ticketRepository = ticketRepository;
-            _updateLock = new object();
-            _timer ??= new Timer(UpdateTicketStatus, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
-        }
-
-        /// <summary>
-        ///  Every 5 minutes, the timer launches this method which checks
-        ///  all tickets with status open and the last message from
-        ///  the operator sent an 1 hour ago and where no user response was received. These tickets we close
-        /// </summary>
-        private void UpdateTicketStatus(object? state)
-        {
-            lock (_updateLock)
-            {
-                _ticketRepository.CloseOpenTickets(60);
-            }
         }
 
         public async Task<Ticket> AddTicketAsync(Ticket ticket, CancellationToken cancellationToken)
@@ -41,6 +26,7 @@ namespace TicketSystem.Services
         {
             var ticketsByConditions =
                 await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
+
             return  ticketsByConditions.FirstOrDefault();
         }
 
@@ -57,6 +43,22 @@ namespace TicketSystem.Services
         public async Task<Ticket?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
         {
             return await _ticketRepository.DeleteAsync(id, cancellationToken);
+        }
+
+        public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
+        {
+            var tickets = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
+                t => t.TicketStatus == TicketStatus.Open
+                     && t.Messages.Any()
+                     && t.Messages.Last().User.UserRole == UserRole.Operator);
+
+            foreach (var ticket in tickets)
+            {
+                if (ticket.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)
+                    ticket.TicketStatus = TicketStatus.Closed;
+            }
+
+            await _ticketRepository.SaveAsync();
         }
     }
 }

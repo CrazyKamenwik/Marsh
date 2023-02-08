@@ -9,10 +9,10 @@ namespace TicketSystem.Data.Repositories.Abstractions
         Task<Ticket?> UpdateAsync(Ticket ticket, CancellationToken cancellationToken);
         Task<Ticket?> DeleteAsync(int id, CancellationToken cancellationToken);
         Task<IEnumerable<Ticket>> GetAllAsync(CancellationToken cancellationToken);
-        Task CloseOpenTickets(int minutesToClose, CancellationToken cancellationToken = default);
         Task<IEnumerable<Ticket>> GetTicketsByConditionsAsync(CancellationToken cancellationToken,
             Expression<Func<Ticket, bool>>? filter = null,
             Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>>? orderBy = null,
             string includeProperties = "");
+        Task SaveAsync();
     }
 }
