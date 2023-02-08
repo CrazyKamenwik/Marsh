@@ -1,7 +1,9 @@
-﻿using TicketSystem.BLL.Services.Abstractions;
+﻿using AutoMapper;
+using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Entities.Enums;
 using TicketSystem.DAL.Repositories.Abstractions;
+using TicketSystem.DAL.Entities.Enums;
 
 namespace TicketSystem.BLL.Services
 {
@@ -9,51 +11,60 @@ namespace TicketSystem.BLL.Services
     {
         private readonly ITicketRepository _ticketRepository;
         private const int MinutesToClose = 60;
+        private readonly IMapper _mapper;
 
-        public TicketService(ITicketRepository ticketRepository)
+        public TicketService(ITicketRepository ticketRepository, IMapper mapper)
         {
+            _mapper = mapper;
             _ticketRepository = ticketRepository;
         }
 
-        public async Task<TicketEntity> AddTicketAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        public async Task<TicketModel> AddTicketAsync(TicketModel ticket, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.CreateAsync(ticket, cancellationToken);
+            var ticketEntity = _mapper.Map<TicketEntity>(ticket);
+            await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
+            return _mapper.Map<TicketModel>(ticketEntity);
         }
 
-        public async Task<TicketEntity?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<TicketModel?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var ticketsByConditions =
+            var ticketsEntityByConditions =
                 await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
+            var ticketEntity = ticketsEntityByConditions.FirstOrDefault();
 
-            return ticketsByConditions.FirstOrDefault();
+            return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
         }
 
-        public async Task<IEnumerable<TicketEntity>> GetTicketsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
         {
-            return await _ticketRepository.GetAllAsync(cancellationToken);
+            var ticketsEntity = await _ticketRepository.GetAllAsync(cancellationToken);
+            return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
         }
 
-        public async Task<TicketEntity?> UpdateTicketAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        public async Task<TicketModel?> UpdateTicketAsync(TicketModel ticket, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.UpdateAsync(ticket, cancellationToken);
+            var ticketEntity = _mapper.Map<TicketEntity>(ticket);
+            ticketEntity = await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
+            return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
         }
 
-        public async Task<TicketEntity?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
+        public async Task<TicketModel?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
         {
-            return await _ticketRepository.DeleteAsync(id, cancellationToken);
+            var ticketEntity = await _ticketRepository.DeleteAsync(id, cancellationToken);
+            return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
         }
 
         public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
         {
-            var tickets = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
+            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
                 t => t.TicketStatus == TicketStatusEnumEntity.Open
                      && t.Messages.Any()
                      && t.Messages.Last().User.UserRole.Name == "Operator");
 
-            foreach (var ticket in tickets)
+            foreach (var ticketEntity in ticketsEntity)
             {
-                if (ticket.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)
-                    ticket.TicketStatus = TicketStatusEnumEntity.Closed;
+                if (ticketEntity.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)
+                    ticketEntity.TicketStatus = TicketStatusEnumEntity.Closed;
             }
 
             await _ticketRepository.SaveAsync();
