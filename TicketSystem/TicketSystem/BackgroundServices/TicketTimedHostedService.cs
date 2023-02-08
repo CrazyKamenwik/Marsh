@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
-using TicketSystem.Services.Abstractions;
+using TicketSystem.BLL.Services.Abstractions;
 
 namespace TicketSystem.BackgroundServices
 {

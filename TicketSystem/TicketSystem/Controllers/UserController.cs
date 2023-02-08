@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
-using TicketSystem.Data.Models;
-using TicketSystem.Services.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
+using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.Entities;
 
 namespace TicketSystem.Controllers
 {
@@ -21,7 +19,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserEntity>> Get(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all users");
             var users = await _userService.GetUsersAsync(cancellationToken);
@@ -30,7 +28,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<User?> Get(int id, CancellationToken cancellationToken)
+        public async Task<UserEntity?> Get(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get user by id {id}", id);
 
@@ -38,7 +36,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<User> Post(User user, CancellationToken cancellationToken)
+        public async Task<UserEntity> Post(UserEntity user, CancellationToken cancellationToken)
         {
             _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
 
@@ -46,7 +44,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<User?> Put(int id, User user, CancellationToken cancellationToken)
+        public async Task<UserEntity?> Put(int id, UserEntity user, CancellationToken cancellationToken)
         {
             _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(user));
             user.Id = id;
@@ -54,7 +52,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<User?> Delete(int id, CancellationToken cancellationToken)
+        public async Task<UserEntity?> Delete(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Delete user by id {id}", id);
             return await _userService.DeleteUserAsync(id, cancellationToken);

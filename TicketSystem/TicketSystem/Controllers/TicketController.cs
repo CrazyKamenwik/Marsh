@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TicketSystem.Data.Models;
-using TicketSystem.Services.Abstractions;
+using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.Entities;
 
 namespace TicketSystem.Controllers
 {
@@ -18,14 +18,14 @@ namespace TicketSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Ticket>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketEntity>> Get(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all Tickets");
             return await _ticketService.GetTicketsAsync(cancellationToken);
         }
 
         [HttpGet("{id}")]
-        public async Task<Ticket?> Get(int id, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> Get(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get Ticket by id {id}", id);
             return await _ticketService.GetTicketByIdAsync(id, cancellationToken);

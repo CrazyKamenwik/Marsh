@@ -1,7 +1,8 @@
-﻿using TicketSystem.Data.DI;
-using TicketSystem.Services.Abstractions;
+﻿using TicketSystem.BLL.Services;
+using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.DI;
 
-namespace TicketSystem.Services.DI
+namespace TicketSystem.BLL.DI
 {
     public static class DependencyRegistrar
     {

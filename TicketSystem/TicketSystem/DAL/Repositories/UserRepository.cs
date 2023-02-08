@@ -1,11 +1,10 @@
 ﻿using System.Linq.Expressions;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
-using TicketSystem.Data;
-using TicketSystem.Data.Models;
-using TicketSystem.Data.Repositories.Abstractions;
+using TicketSystem.DAL.Repositories.Abstractions;
+using TicketSystem.DAL.Entities;
 
-namespace TicketSystem.Data.Repositories
+namespace TicketSystem.DAL.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -16,7 +15,7 @@ namespace TicketSystem.Data.Repositories
             _context = context;
         }
 
-        public async Task<User> CreateAsync(User user, CancellationToken cancellationToken)
+        public async Task<UserEntity> CreateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
@@ -24,7 +23,7 @@ namespace TicketSystem.Data.Repositories
             return user;
         }
 
-        public async Task<User?> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<UserEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var user = await _context.Users.FindAsync(id, cancellationToken);
             if (user == null)
@@ -36,12 +35,12 @@ namespace TicketSystem.Data.Repositories
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _context.Users.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<User?> UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<UserEntity?> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException
@@ -49,9 +48,9 @@ namespace TicketSystem.Data.Repositories
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsersByConditionsAsync(CancellationToken cancellationToken,
-            Expression<Func<User, bool>>? filter = null,
-            Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+        public async Task<IEnumerable<UserEntity>> GetUsersByConditionsAsync(CancellationToken cancellationToken,
+            Expression<Func<UserEntity, bool>>? filter = null,
+            Func<IQueryable<UserEntity>, IOrderedQueryable<UserEntity>>? orderBy = null,
             string includeProperties = "")
         {
             var query = _context.Users.AsNoTracking();

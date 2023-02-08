@@ -1,8 +1,8 @@
-﻿using TicketSystem.Data.Models;
-using TicketSystem.Data.Models.Enums;
-using TicketSystem.Services.Abstractions;
+﻿using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.Entities;
+using TicketSystem.DAL.Entities.Enums;
 
-namespace TicketSystem.Services
+namespace TicketSystem.BLL.Services
 {
     public class MessageService : IMessageService
     {
@@ -15,23 +15,23 @@ namespace TicketSystem.Services
             _ticketService = ticketService;
         }
 
-        public async Task<bool> AddMessageAsync(Message message, CancellationToken cancellationToken)
+        public async Task<bool> AddMessageAsync(MessageEntity message, CancellationToken cancellationToken)
         {
             var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
             if (user == null)
                 return false;
 
-            Ticket ticket;
+            TicketEntity ticket;
             var freeOperator = await _userService.GetNotBusyOperator(cancellationToken);
 
             // If the user has an open ticket, the message will be written into it
-            if (user.Tickets == null || user.Tickets.Count == 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatus.Open)
+            if (user.Tickets == null || user.Tickets.Count == 0 && user.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatusEnumEntity.Open)
             {
                 ticket = user.Tickets!.OrderByDescending(t => t.CreatedAt).First();
             }
             else
             {
-                ticket = new Ticket()
+                ticket = new TicketEntity()
                 {
                     TicketCreator = user,
                     Operator = freeOperator
