@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using TicketSystem.Data.Models;
-using TicketSystem.Data.Models.Enums;
-using TicketSystem.Data.Repositories.Abstractions;
-using TicketSystem.Services.Abstractions;
+﻿using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.Entities;
+using TicketSystem.DAL.Entities.Enums;
+using TicketSystem.DAL.Repositories.Abstractions;
 
-namespace TicketSystem.Services
+namespace TicketSystem.BLL.Services
 {
     public class TicketService : ITicketService
     {
@@ -17,30 +15,30 @@ namespace TicketSystem.Services
             _ticketRepository = ticketRepository;
         }
 
-        public async Task<Ticket> AddTicketAsync(Ticket ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity> AddTicketAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
             return await _ticketRepository.CreateAsync(ticket, cancellationToken);
         }
 
-        public async Task<Ticket?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
         {
             var ticketsByConditions =
                 await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
 
-            return  ticketsByConditions.FirstOrDefault();
+            return ticketsByConditions.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<Ticket>> GetTicketsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketEntity>> GetTicketsAsync(CancellationToken cancellationToken)
         {
             return await _ticketRepository.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Ticket?> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> UpdateTicketAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
             return await _ticketRepository.UpdateAsync(ticket, cancellationToken);
         }
 
-        public async Task<Ticket?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
         {
             return await _ticketRepository.DeleteAsync(id, cancellationToken);
         }
@@ -48,14 +46,14 @@ namespace TicketSystem.Services
         public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
         {
             var tickets = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
-                t => t.TicketStatus == TicketStatus.Open
+                t => t.TicketStatus == TicketStatusEnumEntity.Open
                      && t.Messages.Any()
-                     && t.Messages.Last().User.UserRole == UserRole.Operator);
+                     && t.Messages.Last().User.UserRole.Name == "Operator");
 
             foreach (var ticket in tickets)
             {
                 if (ticket.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)
-                    ticket.TicketStatus = TicketStatus.Closed;
+                    ticket.TicketStatus = TicketStatusEnumEntity.Closed;
             }
 
             await _ticketRepository.SaveAsync();

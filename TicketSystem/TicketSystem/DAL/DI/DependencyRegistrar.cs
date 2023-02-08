@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using TicketSystem.Data.Repositories;
-using TicketSystem.Data.Repositories.Abstractions;
+using TicketSystem.DAL.Repositories;
+using TicketSystem.DAL.Repositories.Abstractions;
 
-namespace TicketSystem.Data.DI
+namespace TicketSystem.DAL.DI
 {
     public static class DependencyRegistrar
     {

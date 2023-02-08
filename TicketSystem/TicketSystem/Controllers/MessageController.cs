@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TicketSystem.Data.Models;
-using TicketSystem.Services.Abstractions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.DAL.Entities;
 
 namespace TicketSystem.Controllers
 {
@@ -20,7 +19,7 @@ namespace TicketSystem.Controllers
         }
 
         [HttpPost("{userId}")]
-        public async Task<Message> Post(int userId, Message message, CancellationToken cancellationToken)
+        public async Task<MessageEntity> Post(int userId, MessageEntity message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(message));
             await _messageService.AddMessageAsync(message, cancellationToken);

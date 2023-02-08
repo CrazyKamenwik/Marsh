@@ -1,6 +1,6 @@
 using TicketSystem.BackgroundServices;
 using TicketSystem.Extensions;
-using TicketSystem.Services.DI;
+using TicketSystem.BLL.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();

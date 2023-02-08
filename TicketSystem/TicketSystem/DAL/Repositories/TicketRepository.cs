@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using TicketSystem.Data.Models;
-using TicketSystem.Data.Models.Enums;
-using TicketSystem.Data.Repositories.Abstractions;
+using TicketSystem.DAL.Repositories.Abstractions;
+using TicketSystem.DAL.Entities;
 
-namespace TicketSystem.Data.Repositories
+namespace TicketSystem.DAL.Repositories
 {
     public class TicketRepository : ITicketRepository
     {
@@ -15,7 +14,7 @@ namespace TicketSystem.Data.Repositories
             _context = context;
         }
 
-        public async Task<Ticket> CreateAsync(Ticket ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity> CreateAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync(cancellationToken);
@@ -23,7 +22,7 @@ namespace TicketSystem.Data.Repositories
             return ticket;
         }
 
-        public async Task<Ticket?> UpdateAsync(Ticket ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> UpdateAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
             var ticketExist = _context.Tickets.Any(x => x.Id == ticket.Id);
             if (!ticketExist)
@@ -35,7 +34,7 @@ namespace TicketSystem.Data.Repositories
             return ticket;
         }
 
-        public async Task<Ticket?> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<TicketEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
         {
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
@@ -47,17 +46,17 @@ namespace TicketSystem.Data.Repositories
             return ticket;
         }
 
-        public async Task<IEnumerable<Ticket>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketEntity>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _context.Tickets.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Ticket>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,
-            Expression<Func<Ticket, bool>>? filter = null,
-            Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>>? orderBy = null,
+        public async Task<IEnumerable<TicketEntity>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,
+            Expression<Func<TicketEntity, bool>>? filter = null,
+            Func<IQueryable<TicketEntity>, IOrderedQueryable<TicketEntity>>? orderBy = null,
             string includeProperties = "")
         {
-            IQueryable<Ticket> query = _context.Tickets;
+            IQueryable<TicketEntity> query = _context.Tickets;
 
             if (filter != null)
             {
