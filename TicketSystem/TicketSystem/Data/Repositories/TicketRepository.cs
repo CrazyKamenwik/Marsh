@@ -52,11 +52,6 @@ namespace TicketSystem.Data.Repositories
             return await _context.Tickets.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        //public async Task CloseOpenTickets(int minutesToClose, CancellationToken cancellationToken)
-        //{
-
-        //}
-
         public async Task<IEnumerable<Ticket>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,
             Expression<Func<Ticket, bool>>? filter = null,
             Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>>? orderBy = null,

@@ -26,6 +26,7 @@ namespace TicketSystem.Services
         {
             var ticketsByConditions =
                 await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id);
+
             return  ticketsByConditions.FirstOrDefault();
         }
 
@@ -55,7 +56,6 @@ namespace TicketSystem.Services
             {
                 if (ticket.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)
                     ticket.TicketStatus = TicketStatus.Closed;
-                
             }
 
             await _ticketRepository.SaveAsync();

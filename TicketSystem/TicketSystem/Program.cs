@@ -5,11 +5,14 @@ using TicketSystem.Services.DI;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-builder.Services.AddBusinessLogicLayerServices(configuration);
-builder.Services.AddHostedService<TicketTimedHostedService>();
+builder.Services
+    .AddBusinessLogicLayerServices(configuration)
+    .AddHostedService<TicketTimedHostedService>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

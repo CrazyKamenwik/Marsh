@@ -19,7 +19,9 @@ namespace TicketSystem.BackgroundServices
         protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Scoped service running");
+
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+
             return Task.CompletedTask;
         }
 
@@ -37,7 +39,9 @@ namespace TicketSystem.BackgroundServices
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Scoped service is stopping.");
+
             _timer?.Change(Timeout.Infinite, 0);
+
             await base.StopAsync(cancellationToken);
         }
     }
