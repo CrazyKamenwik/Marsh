@@ -1,48 +1,46 @@
-﻿using Microsoft.Extensions.Hosting;
-using TicketSystem.BLL.Services.Abstractions;
+﻿using TicketSystem.BLL.Services.Abstractions;
 
-namespace TicketSystem.BackgroundServices
+namespace TicketSystem.BackgroundServices;
+
+public class TicketTimedHostedService : BackgroundService
 {
-    public class TicketTimedHostedService : BackgroundService
+    private readonly ILogger<TicketTimedHostedService> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private Timer? _timer;
+
+    public TicketTimedHostedService(ILogger<TicketTimedHostedService> logger,
+        IServiceProvider services)
     {
-        private readonly ILogger<TicketTimedHostedService> _logger;
-        private Timer? _timer = null;
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = services;
+        _logger = logger;
+    }
 
-        public TicketTimedHostedService(ILogger<TicketTimedHostedService> logger,
-            IServiceProvider services)
+    protected override Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Scoped service running");
+
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+
+        return Task.CompletedTask;
+    }
+
+    private void DoWork(object? state)
+    {
+        _logger.LogInformation("Scoped service is working");
+
+        using (var scope = _serviceProvider.CreateScope())
         {
-            _serviceProvider = services;
-            _logger = logger;
+            var ticketService = scope.ServiceProvider.GetRequiredService<ITicketService>();
+            ticketService.CloseOpenTickets();
         }
+    }
 
-        protected override Task ExecuteAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Scoped service running");
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Scoped service is stopping.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+        _timer?.Change(Timeout.Infinite, 0);
 
-            return Task.CompletedTask;
-        }
-
-        private void DoWork(object? state)
-        {
-            _logger.LogInformation("Scoped service is working");
-
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var ticketService = scope.ServiceProvider.GetRequiredService<ITicketService>();
-                ticketService.CloseOpenTickets();
-            }
-        }
-
-        public override async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Scoped service is stopping.");
-
-            _timer?.Change(Timeout.Infinite, 0);
-
-            await base.StopAsync(cancellationToken);
-        }
+        await base.StopAsync(cancellationToken);
     }
 }

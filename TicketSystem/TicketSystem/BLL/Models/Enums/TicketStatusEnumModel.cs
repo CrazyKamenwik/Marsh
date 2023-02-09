@@ -1,8 +1,7 @@
-﻿namespace TicketSystem.BLL.Models.Enums
+﻿namespace TicketSystem.BLL.Models.Enums;
+
+public enum TicketStatusEnumModel
 {
-    public enum TicketStatusEnumModel
-    {
-        Open,
-        Closed
-    }
+    Open,
+    Closed
 }

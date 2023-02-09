@@ -1,19 +1,18 @@
 ﻿using TicketSystem.DAL.Entities.Enums;
 
-namespace TicketSystem.DAL.Entities
+namespace TicketSystem.DAL.Entities;
+
+public class TicketEntity
 {
-    public class TicketEntity
-    {
-        public int Id { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public TicketStatusEnumEntity TicketStatus { get; set; }
+    public int Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public TicketStatusEnumEntity TicketStatus { get; set; }
 
-        public int TicketCreatorId { get; set; }
-        public UserEntity TicketCreator { get; set; } = null!;
+    public int TicketCreatorId { get; set; }
+    public UserEntity TicketCreator { get; set; } = null!;
 
-        public int? OperatorId { get; set; }
-        public UserEntity? Operator { get; set; }
+    public int? OperatorId { get; set; }
+    public UserEntity? Operator { get; set; }
 
-        public ICollection<MessageEntity> Messages { get; set; } = null!;
-    }
+    public ICollection<MessageEntity> Messages { get; set; } = null!;
 }
