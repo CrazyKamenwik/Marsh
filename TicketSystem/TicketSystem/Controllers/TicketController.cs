@@ -1,6 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TicketSystem.BLL.Services.Abstractions;
-using TicketSystem.DAL.Entities;
+using TicketSystem.ViewModels.Tickets;
 
 namespace TicketSystem.Controllers
 {
@@ -10,25 +11,29 @@ namespace TicketSystem.Controllers
     {
         private readonly ITicketService _ticketService;
         private readonly ILogger<TicketController> _logger;
+        private readonly IMapper _mapper;
 
-        public TicketController(ITicketService ticketService, ILogger<TicketController> logger)
+        public TicketController(ITicketService ticketService, ILogger<TicketController> logger, IMapper mapper)
         {
+            _mapper = mapper;
             _ticketService = ticketService;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TicketEntity>> Get(CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketVm>> Get(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get all Tickets");
-            return await _ticketService.GetTicketsAsync(cancellationToken);
+            var ticketsModel = await _ticketService.GetTicketsAsync(cancellationToken);
+            return _mapper.Map<IEnumerable<TicketVm>>(ticketsModel);
         }
 
         [HttpGet("{id}")]
-        public async Task<TicketEntity?> Get(int id, CancellationToken cancellationToken)
+        public async Task<TicketVm?> Get(int id, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Get Ticket by id {id}", id);
-            return await _ticketService.GetTicketByIdAsync(id, cancellationToken);
+            var ticketModel = await _ticketService.GetTicketByIdAsync(id, cancellationToken);
+            return ticketModel == null ? null : _mapper.Map<TicketVm>(ticketModel);
         }
     }
 }

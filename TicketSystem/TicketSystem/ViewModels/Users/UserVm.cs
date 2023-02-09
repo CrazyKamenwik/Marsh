@@ -1,6 +1,6 @@
-﻿namespace TicketSystem.ViewModels
+﻿namespace TicketSystem.ViewModels.Users
 {
-    public class UserViewModel
+    public class UserVm
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;

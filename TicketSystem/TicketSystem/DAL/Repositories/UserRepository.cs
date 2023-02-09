@@ -23,24 +23,15 @@ namespace TicketSystem.DAL.Repositories
             return user;
         }
 
-        public async Task<UserEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<UserEntity> DeleteAsync(UserEntity user, CancellationToken cancellationToken)
         {
-            var user = await _context.Users.FindAsync(id, cancellationToken);
-            if (user == null)
-                return null;
-
             _context.Users.Remove(user);
             await _context.SaveChangesAsync(cancellationToken);
 
             return user;
         }
 
-        public async Task<IEnumerable<UserEntity>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Users.AsNoTracking().ToListAsync(cancellationToken);
-        }
-
-        public async Task<UserEntity?> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
+        public async Task<UserEntity> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException
@@ -53,7 +44,7 @@ namespace TicketSystem.DAL.Repositories
             Func<IQueryable<UserEntity>, IOrderedQueryable<UserEntity>>? orderBy = null,
             string includeProperties = "")
         {
-            var query = _context.Users.AsNoTracking();
+            IQueryable<UserEntity> query = _context.Users;
 
             if (filter != null)
             {

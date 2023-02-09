@@ -8,6 +8,7 @@ namespace TicketSystem.DAL
         public DbSet<UserEntity> Users { get; set; } = null!;
         public DbSet<TicketEntity> Tickets { get; set; } = null!;
         public DbSet<MessageEntity> Messages { get; set; } = null!;
+        public DbSet<UserRoleEntity> UserRole { get; set; } = null!;
 
         public ApplicationContext(DbContextOptions options)
         : base(options)

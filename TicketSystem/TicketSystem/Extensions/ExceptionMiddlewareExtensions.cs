@@ -12,6 +12,7 @@ namespace TicketSystem.Extensions
             {
                 appError.Run(async context =>
                 {
+                    // TODO #1: Create exceptions with correct StatusCodes
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.ContentType = "application/json";
 

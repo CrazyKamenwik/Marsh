@@ -14,6 +14,7 @@ namespace TicketSystem.DAL.Repositories
             _context = context;
         }
 
+        // Change return type to Task, because ticket is trackable
         public async Task<TicketEntity> CreateAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
             _context.Tickets.Add(ticket);
@@ -22,33 +23,20 @@ namespace TicketSystem.DAL.Repositories
             return ticket;
         }
 
-        public async Task<TicketEntity?> UpdateAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity> UpdateAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
-            var ticketExist = _context.Tickets.Any(x => x.Id == ticket.Id);
-            if (!ticketExist)
-                return null;
-
             _context.Entry(ticket).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException
 
             return ticket;
         }
 
-        public async Task<TicketEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
-        {
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-                return null;
-
+        public async Task<TicketEntity> DeleteAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        { 
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync(cancellationToken);
 
             return ticket;
-        }
-
-        public async Task<IEnumerable<TicketEntity>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _context.Tickets.AsNoTracking().ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<TicketEntity>> GetTicketsByConditionsAsync(CancellationToken cancellationToken = default,
