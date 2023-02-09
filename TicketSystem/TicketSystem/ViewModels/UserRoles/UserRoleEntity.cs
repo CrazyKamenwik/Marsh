@@ -1,8 +1,7 @@
-﻿namespace TicketSystem.DAL.Entities
+﻿namespace TicketSystem.DAL.Entities;
+
+public class UserRoleVm
 {
-    public class UserRoleVm
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = null!;
-    }
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
 }

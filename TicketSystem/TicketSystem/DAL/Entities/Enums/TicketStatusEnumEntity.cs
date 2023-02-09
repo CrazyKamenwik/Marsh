@@ -1,8 +1,7 @@
-﻿namespace TicketSystem.DAL.Entities.Enums
+﻿namespace TicketSystem.DAL.Entities.Enums;
+
+public enum TicketStatusEnumEntity
 {
-    public enum TicketStatusEnumEntity
-    {
-        Open,
-        Closed
-    }
+    Open,
+    Closed
 }

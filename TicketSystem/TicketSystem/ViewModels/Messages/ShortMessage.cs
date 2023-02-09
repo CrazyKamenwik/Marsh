@@ -1,9 +1,6 @@
-﻿using TicketSystem.ViewModels.Users;
+﻿namespace TicketSystem.ViewModels.Messages;
 
-namespace TicketSystem.ViewModels.Messages
+public class ShortMessage
 {
-    public class ShortMessage
-    {
-        public string? Text { get; set; }
-    }
+    public string? Text { get; set; }
 }

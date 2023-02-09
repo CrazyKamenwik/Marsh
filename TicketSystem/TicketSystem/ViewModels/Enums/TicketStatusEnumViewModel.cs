@@ -1,8 +1,7 @@
-﻿namespace TicketSystem.ViewModels.Enums
+﻿namespace TicketSystem.ViewModels.Enums;
+
+public enum TicketStatusEnumVm
 {
-    public enum TicketStatusEnumVm
-    {
-        Open,
-        Closed
-    }
+    Open,
+    Closed
 }
