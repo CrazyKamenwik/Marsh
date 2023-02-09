@@ -23,29 +23,16 @@ namespace TicketSystem.DAL.Repositories
             return ticket;
         }
 
-        public async Task<TicketEntity?> UpdateAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        public async Task<TicketEntity> UpdateAsync(TicketEntity ticket, CancellationToken cancellationToken)
         {
-            var ticketExist = _context.Tickets.Any(x => x.Id == ticket.Id);
-            if (!ticketExist)
-                return null;
-
             _context.Entry(ticket).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException
 
             return ticket;
         }
 
-        public async Task<TicketEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
-        {
-            var ticket = await _context.Tickets
-                .Include(t => t.TicketCreator)
-                .Include(t => t.Operator)
-                .Include(t => t.Messages)
-                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-
-            if (ticket == null)
-                return null;
-
+        public async Task<TicketEntity> DeleteAsync(TicketEntity ticket, CancellationToken cancellationToken)
+        { 
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync(cancellationToken);
 

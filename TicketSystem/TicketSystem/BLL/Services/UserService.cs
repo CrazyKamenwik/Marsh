@@ -3,6 +3,7 @@ using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Repositories.Abstractions;
 using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.Entities;
+using TicketSystem.ViewModels.Users;
 
 namespace TicketSystem.BLL.Services
 {
@@ -42,16 +43,26 @@ namespace TicketSystem.BLL.Services
 
         public async Task<UserModel?> UpdateUserAsync(UserModel user, CancellationToken cancellationToken)
         {
+            var usersEntity = await _userRepository.GetUsersByConditionsAsync(cancellationToken, u => u.Id == user.Id);
+            if (usersEntity.FirstOrDefault() == null)
+                return null;
+
             var userEntity = _mapper.Map<UserEntity>(user);
             userEntity = await _userRepository.UpdateAsync(userEntity, cancellationToken);
-            return userEntity == null ? null : _mapper.Map<UserModel>(userEntity);
+            return _mapper.Map<UserModel>(userEntity);
         }
 
         public async Task<UserModel?> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
+            var usersEntity = await _userRepository.GetUsersByConditionsAsync(cancellationToken,
+                u => u.Id == id,
+                includeProperties: "UserRole");
+            var userEntity = usersEntity.FirstOrDefault();
+            if (userEntity == null)
+                return null;
 
-            var userEntity = await _userRepository.DeleteAsync(id, cancellationToken);
-            return userEntity == null ? null : _mapper.Map<UserModel>(userEntity);
+            await _userRepository.DeleteAsync(userEntity, cancellationToken);
+            return _mapper.Map<UserModel>(userEntity);
         }
 
         public async Task<UserModel?> GetNotBusyOperator(CancellationToken cancellationToken)

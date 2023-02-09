@@ -5,6 +5,7 @@ using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories.Abstractions;
 using TicketSystem.DAL.Entities.Enums;
 using Microsoft.VisualBasic;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketSystem.BLL.Services
 {
@@ -20,18 +21,20 @@ namespace TicketSystem.BLL.Services
             _ticketRepository = ticketRepository;
         }
 
-        public async Task<TicketModel> AddTicketAsync(TicketModel ticket, CancellationToken cancellationToken)
+        public async Task<TicketModel> AddTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
         {
-            ticket.Messages = new List<MessageModel>();
-            var ticketEntity = _mapper.Map<TicketEntity>(ticket);
-            ticketEntity = await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
+            ticketModel.Messages = new List<MessageModel>();
+            var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
+            await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
             return _mapper.Map<TicketModel>(ticketEntity);
         }
 
         public async Task<TicketModel?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
         {
             var ticketsEntityByConditions =
-                await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == id, includeProperties: "TicketCreator, Operator, Messages");
+                await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
+                    t => t.Id == id,
+                    includeProperties: "TicketCreator,Operator,Messages");
             var ticketEntity = ticketsEntityByConditions.FirstOrDefault();
 
             return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
@@ -39,21 +42,33 @@ namespace TicketSystem.BLL.Services
 
         public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
         {
-            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, includeProperties: "TicketCreator, Operator, Messages");
+            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
+                includeProperties: "TicketCreator,Operator,Messages");
             return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
         }
 
-        public async Task<TicketModel?> UpdateTicketAsync(TicketModel ticket, CancellationToken cancellationToken)
+        public async Task<TicketModel?> UpdateTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
         {
-            var ticketEntity = _mapper.Map<TicketEntity>(ticket);
+            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == ticketModel.Id);
+            if (ticketsEntity.FirstOrDefault() == null)
+                return null;
+
+            var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
             ticketEntity = await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
-            return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
+            return _mapper.Map<TicketModel>(ticketEntity);
         }
 
         public async Task<TicketModel?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
         {
-            var ticketEntity = await _ticketRepository.DeleteAsync(id, cancellationToken);
-            return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
+            var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
+                t => t.Id == id,
+                includeProperties: "TicketCreator,Operator,Messages");
+            var ticketEntity = ticketsEntity.FirstOrDefault();
+            if (ticketEntity == null)
+                return null;
+
+            await _ticketRepository.DeleteAsync(ticketEntity, cancellationToken);
+            return _mapper.Map<TicketModel>(ticketEntity);
         }
 
         public async Task CloseOpenTickets(CancellationToken cancellationToken = default)

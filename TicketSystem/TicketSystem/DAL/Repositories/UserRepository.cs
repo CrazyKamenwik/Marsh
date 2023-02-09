@@ -23,22 +23,15 @@ namespace TicketSystem.DAL.Repositories
             return user;
         }
 
-        public async Task<UserEntity?> DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<UserEntity> DeleteAsync(UserEntity user, CancellationToken cancellationToken)
         {
-            var user = await _context.Users
-                .Include(u => u.UserRole)
-                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
-
-            if (user == null)
-                return null;
-
             _context.Users.Remove(user);
             await _context.SaveChangesAsync(cancellationToken);
 
             return user;
         }
 
-        public async Task<UserEntity?> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
+        public async Task<UserEntity> UpdateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync(cancellationToken); // DbUpdateConcurrencyException

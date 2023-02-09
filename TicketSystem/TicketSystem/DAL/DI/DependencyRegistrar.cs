@@ -8,8 +8,8 @@ namespace TicketSystem.DAL.DI
     {
         public static IServiceCollection AddDataAccessLevelServices(this IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            serviceCollection.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("DbConnection"))
-            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+            serviceCollection.AddDbContext<ApplicationContext>(opt =>
+                opt.UseSqlServer(configuration.GetConnectionString("DbConnection")));
 
             serviceCollection.AddTransient<ITicketRepository, TicketRepository>();
             serviceCollection.AddTransient<IUserRepository, UserRepository>();

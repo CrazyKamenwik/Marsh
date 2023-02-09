@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Models.Enums;
 using TicketSystem.BLL.Services.Abstractions;
@@ -17,13 +18,14 @@ namespace TicketSystem.BLL.Services
         }
 
         // TODO #2: Change that method (SOLID)
+        // Todo #4: Create message repo
         public async Task<MessageModel?> AddMessageAsync(MessageModel message, CancellationToken cancellationToken)
         {
             var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
             if (user == null)
                 return null;
 
-            TicketModel ticket;
+            TicketModel? ticket;
             var freeOperator = await _userService.GetNotBusyOperator(cancellationToken);
 
             // If the user has an open ticket, the message will be written into it
@@ -35,22 +37,18 @@ namespace TicketSystem.BLL.Services
             {
                 ticket = new TicketModel()
                 {
-                    //TicketCreator = user,
                     TicketCreatorId = user.Id,
-                    //Operator = freeOperator,
                     OperatorId = freeOperator?.Id ?? null,
                     CreatedAt = DateTime.UtcNow
-                    //Messages = new List<MessageModel>() { message }
                 };
                 ticket = await _ticketService.AddTicketAsync(ticket, cancellationToken);
             }
-
-            message.Ticket = ticket;
+            message.TicketId = ticket.Id;
             message.CreatedAt = DateTime.UtcNow;
-            ticket.Messages!.Add(message);
+            ticket.Messages.Add(message);
             ticket = await _ticketService.UpdateTicketAsync(ticket, cancellationToken);
 
-            return message;
+            return ticket!.Messages.Last();
         }
     }
 }
