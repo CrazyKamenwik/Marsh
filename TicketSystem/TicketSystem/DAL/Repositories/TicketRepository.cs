@@ -54,6 +54,7 @@ public class TicketRepository : ITicketRepository
 
         if (orderBy != null)
             return await orderBy(query).ToListAsync(cancellationToken);
+
         return await query.ToListAsync(cancellationToken);
     }
 

@@ -16,7 +16,7 @@ public class MessageService : IMessageService
     }
 
     // TODO #2: Change that method (SOLID)
-    // Todo #4: Create message repo
+    // TODO #4: Create message repo
     public async Task<MessageModel?> AddMessageAsync(MessageModel message, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);

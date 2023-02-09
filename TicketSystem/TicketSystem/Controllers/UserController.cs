@@ -61,6 +61,7 @@ public class UserController : ControllerBase
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(userModel));
 
         userModel = await _userService.UpdateUserAsync(userModel, cancellationToken);
+
         return userModel == null ? null : _mapper.Map<UserVm>(userModel);
     }
 
@@ -69,6 +70,7 @@ public class UserController : ControllerBase
     {
         _logger.LogInformation("Delete user by id {id}", id);
         var userModel = await _userService.DeleteUserAsync(id, cancellationToken);
+
         return userModel == null ? null : _mapper.Map<UserVm>(userModel);
     }
 }

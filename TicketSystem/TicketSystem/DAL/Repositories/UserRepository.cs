@@ -52,6 +52,7 @@ public class UserRepository : IUserRepository
 
         if (orderBy != null)
             return await orderBy(query).ToListAsync(cancellationToken);
+
         return await query.ToListAsync(cancellationToken);
     }
 }

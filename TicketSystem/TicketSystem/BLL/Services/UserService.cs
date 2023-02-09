@@ -21,6 +21,7 @@ public class UserService : IUserService
     {
         var userEntity = _mapper.Map<UserEntity>(user);
         userEntity = await _userRepository.CreateAsync(userEntity, cancellationToken);
+
         return _mapper.Map<UserModel>(userEntity);
     }
 
@@ -49,6 +50,7 @@ public class UserService : IUserService
 
         var userEntity = _mapper.Map<UserEntity>(user);
         userEntity = await _userRepository.UpdateAsync(userEntity, cancellationToken);
+
         return _mapper.Map<UserModel>(userEntity);
     }
 
@@ -62,6 +64,7 @@ public class UserService : IUserService
             return null;
 
         await _userRepository.DeleteAsync(userEntity, cancellationToken);
+
         return _mapper.Map<UserModel>(userEntity);
     }
 
@@ -72,6 +75,7 @@ public class UserService : IUserService
             u => u.OrderBy(users => users.Tickets!.Count),
             "Tickets");
         var operatorEntity = operatorsEntityByCondition.FirstOrDefault();
+
         return operatorEntity == null ? null : _mapper.Map<UserModel>(operatorEntity);
     }
 }

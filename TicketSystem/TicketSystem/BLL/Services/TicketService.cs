@@ -24,6 +24,7 @@ public class TicketService : ITicketService
         ticketModel.Messages = new List<MessageModel>();
         var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
         await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
+
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
@@ -42,6 +43,7 @@ public class TicketService : ITicketService
     {
         var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
             includeProperties: "TicketCreator,Operator,Messages");
+
         return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
     }
 
@@ -54,6 +56,7 @@ public class TicketService : ITicketService
 
         var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
         ticketEntity = await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
+
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
@@ -67,6 +70,7 @@ public class TicketService : ITicketService
             return null;
 
         await _ticketRepository.DeleteAsync(ticketEntity, cancellationToken);
+
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
