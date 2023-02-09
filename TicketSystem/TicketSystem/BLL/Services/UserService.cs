@@ -68,7 +68,7 @@ public class UserService : IUserService
         return _mapper.Map<UserModel>(userEntity);
     }
 
-    public async Task<UserModel?> GetNotBusyOperator(CancellationToken cancellationToken)
+    public async Task<UserModel?> GetAvailableOperator(CancellationToken cancellationToken)
     {
         var operatorsEntityByCondition = await _userRepository.GetUsersByConditionsAsync(cancellationToken,
             u => u.UserRole.Name == "Operator",

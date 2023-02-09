@@ -9,5 +9,5 @@ public interface IUserService
     Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken);
     Task<UserModel?> UpdateUserAsync(UserModel userModel, CancellationToken cancellationToken);
     Task<UserModel?> DeleteUserAsync(int id, CancellationToken cancellationToken);
-    Task<UserModel?> GetNotBusyOperator(CancellationToken cancellationToken);
+    Task<UserModel?> GetAvailableOperator(CancellationToken cancellationToken);
 }

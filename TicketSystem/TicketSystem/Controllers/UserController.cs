@@ -23,37 +23,37 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<UserVm>> Get(CancellationToken cancellationToken)
+    public async Task<IEnumerable<UserViewModel>> Get(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get all users");
         var usersModel = await _userService.GetUsersAsync(cancellationToken);
 
-        return _mapper.Map<IEnumerable<UserVm>>(usersModel);
+        return _mapper.Map<IEnumerable<UserViewModel>>(usersModel);
     }
 
     [HttpGet("{id}")]
-    public async Task<UserVm?> Get(int id, CancellationToken cancellationToken)
+    public async Task<UserViewModel?> Get(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get user by id {id}", id);
 
         var userModel = await _userService.GetUserByIdAsync(id, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserVm>(userModel);
+        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
     }
 
     [HttpPost]
-    public async Task<UserVm> Post(ShortUser shortUser, CancellationToken cancellationToken)
+    public async Task<UserViewModel> Post(ShortUserViewModel shortUser, CancellationToken cancellationToken)
     {
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(shortUser));
 
         var userModel = _mapper.Map<UserModel>(shortUser);
         userModel = await _userService.AddUserAsync(userModel, cancellationToken);
 
-        return _mapper.Map<UserVm>(userModel);
+        return _mapper.Map<UserViewModel>(userModel);
     }
 
     [HttpPut("{id}")]
-    public async Task<UserVm?> Put(int id, ShortUser shortUser, CancellationToken cancellationToken)
+    public async Task<UserViewModel?> Put(int id, ShortUserViewModel shortUser, CancellationToken cancellationToken)
     {
         var userModel = _mapper.Map<UserModel>(shortUser);
         userModel.Id = id;
@@ -62,15 +62,15 @@ public class UserController : ControllerBase
 
         userModel = await _userService.UpdateUserAsync(userModel, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserVm>(userModel);
+        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
     }
 
     [HttpDelete("{id}")]
-    public async Task<UserVm?> Delete(int id, CancellationToken cancellationToken)
+    public async Task<UserViewModel?> Delete(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Delete user by id {id}", id);
         var userModel = await _userService.DeleteUserAsync(id, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserVm>(userModel);
+        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
     }
 }

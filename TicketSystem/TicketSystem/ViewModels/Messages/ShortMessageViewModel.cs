@@ -1,6 +1,6 @@
 ﻿namespace TicketSystem.ViewModels.Messages;
 
-public class ShortMessage
+public class ShortMessageViewModel
 {
     public string? Text { get; set; }
 }

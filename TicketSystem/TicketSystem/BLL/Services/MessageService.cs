@@ -24,7 +24,7 @@ public class MessageService : IMessageService
             return null;
 
         TicketModel? ticket;
-        var freeOperator = await _userService.GetNotBusyOperator(cancellationToken);
+        var freeOperator = await _userService.GetAvailableOperator(cancellationToken);
 
         // If the user has an open ticket, the message will be written into it
         if (user.Tickets != null && user.Tickets!.Count != 0 &&

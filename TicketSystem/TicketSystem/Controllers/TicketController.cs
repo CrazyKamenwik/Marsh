@@ -21,20 +21,20 @@ public class TicketController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<TicketVm>> Get(CancellationToken cancellationToken)
+    public async Task<IEnumerable<TicketViewModel>> Get(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get all Tickets");
         var ticketsModel = await _ticketService.GetTicketsAsync(cancellationToken);
 
-        return _mapper.Map<IEnumerable<TicketVm>>(ticketsModel);
+        return _mapper.Map<IEnumerable<TicketViewModel>>(ticketsModel);
     }
 
     [HttpGet("{id}")]
-    public async Task<TicketVm?> Get(int id, CancellationToken cancellationToken)
+    public async Task<TicketViewModel?> Get(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Ticket by id {id}", id);
         var ticketModel = await _ticketService.GetTicketByIdAsync(id, cancellationToken);
 
-        return ticketModel == null ? null : _mapper.Map<TicketVm>(ticketModel);
+        return ticketModel == null ? null : _mapper.Map<TicketViewModel>(ticketModel);
     }
 }

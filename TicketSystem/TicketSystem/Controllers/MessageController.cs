@@ -23,7 +23,7 @@ public class MessageController : ControllerBase
     }
 
     [HttpPost("{userId}")]
-    public async Task<MessageVm?> Post(int userId, ShortMessage shortMessage, CancellationToken cancellationToken)
+    public async Task<MessageViewModel?> Post(int userId, ShortMessageViewModel shortMessage, CancellationToken cancellationToken)
     {
         var messageModel = _mapper.Map<MessageModel>(shortMessage);
         messageModel.UserId = userId;
@@ -32,6 +32,6 @@ public class MessageController : ControllerBase
 
         messageModel = await _messageService.AddMessageAsync(messageModel, cancellationToken);
 
-        return messageModel == null ? null : _mapper.Map<MessageVm>(messageModel);
+        return messageModel == null ? null : _mapper.Map<MessageViewModel>(messageModel);
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace TicketSystem.DAL.Entities;
+﻿namespace TicketSystem.ViewModels.UserRoles;
 
-public class UserRoleVm
+public class UserRoleViewModel
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;

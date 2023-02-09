@@ -10,21 +10,21 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
-        CreateMap<ShortMessage, MessageModel>()
+        CreateMap<ShortMessageViewModel, MessageModel>()
             .ForMember(mm => mm.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
-        CreateMap<ShortUser, UserModel>()
+        CreateMap<ShortUserViewModel, UserModel>()
             .ForMember(um => um.UserRole, opt => opt.MapFrom(src => new UserRoleModel { Name = src.UserRole }));
 
-        CreateMap<UserModel, UserVm>()
+        CreateMap<UserModel, UserViewModel>()
             .ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole.Name))
             .ReverseMap();
 
-        CreateMap<TicketModel, TicketVm>()
+        CreateMap<TicketModel, TicketViewModel>()
             .ForMember(dest => dest.TicketCreator, opt => opt.MapFrom(src => src.TicketCreator))
             .ForMember(dest => dest.Operator, opt => opt.MapFrom(src => src.Operator))
             .ReverseMap();
 
-        CreateMap<MessageModel, MessageVm>()
+        CreateMap<MessageModel, MessageViewModel>()
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ReverseMap();
     }
