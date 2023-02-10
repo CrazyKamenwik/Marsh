@@ -39,7 +39,7 @@ public class TicketService : ITicketService
 
         if (ticketEntity == null)
             throw new NotFoundException($"Ticket with id {id} not found");
-        
+
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 

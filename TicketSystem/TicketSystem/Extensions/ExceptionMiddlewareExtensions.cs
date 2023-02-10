@@ -1,7 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Diagnostics;
-using Newtonsoft.Json;
-using TicketSystem.Middleware;
+﻿using TicketSystem.Middleware;
 
 namespace TicketSystem.Extensions;
 
