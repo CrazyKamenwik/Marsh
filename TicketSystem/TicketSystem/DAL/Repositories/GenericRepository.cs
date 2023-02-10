@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories.Abstractions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TicketSystem.DAL.Repositories;
 
@@ -34,38 +35,39 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAsync()
-    {
-        return await _dbSet.AsNoTracking().ToListAsync();
-    }
-
-    public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(CancellationToken cancellationToken,
-        params Expression<Func<TEntity, object>>[] includeProperties)
-    {
-        return await Include(includeProperties).ToListAsync(cancellationToken);
-    }
-
-    public async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
-    {
-        return await _dbSet.FindAsync(new object?[] { id, cancellationToken }, cancellationToken);
-    }
-
-    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
-        params Expression<Func<TEntity, object>>[] includeProperties)
-    {
-        var query = Include(includeProperties);
-        return await query.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
-    }
-
-    public IEnumerable<TEntity> GetWithInclude(Func<TEntity, bool> predicate,
+    //public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(CancellationToken cancellationToken,
+    //    params Expression<Func<TEntity, object>>[] includeProperties)
+    //{
+    //    return await Include(includeProperties).ToListAsync(cancellationToken);
+    //}
+    public async Task<IEnumerable<TEntity>> GetWithInclude(CancellationToken cancellationToken, Func<TEntity, bool>? predicate,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = Include(includeProperties);
 
-        orderBy?.Invoke(query).ToListAsync();
+        if (orderBy != null)
+        {
+            await orderBy.Invoke(query).ToListAsync(cancellationToken);
+        }
 
-        return query.AsEnumerable().Where(predicate).ToList();
+        var entities = query.AsEnumerable();
+
+        if (predicate != null)
+            entities = entities.Where(predicate);
+
+        return entities.ToList();
+    }
+
+    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
+        params Expression<Func<TEntity, object>>[] includeProperties)
+    {
+        IQueryable<TEntity> entity = _dbSet;
+
+        if (includeProperties.Length > 0)
+            entity = Include(includeProperties);
+
+        return await entity.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
     public async Task SaveAsync()

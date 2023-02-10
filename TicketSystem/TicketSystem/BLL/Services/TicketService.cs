@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
+using TicketSystem.BLL.Models.Enums;
 using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Entities.Enums;
@@ -12,12 +13,14 @@ public class TicketService : ITicketService
 {
     private const int MinutesToClose = 60;
     private readonly IMapper _mapper;
+    private readonly IUserService _userService;
     private readonly IGenericRepository<TicketEntity> _ticketRepository;
 
-    public TicketService(IGenericRepository<TicketEntity> ticketRepository, IMapper mapper)
+    public TicketService(IGenericRepository<TicketEntity> ticketRepository, IMapper mapper, IUserService userService)
     {
         _mapper = mapper;
         _ticketRepository = ticketRepository;
+        _userService = userService;
     }
 
     public async Task<TicketModel> AddTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
@@ -44,8 +47,11 @@ public class TicketService : ITicketService
 
     public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
     {
-        var ticketsEntity = await _ticketRepository.GetWithIncludeAsync(cancellationToken, t => t.Messages,
-            t => t.Operator, t => t.TicketCreator);
+        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, predicate: null, orderBy:null,
+            t => t.Messages,
+            t => t.Operator,
+            t => t.TicketCreator
+        );
 
         return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
     }
@@ -53,7 +59,7 @@ public class TicketService : ITicketService
     public async Task<TicketModel> UpdateTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
     {
         var ticketEntity =
-            await _ticketRepository.GetByIdAsync(ticketModel.Id, cancellationToken);
+            await _ticketRepository.GetByIdWithIncludeAsync(ticketModel.Id, cancellationToken);
 
         if (ticketEntity == null)
             throw new NotFoundException($"Ticket with id {ticketModel.Id} not found");
@@ -65,7 +71,7 @@ public class TicketService : ITicketService
 
     public async Task<TicketModel> DeleteTicketAsync(int id, CancellationToken cancellationToken)
     {
-        var ticketEntity = await _ticketRepository.GetByIdAsync(id, cancellationToken);
+        var ticketEntity = await _ticketRepository.GetByIdWithIncludeAsync(id, cancellationToken);
         if (ticketEntity == null)
             throw new NotFoundException($"Ticket with id {id} not found");
 
@@ -74,12 +80,38 @@ public class TicketService : ITicketService
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
+    public async Task<TicketModel> GetOrCreateOpenTicket(UserModel userModel, CancellationToken cancellationToken)
+    {
+        TicketModel ticket;
+
+        if (userModel.Tickets != null && userModel.Tickets!.Count != 0 &&
+            userModel.Tickets.OrderByDescending(t => t.CreatedAt).First().TicketStatus == TicketStatusEnumModel.Open)
+        {
+            ticket = userModel.Tickets!.OrderByDescending(t => t.CreatedAt).First();
+        }
+        else
+        {
+            var availableOperator = await _userService.GetAvailableOperator(cancellationToken);
+            ticket = new TicketModel
+            {
+                TicketCreatorId = userModel.Id,
+                CreatedAt = DateTime.UtcNow,
+                Operator = availableOperator
+            };
+            ticket = await AddTicketAsync(ticket, cancellationToken);
+        }
+
+        return ticket;
+    }
+
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
     {
-        var ticketsEntity = _ticketRepository.GetWithInclude(t => t.TicketStatus == TicketStatusEnumEntity.Open
-                                                                  && t.Messages.Any()
-                                                                  && t.Messages.Last().User.UserRole.Name ==
-                                                                  "Operator");
+        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, t => 
+            t.TicketStatus == TicketStatusEnumEntity.Open 
+            && t.Messages.Any() 
+            && t.Messages.Last().User.UserRole.Name == "Operator",
+            orderBy: null,
+            t => t.Messages, t => t.TicketStatus);
 
         foreach (var ticketEntity in ticketsEntity)
             if (ticketEntity.CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now)

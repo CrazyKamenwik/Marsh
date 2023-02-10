@@ -28,15 +28,18 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken)
     {
-        var allUsers =
-            await _userRepository.GetWithIncludeAsync(cancellationToken, u => u.UserRole);
+        var allUsers = await _userRepository.GetWithInclude(cancellationToken, 
+            predicate:null, 
+            orderBy:null, 
+            u => u.UserRole);
 
         return _mapper.Map<IEnumerable<UserModel>>(allUsers);
     }
 
     public async Task<UserModel> GetUserByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var userEntityByCondition = await _userRepository.GetByIdAsync(id, cancellationToken);
+        var userEntityByCondition =
+            await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole);
 
         if (userEntityByCondition == null)
             throw new NotFoundException($"User with id {id} not found");
@@ -46,7 +49,7 @@ public class UserService : IUserService
 
     public async Task<UserModel> UpdateUserAsync(UserModel user, CancellationToken cancellationToken)
     {
-        var usersEntity = await _userRepository.GetByIdAsync(user.Id, cancellationToken);
+        var usersEntity = await _userRepository.GetByIdWithIncludeAsync(user.Id, cancellationToken);
 
         if (usersEntity == null)
             throw new NotFoundException($"User with id {user.Id} not found");
@@ -59,7 +62,7 @@ public class UserService : IUserService
 
     public async Task<UserModel> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
-        var usersEntity = await _userRepository.GetByIdAsync(id, cancellationToken);
+        var usersEntity = await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken);
 
         if (usersEntity == null)
             throw new NotFoundException($"User with id {id} not found");
@@ -71,12 +74,12 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetAvailableOperator(CancellationToken cancellationToken)
     {
-        var operatorsEntityByCondition = _userRepository.GetWithInclude(u => u.UserRole.Name == "Operator",
-            u => u.OrderBy(users => users.Tickets!.Count),
-            u => u.Tickets);
+        var availableOperators = await _userRepository.GetWithInclude(cancellationToken, u => u.UserRole.Name == "Operator",
+            u => u.OrderBy(u => u.Tickets),
+            u => u.UserRole, u => u.Tickets);
 
-        var operatorEntity = operatorsEntityByCondition.FirstOrDefault();
+        var availableOperator = availableOperators.FirstOrDefault();
 
-        return operatorEntity == null ? null : _mapper.Map<UserModel>(operatorEntity);
+        return availableOperator == null ? null : _mapper.Map<UserModel>(availableOperator);
     }
 }
