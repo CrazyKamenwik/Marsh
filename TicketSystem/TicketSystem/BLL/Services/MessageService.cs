@@ -17,11 +17,9 @@ public class MessageService : IMessageService
 
     // TODO #2: Change that method (SOLID)
     // TODO #4: Create message repo
-    public async Task<MessageModel?> AddMessageAsync(MessageModel message, CancellationToken cancellationToken)
+    public async Task<MessageModel> AddMessageAsync(MessageModel message, CancellationToken cancellationToken)
     {
         var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
-        if (user == null)
-            return null;
 
         TicketModel? ticket;
         var freeOperator = await _userService.GetAvailableOperator(cancellationToken);

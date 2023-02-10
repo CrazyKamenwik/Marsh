@@ -30,11 +30,11 @@ public class TicketController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<TicketViewModel?> Get(int id, CancellationToken cancellationToken)
+    public async Task<TicketViewModel> Get(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Ticket by id {id}", id);
         var ticketModel = await _ticketService.GetTicketByIdAsync(id, cancellationToken);
 
-        return ticketModel == null ? null : _mapper.Map<TicketViewModel>(ticketModel);
+        return _mapper.Map<TicketViewModel>(ticketModel);
     }
 }

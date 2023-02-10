@@ -32,13 +32,13 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<UserViewModel?> Get(int id, CancellationToken cancellationToken)
+    public async Task<UserViewModel> Get(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get user by id {id}", id);
 
         var userModel = await _userService.GetUserByIdAsync(id, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
+        return _mapper.Map<UserViewModel>(userModel);
     }
 
     [HttpPost]
@@ -53,7 +53,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<UserViewModel?> Put(int id, ShortUserViewModel shortUser, CancellationToken cancellationToken)
+    public async Task<UserViewModel> Put(int id, ShortUserViewModel shortUser, CancellationToken cancellationToken)
     {
         var userModel = _mapper.Map<UserModel>(shortUser);
         userModel.Id = id;
@@ -62,15 +62,15 @@ public class UserController : ControllerBase
 
         userModel = await _userService.UpdateUserAsync(userModel, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
+        return _mapper.Map<UserViewModel>(userModel);
     }
 
     [HttpDelete("{id}")]
-    public async Task<UserViewModel?> Delete(int id, CancellationToken cancellationToken)
+    public async Task<UserViewModel> Delete(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Delete user by id {id}", id);
         var userModel = await _userService.DeleteUserAsync(id, cancellationToken);
 
-        return userModel == null ? null : _mapper.Map<UserViewModel>(userModel);
+        return _mapper.Map<UserViewModel>(userModel);
     }
 }

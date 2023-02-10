@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.Entities;
@@ -33,20 +34,24 @@ public class UserService : IUserService
         return _mapper.Map<IEnumerable<UserModel>>(allUsers);
     }
 
-    public async Task<UserModel?> GetUserByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<UserModel> GetUserByIdAsync(int id, CancellationToken cancellationToken)
     {
         var userEntityByCondition =
             await _userRepository.GetUsersByConditionsAsync(cancellationToken, user => user.Id == id);
         var userEntity = userEntityByCondition.FirstOrDefault();
 
-        return userEntity == null ? null : _mapper.Map<UserModel>(userEntity);
+        if (userEntity == null)
+            throw new NotFoundException($"User with id {id} not found");
+
+        return _mapper.Map<UserModel>(userEntity);
     }
 
-    public async Task<UserModel?> UpdateUserAsync(UserModel user, CancellationToken cancellationToken)
+    public async Task<UserModel> UpdateUserAsync(UserModel user, CancellationToken cancellationToken)
     {
         var usersEntity = await _userRepository.GetUsersByConditionsAsync(cancellationToken, u => u.Id == user.Id);
+
         if (usersEntity.FirstOrDefault() == null)
-            return null;
+            throw new NotFoundException($"User with id {user.Id} not found");
 
         var userEntity = _mapper.Map<UserEntity>(user);
         userEntity = await _userRepository.UpdateAsync(userEntity, cancellationToken);
@@ -54,14 +59,15 @@ public class UserService : IUserService
         return _mapper.Map<UserModel>(userEntity);
     }
 
-    public async Task<UserModel?> DeleteUserAsync(int id, CancellationToken cancellationToken)
+    public async Task<UserModel> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
         var usersEntity = await _userRepository.GetUsersByConditionsAsync(cancellationToken,
             u => u.Id == id,
             includeProperties: "UserRole");
         var userEntity = usersEntity.FirstOrDefault();
+
         if (userEntity == null)
-            return null;
+            throw new NotFoundException($"User with id {id} not found");
 
         await _userRepository.DeleteAsync(userEntity, cancellationToken);
 
