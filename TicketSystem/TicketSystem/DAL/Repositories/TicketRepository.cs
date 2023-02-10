@@ -14,7 +14,6 @@ public class TicketRepository : ITicketRepository
         _context = context;
     }
 
-    // Change return type to Task, because ticket is trackable
     public async Task<TicketEntity> CreateAsync(TicketEntity ticket, CancellationToken cancellationToken)
     {
         _context.Tickets.Add(ticket);

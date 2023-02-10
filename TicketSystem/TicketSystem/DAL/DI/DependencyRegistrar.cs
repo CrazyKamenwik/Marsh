@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories;
 using TicketSystem.DAL.Repositories.Abstractions;
 
@@ -14,6 +15,10 @@ public static class DependencyRegistrar
 
         serviceCollection.AddTransient<ITicketRepository, TicketRepository>();
         serviceCollection.AddTransient<IUserRepository, UserRepository>();
+
+        serviceCollection.AddTransient<IGenericRepository<UserEntity>, GenericRepository<UserEntity>>();
+        serviceCollection.AddTransient<IGenericRepository<TicketEntity>, GenericRepository<TicketEntity>>();
+        serviceCollection.AddTransient<IGenericRepository<MessageEntity>, GenericRepository<MessageEntity>>();
 
         return serviceCollection;
     }
