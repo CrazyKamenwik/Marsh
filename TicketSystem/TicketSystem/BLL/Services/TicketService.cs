@@ -44,7 +44,8 @@ public class TicketService : ITicketService
 
     public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
     {
-        var ticketsEntity = await _ticketRepository.GetAsync();
+        var ticketsEntity = await _ticketRepository.GetWithIncludeAsync(cancellationToken, t => t.Messages,
+            t => t.Operator, t => t.TicketCreator);
 
         return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
     }
@@ -56,7 +57,7 @@ public class TicketService : ITicketService
 
         if (ticketEntity == null)
             throw new NotFoundException($"Ticket with id {ticketModel.Id} not found");
-        
+
         await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
 
         return _mapper.Map<TicketModel>(ticketEntity);
@@ -75,11 +76,6 @@ public class TicketService : ITicketService
 
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
     {
-        //var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
-        //    t => t.TicketStatus == TicketStatusEnumEntity.Open
-        //         && t.Messages.Any()
-        //         && t.Messages.Last().User.UserRole.Name == "Operator");
-
         var ticketsEntity = _ticketRepository.GetWithInclude(t => t.TicketStatus == TicketStatusEnumEntity.Open
                                                                   && t.Messages.Any()
                                                                   && t.Messages.Last().User.UserRole.Name ==

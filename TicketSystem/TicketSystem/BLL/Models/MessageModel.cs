@@ -1,8 +1,7 @@
 ﻿namespace TicketSystem.BLL.Models;
 
-public class MessageModel
+public class MessageModel : BaseModel
 {
-    public int Id { get; set; }
     public string? Text { get; set; }
     public DateTime CreatedAt { get; set; }
 

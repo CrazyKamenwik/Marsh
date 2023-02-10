@@ -13,9 +13,6 @@ public static class DependencyRegistrar
         serviceCollection.AddDbContext<ApplicationContext>(opt =>
             opt.UseSqlServer(configuration.GetConnectionString("DbConnection")));
 
-        serviceCollection.AddTransient<ITicketRepository, TicketRepository>();
-        serviceCollection.AddTransient<IUserRepository, UserRepository>();
-
         serviceCollection.AddTransient<IGenericRepository<UserEntity>, GenericRepository<UserEntity>>();
         serviceCollection.AddTransient<IGenericRepository<TicketEntity>, GenericRepository<TicketEntity>>();
         serviceCollection.AddTransient<IGenericRepository<MessageEntity>, GenericRepository<MessageEntity>>();

@@ -1,15 +1,16 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories.Abstractions;
 
 namespace TicketSystem.DAL.Repositories;
 
-public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    private readonly DbContext _context;
+    private readonly ApplicationContext _context;
     private readonly DbSet<TEntity> _dbSet;
 
-    public GenericRepository(DbContext context)
+    public GenericRepository(ApplicationContext context)
     {
         _context = context;
         _dbSet = context.Set<TEntity>();
@@ -38,35 +39,33 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return await _dbSet.AsNoTracking().ToListAsync();
     }
 
-    public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includeProperties)
+    public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(CancellationToken cancellationToken,
+        params Expression<Func<TEntity, object>>[] includeProperties)
     {
         return await Include(includeProperties).ToListAsync(cancellationToken);
     }
 
     public async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return await _dbSet.FindAsync(new object?[] { id, cancellationToken }, cancellationToken: cancellationToken);
+        return await _dbSet.FindAsync(new object?[] { id, cancellationToken }, cancellationToken);
     }
 
-    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includeProperties)
+    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
+        params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = Include(includeProperties);
-        return await _dbSet.FindAsync(id, cancellationToken);
+        return await query.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
-
-   public IEnumerable<TEntity> GetWithInclude(Func<TEntity, bool> predicate,
-       params Expression<Func<TEntity, object>>[] includeProperties)
-   {
-       var query = Include(includeProperties);
-       return query.AsEnumerable().Where(predicate).ToList();
-   }
-
-    private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
+    public IEnumerable<TEntity> GetWithInclude(Func<TEntity, bool> predicate,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        IQueryable<TEntity> query = _dbSet.AsNoTracking();
-        return includeProperties
-            .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+        var query = Include(includeProperties);
+
+        orderBy?.Invoke(query).ToListAsync();
+
+        return query.AsEnumerable().Where(predicate).ToList();
     }
 
     public async Task SaveAsync()
@@ -74,22 +73,10 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync();
     }
 
-
-
-    //public async Task<IEnumerable<TEntity>> GetEntityByConditions(Expression<Func<TEntity, bool>>? filter = null,
-    //    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-    //    string includeProperties = "")
-    //{
-    //    IQueryable<TEntity> query = _context.Set<TEntity>();
-
-    //    if (filter != null) query = query.Where(filter);
-
-    //    foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-    //        query = query.Include(includeProperty);
-
-    //    if (orderBy != null)
-    //        return await orderBy(query).ToListAsync();
-
-    //    return await query.ToListAsync();
-    //}
+    private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
+    {
+        IQueryable<TEntity> query = _dbSet;
+        return includeProperties
+            .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+    }
 }

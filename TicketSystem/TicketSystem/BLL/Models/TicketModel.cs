@@ -2,9 +2,8 @@
 
 namespace TicketSystem.BLL.Models;
 
-public class TicketModel
+public class TicketModel : BaseModel
 {
-    public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public TicketStatusEnumModel TicketStatus { get; set; }
 
