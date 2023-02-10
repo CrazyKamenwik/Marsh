@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.Entities;
@@ -28,7 +29,7 @@ public class TicketService : ITicketService
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
-    public async Task<TicketModel?> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<TicketModel> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
     {
         var ticketsEntityByConditions =
             await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
@@ -36,7 +37,10 @@ public class TicketService : ITicketService
                 includeProperties: "TicketCreator,Operator,Messages");
         var ticketEntity = ticketsEntityByConditions.FirstOrDefault();
 
-        return ticketEntity == null ? null : _mapper.Map<TicketModel>(ticketEntity);
+        if (ticketEntity == null)
+            throw new NotFoundException($"Ticket with id {id} not found");
+
+        return _mapper.Map<TicketModel>(ticketEntity);
     }
 
     public async Task<IEnumerable<TicketModel>> GetTicketsAsync(CancellationToken cancellationToken)
@@ -47,12 +51,13 @@ public class TicketService : ITicketService
         return _mapper.Map<IEnumerable<TicketModel>>(ticketsEntity);
     }
 
-    public async Task<TicketModel?> UpdateTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
+    public async Task<TicketModel> UpdateTicketAsync(TicketModel ticketModel, CancellationToken cancellationToken)
     {
         var ticketsEntity =
             await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken, t => t.Id == ticketModel.Id);
+
         if (ticketsEntity.FirstOrDefault() == null)
-            return null;
+            throw new NotFoundException($"Ticket with id {ticketModel.Id} not found");
 
         var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
         ticketEntity = await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
@@ -60,14 +65,13 @@ public class TicketService : ITicketService
         return _mapper.Map<TicketModel>(ticketEntity);
     }
 
-    public async Task<TicketModel?> DeleteTicketAsync(int id, CancellationToken cancellationToken)
+    public async Task<TicketModel> DeleteTicketAsync(int id, CancellationToken cancellationToken)
     {
         var ticketsEntity = await _ticketRepository.GetTicketsByConditionsAsync(cancellationToken,
             t => t.Id == id,
             includeProperties: "TicketCreator,Operator,Messages");
         var ticketEntity = ticketsEntity.FirstOrDefault();
-        if (ticketEntity == null)
-            return null;
+        if (ticketEntity == null) throw new NotFoundException($"Ticket with id {id} not found");
 
         await _ticketRepository.DeleteAsync(ticketEntity, cancellationToken);
 

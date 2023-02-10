@@ -21,7 +21,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.ConfigureExceptionHandler();
+app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
