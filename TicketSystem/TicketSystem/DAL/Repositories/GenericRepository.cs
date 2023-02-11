@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Repositories.Abstractions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TicketSystem.DAL.Repositories;
 
@@ -35,34 +34,23 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    //public async Task<IEnumerable<TEntity>> GetWithIncludeAsync(CancellationToken cancellationToken,
-    //    params Expression<Func<TEntity, object>>[] includeProperties)
-    //{
-    //    return await Include(includeProperties).ToListAsync(cancellationToken);
-    //}
-    public async Task<IEnumerable<TEntity>> GetWithInclude(CancellationToken cancellationToken, Func<TEntity, bool>? predicate,
+    public async Task<IEnumerable<TEntity>> GetWithInclude(CancellationToken cancellationToken,
+        bool isTrack,
+        Func<TEntity, bool>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        var query = Include(includeProperties);
+        var query = isTrack ? Include(includeProperties) : Include(includeProperties).AsNoTracking();
 
-        if (orderBy != null)
-        {
-            await orderBy.Invoke(query).ToListAsync(cancellationToken);
-        }
+        if (orderBy != null) query = orderBy.Invoke(query);
 
-        var entities = query.AsEnumerable();
-
-        if (predicate != null)
-            entities = entities.Where(predicate);
-
-        return entities.ToList();
+        return predicate != null ? query.AsEnumerable().Where(predicate) : await query.ToListAsync(cancellationToken);
     }
 
     public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        IQueryable<TEntity> entity = _dbSet;
+        var entity = _dbSet.AsNoTracking();
 
         if (includeProperties.Length > 0)
             entity = Include(includeProperties);

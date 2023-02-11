@@ -28,9 +28,10 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken)
     {
-        var allUsers = await _userRepository.GetWithInclude(cancellationToken, 
-            predicate:null, 
-            orderBy:null, 
+        var allUsers = await _userRepository.GetWithInclude(cancellationToken,
+            false,
+            null,
+            null,
             u => u.UserRole);
 
         return _mapper.Map<IEnumerable<UserModel>>(allUsers);
@@ -39,7 +40,7 @@ public class UserService : IUserService
     public async Task<UserModel> GetUserByIdAsync(int id, CancellationToken cancellationToken)
     {
         var userEntityByCondition =
-            await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole);
+            await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole, u => u.Tickets);
 
         if (userEntityByCondition == null)
             throw new NotFoundException($"User with id {id} not found");
@@ -74,9 +75,12 @@ public class UserService : IUserService
 
     public async Task<UserModel?> GetAvailableOperator(CancellationToken cancellationToken)
     {
-        var availableOperators = await _userRepository.GetWithInclude(cancellationToken, u => u.UserRole.Name == "Operator",
-            u => u.OrderBy(u => u.Tickets),
-            u => u.UserRole, u => u.Tickets);
+        var availableOperators = await _userRepository.GetWithInclude(cancellationToken,
+            false,
+            u => u.UserRole.Name == "Operator",
+            q => q.OrderBy(u => u.Tickets.Count()),
+            u => u.UserRole,
+            u => u.Tickets);
 
         var availableOperator = availableOperators.FirstOrDefault();
 
