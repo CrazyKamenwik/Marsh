@@ -11,13 +11,14 @@ namespace TicketSystem.BLL.Services;
 
 public class TicketService : ITicketService
 {
-    private const int MinutesToClose = 1; //60
+    private const int MinutesToClose = 60;
+    private readonly ILogger<TicketService> _logger;
     private readonly IMapper _mapper;
     private readonly IGenericRepository<TicketEntity> _ticketRepository;
     private readonly IUserService _userService;
-    private readonly ILogger<TicketService> _logger;
 
-    public TicketService(IGenericRepository<TicketEntity> ticketRepository, IMapper mapper, IUserService userService, ILogger<TicketService> logger)
+    public TicketService(IGenericRepository<TicketEntity> ticketRepository, IMapper mapper, IUserService userService,
+        ILogger<TicketService> logger)
     {
         _mapper = mapper;
         _ticketRepository = ticketRepository;
@@ -108,11 +109,11 @@ public class TicketService : ITicketService
 
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
     {
-        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, 
-            isTrack: true, 
-            t => t is { TicketStatus: TicketStatusEnumEntity.Open, OperatorId: { } } 
-                 && t.Messages.Last().CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now, 
-            orderBy: null, 
+        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken,
+            true,
+            t => t is { TicketStatus: TicketStatusEnumEntity.Open, OperatorId: { } }
+                 && t.Messages.Last().CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now,
+            null,
             t => t.Messages);
 
         foreach (var ticket in ticketsEntity)

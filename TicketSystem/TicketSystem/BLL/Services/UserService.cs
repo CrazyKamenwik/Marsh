@@ -29,10 +29,10 @@ public class UserService : IUserService
     public async Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken)
     {
         var allUsers = await _userRepository.GetWithInclude(cancellationToken,
-            false,
-            null,
-            null,
-            u => u.UserRole);
+            isTrack: false,
+            predicate: null,
+            orderBy: null,
+            includeProperties: u => u.UserRole);
 
         return _mapper.Map<IEnumerable<UserModel>>(allUsers);
     }
