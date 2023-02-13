@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using TicketSystem.BLL.Abstractions.MessagesStrategy;
 using TicketSystem.BLL.Abstractions.Services;
+using TicketSystem.BLL.MessagesStrategy;
 using TicketSystem.BLL.Services;
 using TicketSystem.DAL.DI;
 
@@ -16,6 +18,9 @@ public static class DependencyRegistrar
         serviceCollection.AddTransient<IUserService, UserService>();
         serviceCollection.AddTransient<ITicketService, TicketService>();
         serviceCollection.AddTransient<IMessageService, MessageService>();
+
+        serviceCollection.AddTransient<IMessageStrategy, UserMessageStrategy>();
+        serviceCollection.AddTransient<IMessageStrategy, OperatorMessageStrategy>();
 
         return serviceCollection;
     }
