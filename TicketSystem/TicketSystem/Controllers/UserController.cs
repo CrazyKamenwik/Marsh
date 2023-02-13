@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Models;
-using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.ViewModels.Users;
 
 namespace TicketSystem.Controllers;
@@ -46,7 +46,7 @@ public class UserController : ControllerBase
     {
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(shortUser));
 
-        var userModel = _mapper.Map<UserModel>(shortUser);
+        var userModel = _mapper.Map<User>(shortUser);
         userModel = await _userService.AddUserAsync(userModel, cancellationToken);
 
         return _mapper.Map<UserViewModel>(userModel);
@@ -55,7 +55,7 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<UserViewModel> Put(int id, ShortUserViewModel shortUser, CancellationToken cancellationToken)
     {
-        var userModel = _mapper.Map<UserModel>(shortUser);
+        var userModel = _mapper.Map<User>(shortUser);
         userModel.Id = id;
 
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(userModel));

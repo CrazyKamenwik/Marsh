@@ -2,9 +2,8 @@
 
 namespace TicketSystem.DAL.Entities;
 
-public class TicketEntity
+public class TicketEntity : BaseEntity
 {
-    public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public TicketStatusEnumEntity TicketStatus { get; set; }
 

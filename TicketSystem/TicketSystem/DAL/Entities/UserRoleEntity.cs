@@ -1,7 +1,6 @@
 ﻿namespace TicketSystem.DAL.Entities;
 
-public class UserRoleEntity
+public class UserRoleEntity : BaseEntity
 {
-    public int Id { get; set; }
     public string Name { get; set; } = null!;
 }

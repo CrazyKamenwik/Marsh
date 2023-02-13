@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Models;
-using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.ViewModels.Messages;
 
 namespace TicketSystem.Controllers;
@@ -27,7 +27,7 @@ public class MessageController : ControllerBase
         CancellationToken cancellationToken)
     {
         shortMessage.UserId = userId;
-        var messageModel = _mapper.Map<MessageModel>(shortMessage);
+        var messageModel = _mapper.Map<Message>(shortMessage);
 
         _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(messageModel));
 

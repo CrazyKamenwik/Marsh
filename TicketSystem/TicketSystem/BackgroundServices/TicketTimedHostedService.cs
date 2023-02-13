@@ -1,4 +1,4 @@
-﻿using TicketSystem.BLL.Services.Abstractions;
+﻿using TicketSystem.BLL.Abstractions.Services;
 
 namespace TicketSystem.BackgroundServices;
 
