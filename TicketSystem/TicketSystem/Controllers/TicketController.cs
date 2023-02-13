@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TicketSystem.BLL.Services.Abstractions;
+using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.ViewModels.Tickets;
 
 namespace TicketSystem.Controllers;

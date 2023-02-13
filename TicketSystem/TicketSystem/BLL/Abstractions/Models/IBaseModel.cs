@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.BLL.Models.Abstractions;
+﻿namespace TicketSystem.BLL.Abstractions.Models;
 
 public interface IBaseModel
 {

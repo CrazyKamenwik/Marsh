@@ -1,4 +1,4 @@
-﻿using TicketSystem.BLL.Models.Abstractions;
+﻿using TicketSystem.BLL.Abstractions.Models;
 
 namespace TicketSystem.BLL.Models;
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
-using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Repositories.Abstractions;
+using TicketSystem.DAL.Entities.Abstractions;
 
 namespace TicketSystem.BLL.Services;
 
@@ -18,26 +18,26 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserModel> AddUserAsync(UserModel user, CancellationToken cancellationToken)
+    public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
         await _userRepository.CreateAsync(userEntity, cancellationToken);
 
-        return _mapper.Map<UserModel>(userEntity);
+        return _mapper.Map<User>(userEntity);
     }
 
-    public async Task<IEnumerable<UserModel>> GetUsersAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken)
     {
         var allUsers = await _userRepository.GetWithInclude(cancellationToken,
-            isTrack: false,
-            predicate: null,
-            orderBy: null,
-            includeProperties: u => u.UserRole);
+            false,
+            null,
+            null,
+            u => u.UserRole);
 
-        return _mapper.Map<IEnumerable<UserModel>>(allUsers);
+        return _mapper.Map<IEnumerable<User>>(allUsers);
     }
 
-    public async Task<UserModel> GetUserByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<User> GetUserByIdAsync(int id, CancellationToken cancellationToken)
     {
         var userEntityByCondition =
             await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole, u => u.Tickets);
@@ -45,10 +45,10 @@ public class UserService : IUserService
         if (userEntityByCondition == null)
             throw new NotFoundException($"User with id {id} not found");
 
-        return _mapper.Map<UserModel>(userEntityByCondition);
+        return _mapper.Map<User>(userEntityByCondition);
     }
 
-    public async Task<UserModel> UpdateUserAsync(UserModel user, CancellationToken cancellationToken)
+    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
     {
         var usersEntity = await _userRepository.GetByIdWithIncludeAsync(user.Id, cancellationToken);
 
@@ -58,10 +58,10 @@ public class UserService : IUserService
         var userEntity = _mapper.Map<UserEntity>(user);
         await _userRepository.UpdateAsync(userEntity, cancellationToken);
 
-        return _mapper.Map<UserModel>(userEntity);
+        return _mapper.Map<User>(userEntity);
     }
 
-    public async Task<UserModel> DeleteUserAsync(int id, CancellationToken cancellationToken)
+    public async Task<User> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
         var usersEntity = await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken);
 
@@ -70,10 +70,10 @@ public class UserService : IUserService
 
         await _userRepository.RemoveAsync(usersEntity, cancellationToken);
 
-        return _mapper.Map<UserModel>(usersEntity);
+        return _mapper.Map<User>(usersEntity);
     }
 
-    public async Task<UserModel?> GetAvailableOperator(CancellationToken cancellationToken)
+    public async Task<User?> GetAvailableOperator(CancellationToken cancellationToken)
     {
         var availableOperators = await _userRepository.GetWithInclude(cancellationToken,
             false,
@@ -84,6 +84,6 @@ public class UserService : IUserService
 
         var availableOperator = availableOperators.FirstOrDefault();
 
-        return availableOperator == null ? null : _mapper.Map<UserModel>(availableOperator);
+        return availableOperator == null ? null : _mapper.Map<User>(availableOperator);
     }
 }

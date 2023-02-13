@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.BLL.Models.Enums;
+﻿namespace TicketSystem.BLL.Enums;
 
 public enum TicketStatusEnumModel
 {

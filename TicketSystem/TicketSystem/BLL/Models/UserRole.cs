@@ -1,6 +1,6 @@
 ﻿namespace TicketSystem.BLL.Models;
 
-public class UserRoleModel : BaseModel
+public class UserRole : BaseModel
 {
     public string Name { get; set; } = null!;
 }

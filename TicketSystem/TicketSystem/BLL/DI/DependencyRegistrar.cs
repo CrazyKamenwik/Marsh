@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Services;
-using TicketSystem.BLL.Services.Abstractions;
 using TicketSystem.DAL.DI;
 
 namespace TicketSystem.BLL.DI;

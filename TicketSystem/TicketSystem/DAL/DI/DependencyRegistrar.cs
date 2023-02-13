@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketSystem.DAL.Entities;
+using TicketSystem.DAL.Entities.Abstractions;
 using TicketSystem.DAL.Repositories;
-using TicketSystem.DAL.Repositories.Abstractions;
 
 namespace TicketSystem.DAL.DI;
 

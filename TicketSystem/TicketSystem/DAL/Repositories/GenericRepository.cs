@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Repositories.Abstractions;
+using TicketSystem.DAL.Entities.Abstractions;
 
 namespace TicketSystem.DAL.Repositories;
 
