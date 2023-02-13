@@ -1,4 +1,4 @@
-﻿using TicketSystem.DAL.Entities.Abstractions;
+﻿using TicketSystem.DAL.Abstractions;
 
 namespace TicketSystem.DAL.Entities;
 

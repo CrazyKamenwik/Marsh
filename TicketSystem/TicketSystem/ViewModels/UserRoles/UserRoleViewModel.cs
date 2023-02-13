@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.ViewModels.UserRoles;
+﻿namespace TicketSystem.API.ViewModels.UserRoles;
 
 public class UserRoleViewModel
 {

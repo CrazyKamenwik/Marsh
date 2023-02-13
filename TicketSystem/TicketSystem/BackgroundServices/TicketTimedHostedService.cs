@@ -1,6 +1,6 @@
 ﻿using TicketSystem.BLL.Abstractions.Services;
 
-namespace TicketSystem.BackgroundServices;
+namespace TicketSystem.API.BackgroundServices;
 
 public class TicketTimedHostedService : BackgroundService
 {

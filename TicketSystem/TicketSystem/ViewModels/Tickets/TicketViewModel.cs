@@ -1,8 +1,8 @@
-﻿using TicketSystem.Enums;
-using TicketSystem.ViewModels.Messages;
-using TicketSystem.ViewModels.Users;
+﻿using TicketSystem.API.Enums;
+using TicketSystem.API.ViewModels.Messages;
+using TicketSystem.API.ViewModels.Users;
 
-namespace TicketSystem.ViewModels.Tickets;
+namespace TicketSystem.API.ViewModels.Tickets;
 
 public class TicketViewModel
 {

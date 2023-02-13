@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace TicketSystem.ViewModels.Exceptions;
+namespace TicketSystem.API.ViewModels.Exceptions;
 
 public class ErrorDetails
 {

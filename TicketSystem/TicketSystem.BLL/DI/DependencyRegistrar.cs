@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using TicketSystem.BLL.Abstractions.MessagesStrategy;
 using TicketSystem.BLL.Abstractions.Services;
+using TicketSystem.BLL.MapperProfiles;
 using TicketSystem.BLL.MessagesStrategy;
 using TicketSystem.BLL.Services;
 using TicketSystem.DAL.DI;
@@ -12,7 +15,7 @@ public static class DependencyRegistrar
     public static IServiceCollection AddBusinessLogicLayerServices(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
+        serviceCollection.AddAutoMapper(typeof(MapperProfile).GetTypeInfo().Assembly);
 
         serviceCollection.AddDataAccessLevelServices(configuration);
         serviceCollection.AddTransient<IUserService, UserService>();

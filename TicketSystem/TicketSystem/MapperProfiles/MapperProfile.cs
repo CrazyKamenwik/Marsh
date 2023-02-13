@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using TicketSystem.API.ViewModels.Messages;
+using TicketSystem.API.ViewModels.Tickets;
+using TicketSystem.API.ViewModels.Users;
 using TicketSystem.BLL.Models;
-using TicketSystem.ViewModels.Messages;
-using TicketSystem.ViewModels.Tickets;
-using TicketSystem.ViewModels.Users;
 
-namespace TicketSystem.MapperProfiles;
+namespace TicketSystem.API.MapperProfiles;
 
 public class MapperProfile : Profile
 {

@@ -1,9 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.API.ViewModels.Tickets;
 using TicketSystem.BLL.Abstractions.Services;
-using TicketSystem.ViewModels.Tickets;
 
-namespace TicketSystem.Controllers;
+namespace TicketSystem.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

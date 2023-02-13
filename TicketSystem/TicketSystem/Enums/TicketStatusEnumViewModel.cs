@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.Enums;
+﻿namespace TicketSystem.API.Enums;
 
 public enum TicketStatusEnumVm
 {

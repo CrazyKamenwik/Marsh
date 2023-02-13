@@ -1,6 +1,6 @@
-﻿using TicketSystem.Middleware;
+﻿using TicketSystem.API.Middleware;
 
-namespace TicketSystem.Extensions;
+namespace TicketSystem.API.Extensions;
 
 public static class ExceptionMiddlewareExtensions
 {

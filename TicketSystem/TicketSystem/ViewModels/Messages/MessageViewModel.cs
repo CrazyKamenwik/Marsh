@@ -1,6 +1,6 @@
-﻿using TicketSystem.ViewModels.Users;
+﻿using TicketSystem.API.ViewModels.Users;
 
-namespace TicketSystem.ViewModels.Messages;
+namespace TicketSystem.API.ViewModels.Messages;
 
 public class MessageViewModel
 {

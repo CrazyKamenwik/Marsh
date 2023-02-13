@@ -1,8 +1,8 @@
 ﻿using System.Net;
+using TicketSystem.API.ViewModels.Exceptions;
 using TicketSystem.BLL.Exceptions;
-using TicketSystem.ViewModels.Exceptions;
 
-namespace TicketSystem.Middleware;
+namespace TicketSystem.API.Middleware;
 
 public class ExceptionMiddleware
 {
