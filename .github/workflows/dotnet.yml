@@ -20,9 +20,11 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-    - name: Go to current folder
-      run: cd ./TicketSystem/TicketSystem
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+            cd ./TicketSystem
+            dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: |
+            cd ./TicketSystem
+            dotnet build --no-restore
