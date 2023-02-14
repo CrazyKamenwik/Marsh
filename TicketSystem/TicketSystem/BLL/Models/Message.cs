@@ -2,12 +2,6 @@
 
 public class Message : BaseModel
 {
-    public Message(int ticketId, int userId)
-    {
-        TicketId = ticketId;
-        UserId = userId;
-    }
-
     public string? Text { get; set; }
     public DateTime CreatedAt { get; init; } = DateTime.Now;
 

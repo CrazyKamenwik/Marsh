@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TicketSystem.BLL.Abstractions.Services;
@@ -14,9 +15,11 @@ public class UserController : ControllerBase
     private readonly ILogger<UserController> _logger;
     private readonly IMapper _mapper;
     private readonly IUserService _userService;
+    private readonly IValidator<ShortUserViewModel> _validator;
 
-    public UserController(IUserService userService, ILogger<UserController> logger, IMapper mapper)
+    public UserController(IUserService userService, ILogger<UserController> logger, IMapper mapper, IValidator<ShortUserViewModel> validator)
     {
+        _validator = validator;
         _mapper = mapper;
         _userService = userService;
         _logger = logger;
@@ -44,6 +47,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<UserViewModel> Post(ShortUserViewModel shortUser, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(shortUser, cancellationToken);
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(shortUser));
 
         var userModel = _mapper.Map<User>(shortUser);

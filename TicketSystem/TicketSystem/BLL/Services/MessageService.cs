@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TicketSystem.BLL.Abstractions.MessagesStrategy;
 using TicketSystem.BLL.Abstractions.Services;
+using TicketSystem.BLL.Constants;
 using TicketSystem.BLL.Models;
 
 namespace TicketSystem.BLL.Services;
@@ -22,9 +23,17 @@ public class MessageService : IMessageService
     {
         var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
 
+        ThrowExceptionIfOperatorHasIncorrectTicketId(user, message);
+
         message = await _messageStrategies.First(x => x.IsApplicable(user.UserRole.Name))
             .AddMessageAsync(message, user, cancellationToken);
 
         return _mapper.Map<Message>(message);
+    }
+
+    private static void ThrowExceptionIfOperatorHasIncorrectTicketId(User user, Message message)
+    {
+        if (user.UserRole.Name == RolesConstants.Operator && message.TicketId == 0)
+            throw new ArgumentException("Operator needs to enter ticketId, in which it is necessary to add the message");
     }
 }

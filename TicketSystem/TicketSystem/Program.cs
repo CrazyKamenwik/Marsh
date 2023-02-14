@@ -1,13 +1,16 @@
+using FluentValidation;
 using TicketSystem.BackgroundServices;
 using TicketSystem.BLL.DI;
 using TicketSystem.Extensions;
+using TicketSystem.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
 builder.Services
     .AddBusinessLogicLayerServices(configuration)
-    .AddHostedService<TicketTimedHostedService>();
+    .AddHostedService<TicketTimedHostedService>()
+    .AddValidatorsFromAssemblyContaining<ShortUserValidator>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
