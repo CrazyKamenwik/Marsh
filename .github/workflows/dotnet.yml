@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Go to current folder
-      run: cd ./TicketSystem
+      run: cd ./Marsh/TicketSystem
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
