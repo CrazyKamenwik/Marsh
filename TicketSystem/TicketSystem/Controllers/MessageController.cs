@@ -15,11 +15,9 @@ public class MessageController : ControllerBase
     private readonly ILogger<MessageController> _logger;
     private readonly IMapper _mapper;
     private readonly IMessageService _messageService;
-    private readonly IValidator<ShortMessageViewModel> _validator;
 
-    public MessageController(IMessageService messageService, ILogger<MessageController> logger, IMapper mapper, IValidator<ShortMessageViewModel> validator)
+    public MessageController(IMessageService messageService, ILogger<MessageController> logger, IMapper mapper)
     {
-        _validator = validator;
         _mapper = mapper;
         _messageService = messageService;
         _logger = logger;
@@ -29,8 +27,6 @@ public class MessageController : ControllerBase
     public async Task<MessageViewModel> Post(int userId, ShortMessageViewModel shortMessage,
         CancellationToken cancellationToken)
     {
-        await _validator.ValidateAndThrowAsync(shortMessage, cancellationToken);
-
         var messageModel = _mapper.Map<Message>(shortMessage);
         messageModel.UserId = userId;
 

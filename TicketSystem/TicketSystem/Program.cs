@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using TicketSystem.BackgroundServices;
 using TicketSystem.BLL.DI;
 using TicketSystem.Extensions;
@@ -10,6 +11,7 @@ var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").B
 builder.Services
     .AddBusinessLogicLayerServices(configuration)
     .AddHostedService<TicketTimedHostedService>()
+    .AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblyContaining<ShortUserValidator>();
 
 builder.Services.AddControllers();
