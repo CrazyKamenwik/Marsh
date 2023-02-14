@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.ViewModels.Messages;
+﻿namespace TicketSystem.API.ViewModels.Messages;
 
 public class ShortMessageViewModel
 {

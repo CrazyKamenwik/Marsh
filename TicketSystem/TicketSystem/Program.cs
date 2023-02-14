@@ -1,13 +1,16 @@
-using TicketSystem.BackgroundServices;
+using System.Reflection;
+using TicketSystem.API.BackgroundServices;
+using TicketSystem.API.Extensions;
+using TicketSystem.API.MapperProfiles;
 using TicketSystem.BLL.DI;
-using TicketSystem.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
 builder.Services
     .AddBusinessLogicLayerServices(configuration)
-    .AddHostedService<TicketTimedHostedService>();
+    .AddHostedService<TicketTimedHostedService>()
+    .AddAutoMapper(typeof(MapperProfile).GetTypeInfo().Assembly);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

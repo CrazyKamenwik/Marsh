@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
+using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Entities.Abstractions;
 using TicketSystem.DAL.Entities.Enums;
 
 namespace TicketSystem.BLL.Services;

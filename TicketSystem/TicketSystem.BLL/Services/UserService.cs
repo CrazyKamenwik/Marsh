@@ -2,8 +2,8 @@
 using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
+using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Entities.Abstractions;
 
 namespace TicketSystem.BLL.Services;
 

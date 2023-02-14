@@ -3,8 +3,8 @@ using TicketSystem.BLL.Abstractions.MessagesStrategy;
 using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Constants;
 using TicketSystem.BLL.Models;
+using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.DAL.Entities.Abstractions;
 
 namespace TicketSystem.BLL.MessagesStrategy;
 

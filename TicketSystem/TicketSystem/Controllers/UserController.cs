@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TicketSystem.API.ViewModels.Users;
 using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Models;
-using TicketSystem.ViewModels.Users;
 
-namespace TicketSystem.Controllers;
+namespace TicketSystem.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

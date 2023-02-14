@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.ViewModels.Users;
+﻿namespace TicketSystem.API.ViewModels.Users;
 
 public class ShortUserViewModel
 {

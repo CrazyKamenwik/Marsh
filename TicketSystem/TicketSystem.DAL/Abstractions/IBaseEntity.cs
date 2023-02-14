@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.DAL.Entities.Abstractions;
+﻿namespace TicketSystem.DAL.Abstractions;
 
 public interface IBaseEntity
 {

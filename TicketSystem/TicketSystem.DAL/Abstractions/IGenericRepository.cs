@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace TicketSystem.DAL.Entities.Abstractions;
+namespace TicketSystem.DAL.Abstractions;
 
 public interface IGenericRepository<TEntity> where TEntity : IBaseEntity
 {
