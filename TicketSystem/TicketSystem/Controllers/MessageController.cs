@@ -26,8 +26,8 @@ public class MessageController : ControllerBase
     public async Task<MessageViewModel> Post(int userId, ShortMessageViewModel shortMessage,
         CancellationToken cancellationToken)
     {
-        shortMessage.UserId = userId;
         var messageModel = _mapper.Map<Message>(shortMessage);
+        messageModel.UserId = userId;
 
         _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(messageModel));
 
