@@ -22,11 +22,9 @@ public class MessageController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("{userId}")]
-    public async Task<MessageViewModel> Post(int userId, ShortMessageViewModel shortMessage,
-        CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<MessageViewModel> Post(ShortMessageViewModel shortMessage, CancellationToken cancellationToken)
     {
-        shortMessage.UserId = userId;
         var messageModel = _mapper.Map<Message>(shortMessage);
 
         _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(messageModel));

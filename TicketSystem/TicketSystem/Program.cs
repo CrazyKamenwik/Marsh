@@ -1,7 +1,10 @@
 using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using TicketSystem.API.BackgroundServices;
 using TicketSystem.API.Extensions;
 using TicketSystem.API.MapperProfiles;
+using TicketSystem.API.Validators;
 using TicketSystem.BLL.DI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +13,9 @@ var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").B
 builder.Services
     .AddBusinessLogicLayerServices(configuration)
     .AddHostedService<TicketTimedHostedService>()
-    .AddAutoMapper(typeof(MapperProfile).GetTypeInfo().Assembly);
+    .AddAutoMapper(typeof(MapperProfile).GetTypeInfo().Assembly)
+    .AddFluentValidationAutoValidation()
+    .AddValidatorsFromAssemblyContaining<ShortUserValidator>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
