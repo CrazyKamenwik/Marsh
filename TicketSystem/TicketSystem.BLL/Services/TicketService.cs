@@ -62,13 +62,11 @@ public class TicketService : ITicketService
         return _mapper.Map<IEnumerable<Ticket>>(ticketsEntity);
     }
 
-    public async Task<Ticket> UpdateTicketAsync(Ticket ticketModel, CancellationToken cancellationToken)
+    public async Task<Ticket> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken)
     {
-        var ticketEntity =
-            await _ticketRepository.GetByIdWithIncludeAsync(ticketModel.Id, cancellationToken);
+        await GetTicketByIdAsync(ticket.Id, cancellationToken);
 
-        if (ticketEntity == null)
-            throw new NotFoundException($"Ticket with id {ticketModel.Id} not found");
+        var ticketEntity = _mapper.Map<TicketEntity>(ticket);
 
         await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
 
@@ -77,9 +75,9 @@ public class TicketService : ITicketService
 
     public async Task<Ticket> DeleteTicketAsync(int id, CancellationToken cancellationToken)
     {
-        var ticketEntity = await _ticketRepository.GetByIdWithIncludeAsync(id, cancellationToken);
-        if (ticketEntity == null)
-            throw new NotFoundException($"Ticket with id {id} not found");
+        var ticket = await GetTicketByIdAsync(id, cancellationToken);
+
+        var ticketEntity = _mapper.Map<TicketEntity>(ticket);
 
         await _ticketRepository.RemoveAsync(ticketEntity, cancellationToken);
 

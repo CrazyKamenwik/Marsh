@@ -50,12 +50,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        var entity = _dbSet.AsNoTracking();
+        IQueryable<TEntity> entity = _dbSet;
 
         if (includeProperties.Length > 0)
             entity = Include(includeProperties);
 
-        return await entity.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+        return await entity.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
     public async Task SaveAsync()

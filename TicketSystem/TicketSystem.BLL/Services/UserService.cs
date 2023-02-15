@@ -50,12 +50,10 @@ public class UserService : IUserService
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
     {
-        var usersEntity = await _userRepository.GetByIdWithIncludeAsync(user.Id, cancellationToken);
-
-        if (usersEntity == null)
-            throw new NotFoundException($"User with id {user.Id} not found");
+        await GetUserByIdAsync(user.Id, cancellationToken);
 
         var userEntity = _mapper.Map<UserEntity>(user);
+
         await _userRepository.UpdateAsync(userEntity, cancellationToken);
 
         return _mapper.Map<User>(userEntity);
@@ -63,10 +61,9 @@ public class UserService : IUserService
 
     public async Task<User> DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
-        var usersEntity = await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken);
+        var user = await GetUserByIdAsync(id, cancellationToken);
 
-        if (usersEntity == null)
-            throw new NotFoundException($"User with id {id} not found");
+        var usersEntity = _mapper.Map<UserEntity>(user);
 
         await _userRepository.RemoveAsync(usersEntity, cancellationToken);
 
