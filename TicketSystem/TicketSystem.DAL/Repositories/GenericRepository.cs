@@ -16,25 +16,25 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbSet = context.Set<TEntity>();
     }
 
-    public async Task CreateAsync(TEntity item, CancellationToken cancellationToken)
+    public async Task Create(TEntity item, CancellationToken cancellationToken)
     {
         _dbSet.Add(item);
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(TEntity item, CancellationToken cancellationToken)
+    public async Task Update(TEntity item, CancellationToken cancellationToken)
     {
         _context.Entry(item).State = EntityState.Modified;
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(int id, CancellationToken cancellationToken)
+    public async Task Remove(int id, CancellationToken cancellationToken)
     {
         var item = await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (item == null)
             return;
-        
+
         _dbSet.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
     }
@@ -52,7 +52,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return predicate != null ? query.AsEnumerable().Where(predicate) : await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
+    public async Task<TEntity?> GetByIdWithInclude(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
         IQueryable<TEntity> entity = _dbSet;
@@ -63,7 +63,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return await entity.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
-    public async Task SaveAsync()
+    public async Task Save()
     {
         await _context.SaveChangesAsync();
     }

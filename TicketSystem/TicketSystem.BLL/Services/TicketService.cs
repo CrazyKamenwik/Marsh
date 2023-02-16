@@ -25,21 +25,21 @@ public class TicketService : ITicketService
         _logger = logger;
     }
 
-    public async Task<Ticket> AddTicketAsync(Ticket ticketModel, CancellationToken cancellationToken)
+    public async Task<Ticket> AddTicket(Ticket ticketModel, CancellationToken cancellationToken)
     {
         var availableOperator = _userService.GetAvailableOperator(cancellationToken);
 
         ticketModel.OperatorId = availableOperator?.Id ?? null;
 
         var ticketEntity = _mapper.Map<TicketEntity>(ticketModel);
-        await _ticketRepository.CreateAsync(ticketEntity, cancellationToken);
+        await _ticketRepository.Create(ticketEntity, cancellationToken);
 
         return _mapper.Map<Ticket>(ticketEntity);
     }
 
-    public async Task<Ticket> GetTicketByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<Ticket> GetTicketById(int id, CancellationToken cancellationToken)
     {
-        var ticketEntity = await _ticketRepository.GetByIdWithIncludeAsync(id, cancellationToken,
+        var ticketEntity = await _ticketRepository.GetByIdWithInclude(id, cancellationToken,
             t => t.Messages,
             t => t.Operator,
             t => t.TicketCreator);
@@ -47,7 +47,7 @@ public class TicketService : ITicketService
         return _mapper.Map<Ticket>(ticketEntity);
     }
 
-    public async Task<IEnumerable<Ticket>> GetTicketsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<Ticket>> GetTickets(CancellationToken cancellationToken)
     {
         var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, false, null, null,
             t => t.Messages,
@@ -58,18 +58,18 @@ public class TicketService : ITicketService
         return _mapper.Map<IEnumerable<Ticket>>(ticketsEntity);
     }
 
-    public async Task<Ticket> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken)
+    public async Task<Ticket> UpdateTicket(Ticket ticket, CancellationToken cancellationToken)
     {
         var ticketEntity = _mapper.Map<TicketEntity>(ticket);
 
-        await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
+        await _ticketRepository.Update(ticketEntity, cancellationToken);
 
         return _mapper.Map<Ticket>(ticketEntity);
     }
 
-    public async Task DeleteTicketAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteTicket(int id, CancellationToken cancellationToken)
     {
-        await _ticketRepository.RemoveAsync(id, cancellationToken);
+        await _ticketRepository.Remove(id, cancellationToken);
     }
 
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
@@ -87,6 +87,6 @@ public class TicketService : ITicketService
             ticket.TicketStatus = TicketStatusEnumEntity.Closed;
         }
 
-        await _ticketRepository.SaveAsync();
+        await _ticketRepository.Save();
     }
 }

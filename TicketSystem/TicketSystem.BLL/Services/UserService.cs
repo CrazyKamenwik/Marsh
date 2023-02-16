@@ -17,15 +17,15 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
+    public async Task<User> AddUser(User user, CancellationToken cancellationToken)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
-        await _userRepository.CreateAsync(userEntity, cancellationToken);
+        await _userRepository.Create(userEntity, cancellationToken);
 
         return _mapper.Map<User>(userEntity);
     }
 
-    public async Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<User>> GetUsers(CancellationToken cancellationToken)
     {
         var allUsers = await _userRepository.GetWithInclude(cancellationToken,
             false,
@@ -36,26 +36,26 @@ public class UserService : IUserService
         return _mapper.Map<IEnumerable<User>>(allUsers);
     }
 
-    public async Task<User> GetUserByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<User> GetUserById(int id, CancellationToken cancellationToken)
     {
         var userEntityByCondition =
-            await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole, u => u.Tickets);
+            await _userRepository.GetByIdWithInclude(id, cancellationToken, u => u.UserRole, u => u.Tickets);
 
         return _mapper.Map<User>(userEntityByCondition);
     }
 
-    public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
+    public async Task<User> UpdateUser(User user, CancellationToken cancellationToken)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
 
-        await _userRepository.UpdateAsync(userEntity, cancellationToken);
+        await _userRepository.Update(userEntity, cancellationToken);
 
         return _mapper.Map<User>(userEntity);
     }
 
-    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteUser(int id, CancellationToken cancellationToken)
     {
-        await _userRepository.RemoveAsync(id, cancellationToken);
+        await _userRepository.Remove(id, cancellationToken);
     }
 
     public async Task<User?> GetAvailableOperator(CancellationToken cancellationToken)

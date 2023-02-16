@@ -19,14 +19,14 @@ public class MessageService : IMessageService
         _messageStrategies = messageStrategy;
     }
 
-    public async Task<Message> AddMessageAsync(Message message, CancellationToken cancellationToken)
+    public async Task<Message> AddMessage(Message message, CancellationToken cancellationToken)
     {
-        var user = await _userService.GetUserByIdAsync(message.UserId, cancellationToken);
+        var user = await _userService.GetUserById(message.UserId, cancellationToken);
 
         ThrowExceptionIfOperatorHasIncorrectTicketId(user, message);
 
         message = await _messageStrategies.First(x => x.IsApplicable(user.UserRole.Name))
-            .AddMessageAsync(message, user, cancellationToken);
+            .AddMessage(message, user, cancellationToken);
 
         return _mapper.Map<Message>(message);
     }

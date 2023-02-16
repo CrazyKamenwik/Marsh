@@ -14,7 +14,7 @@ public class ExceptionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task Invoke(HttpContext httpContext)
     {
         try
         {
@@ -23,11 +23,11 @@ public class ExceptionMiddleware
         catch (Exception ex)
         {
             _logger.LogError("Something went wrong: {ex}", ex);
-            await HandleExceptionAsync(httpContext, ex);
+            await HandleException(httpContext, ex);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static async Task HandleException(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = exception switch

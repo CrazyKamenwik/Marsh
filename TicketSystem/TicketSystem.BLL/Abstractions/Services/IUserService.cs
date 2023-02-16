@@ -4,10 +4,10 @@ namespace TicketSystem.BLL.Abstractions.Services;
 
 public interface IUserService
 {
-    Task<User> AddUserAsync(User userModel, CancellationToken cancellationToken);
-    Task<User> GetUserByIdAsync(int id, CancellationToken cancellationToken);
-    Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken);
-    Task<User> UpdateUserAsync(User userModel, CancellationToken cancellationToken);
-    Task DeleteUserAsync(int id, CancellationToken cancellationToken);
+    Task<User> AddUser(User userModel, CancellationToken cancellationToken);
+    Task<User> GetUserById(int id, CancellationToken cancellationToken);
+    Task<IEnumerable<User>> GetUsers(CancellationToken cancellationToken);
+    Task<User> UpdateUser(User userModel, CancellationToken cancellationToken);
+    Task DeleteUser(int id, CancellationToken cancellationToken);
     Task<User?> GetAvailableOperator(CancellationToken cancellationToken);
 }

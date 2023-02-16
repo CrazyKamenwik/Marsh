@@ -4,5 +4,5 @@ namespace TicketSystem.BLL.Abstractions.Services;
 
 public interface IMessageService
 {
-    Task<Message> AddMessageAsync(Message message, CancellationToken cancellationToken);
+    Task<Message> AddMessage(Message message, CancellationToken cancellationToken);
 }
