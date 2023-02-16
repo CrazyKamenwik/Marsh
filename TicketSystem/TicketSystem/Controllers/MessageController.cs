@@ -29,7 +29,7 @@ public class MessageController : ControllerBase
 
         _logger.LogInformation("{JsonConvert.SerializeObject(message)}", JsonConvert.SerializeObject(messageModel));
 
-        messageModel = await _messageService.AddMessageAsync(messageModel, cancellationToken);
+        messageModel = await _messageService.AddMessage(messageModel, cancellationToken);
 
         return _mapper.Map<MessageViewModel>(messageModel);
     }

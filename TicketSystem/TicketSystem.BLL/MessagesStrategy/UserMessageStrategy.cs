@@ -30,18 +30,18 @@ public class UserMessageStrategy : IMessageStrategy
         return userRole == RolesConstants.User;
     }
 
-    public async Task<Message> AddMessageAsync(Message message, User user, CancellationToken cancellationToken)
+    public async Task<Message> AddMessage(Message message, User user, CancellationToken cancellationToken)
     {
-        await SetOpenTicketToMessageAsync(message, user, cancellationToken);
+        await SetOpenTicketToMessage(message, user, cancellationToken);
 
         var messageEntity = _mapper.Map<MessageEntity>(message);
 
-        await _messageRepository.CreateAsync(messageEntity, cancellationToken);
+        await _messageRepository.Create(messageEntity, cancellationToken);
 
         return _mapper.Map<Message>(messageEntity);
     }
 
-    private async Task SetOpenTicketToMessageAsync(Message message, User user, CancellationToken cancellationToken)
+    private async Task SetOpenTicketToMessage(Message message, User user, CancellationToken cancellationToken)
     {
         Ticket ticket;
 
@@ -52,7 +52,7 @@ public class UserMessageStrategy : IMessageStrategy
         else
         {
             ticket = new Ticket(user.Id);
-            ticket = await _ticketService.AddTicketAsync(ticket, cancellationToken);
+            ticket = await _ticketService.AddTicket(ticket, cancellationToken);
         }
 
         message.TicketId = ticket.Id;

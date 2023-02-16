@@ -29,13 +29,13 @@ public class OperatorMessageStrategy : IMessageStrategy
         return userRole == RolesConstants.Operator;
     }
 
-    public async Task<Message> AddMessageAsync(Message message, User user, CancellationToken cancellationToken)
+    public async Task<Message> AddMessage(Message message, User user, CancellationToken cancellationToken)
     {
-        await _ticketService.GetTicketByIdAsync(message.TicketId, cancellationToken);
+        await _ticketService.GetTicketById(message.TicketId, cancellationToken);
 
         var messageEntity = _mapper.Map<MessageEntity>(message);
 
-        await _messageRepository.CreateAsync(messageEntity, cancellationToken);
+        await _messageRepository.Create(messageEntity, cancellationToken);
 
         return _mapper.Map<Message>(message);
     }

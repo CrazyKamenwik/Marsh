@@ -24,7 +24,7 @@ public class TicketController : ControllerBase
     public async Task<IEnumerable<TicketViewModel>> Get(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get all Tickets");
-        var ticketsModel = await _ticketService.GetTicketsAsync(cancellationToken);
+        var ticketsModel = await _ticketService.GetTickets(cancellationToken);
 
         return _mapper.Map<IEnumerable<TicketViewModel>>(ticketsModel);
     }
@@ -33,7 +33,7 @@ public class TicketController : ControllerBase
     public async Task<TicketViewModel> Get(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Ticket by id {id}", id);
-        var ticketModel = await _ticketService.GetTicketByIdAsync(id, cancellationToken);
+        var ticketModel = await _ticketService.GetTicketById(id, cancellationToken);
 
         return _mapper.Map<TicketViewModel>(ticketModel);
     }

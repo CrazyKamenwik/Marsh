@@ -26,7 +26,7 @@ public class UserController : ControllerBase
     public async Task<IEnumerable<UserViewModel>> Get(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get all users");
-        var usersModel = await _userService.GetUsersAsync(cancellationToken);
+        var usersModel = await _userService.GetUsers(cancellationToken);
 
         return _mapper.Map<IEnumerable<UserViewModel>>(usersModel);
     }
@@ -36,7 +36,7 @@ public class UserController : ControllerBase
     {
         _logger.LogInformation("Get user by id {id}", id);
 
-        var userModel = await _userService.GetUserByIdAsync(id, cancellationToken);
+        var userModel = await _userService.GetUserById(id, cancellationToken);
 
         return _mapper.Map<UserViewModel>(userModel);
     }
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(shortUser));
 
         var userModel = _mapper.Map<User>(shortUser);
-        userModel = await _userService.AddUserAsync(userModel, cancellationToken);
+        userModel = await _userService.AddUser(userModel, cancellationToken);
 
         return _mapper.Map<UserViewModel>(userModel);
     }
@@ -60,7 +60,7 @@ public class UserController : ControllerBase
 
         _logger.LogInformation("{JsonConvert.SerializeObject(user)}", JsonConvert.SerializeObject(userModel));
 
-        userModel = await _userService.UpdateUserAsync(userModel, cancellationToken);
+        userModel = await _userService.UpdateUser(userModel, cancellationToken);
 
         return _mapper.Map<UserViewModel>(userModel);
     }
@@ -69,6 +69,6 @@ public class UserController : ControllerBase
     public async Task Delete(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Delete user by id {id}", id);
-        await _userService.DeleteUserAsync(id, cancellationToken);
+        await _userService.DeleteUser(id, cancellationToken);
     }
 }
