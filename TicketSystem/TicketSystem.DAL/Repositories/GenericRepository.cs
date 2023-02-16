@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
+using TicketSystem.DAL.Exceptions;
 
 namespace TicketSystem.DAL.Repositories;
 
@@ -28,8 +29,10 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken)
+    public async Task RemoveAsync(int id, CancellationToken cancellationToken)
     {
+        var item = await _dbSet.FirstAsync(x => x.Id == id, cancellationToken: cancellationToken);
+
         _dbSet.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
     }
@@ -47,7 +50,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return predicate != null ? query.AsEnumerable().Where(predicate) : await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
+    public async Task<TEntity> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
         IQueryable<TEntity> entity = _dbSet;
@@ -55,7 +58,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         if (includeProperties.Length > 0)
             entity = Include(includeProperties);
 
-        return await entity.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+        return await entity.AsNoTracking().FirstAsync(t => t.Id == id, cancellationToken);
     }
 
     public async Task SaveAsync()

@@ -1,4 +1,4 @@
-﻿namespace TicketSystem.BLL.Exceptions;
+﻿namespace TicketSystem.DAL.Exceptions;
 
 [Serializable]
 public class NotFoundException : Exception

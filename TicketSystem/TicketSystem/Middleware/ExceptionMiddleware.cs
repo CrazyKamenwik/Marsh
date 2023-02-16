@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using TicketSystem.API.ViewModels.Exceptions;
-using TicketSystem.BLL.Exceptions;
+using TicketSystem.DAL.Exceptions;
 
 namespace TicketSystem.API.Middleware;
 

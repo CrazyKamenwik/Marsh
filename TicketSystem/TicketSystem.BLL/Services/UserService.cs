@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TicketSystem.BLL.Abstractions.Services;
-using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
@@ -42,16 +41,11 @@ public class UserService : IUserService
         var userEntityByCondition =
             await _userRepository.GetByIdWithIncludeAsync(id, cancellationToken, u => u.UserRole, u => u.Tickets);
 
-        if (userEntityByCondition == null)
-            throw new NotFoundException($"User with id {id} not found");
-
         return _mapper.Map<User>(userEntityByCondition);
     }
 
     public async Task<User> UpdateUserAsync(User user, CancellationToken cancellationToken)
     {
-        await GetUserByIdAsync(user.Id, cancellationToken);
-
         var userEntity = _mapper.Map<UserEntity>(user);
 
         await _userRepository.UpdateAsync(userEntity, cancellationToken);
@@ -59,15 +53,9 @@ public class UserService : IUserService
         return _mapper.Map<User>(userEntity);
     }
 
-    public async Task<User> DeleteUserAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteUserAsync(int id, CancellationToken cancellationToken)
     {
-        var user = await GetUserByIdAsync(id, cancellationToken);
-
-        var usersEntity = _mapper.Map<UserEntity>(user);
-
-        await _userRepository.RemoveAsync(usersEntity, cancellationToken);
-
-        return _mapper.Map<User>(usersEntity);
+        await _userRepository.RemoveAsync(id, cancellationToken);
     }
 
     public async Task<User?> GetAvailableOperator(CancellationToken cancellationToken)
