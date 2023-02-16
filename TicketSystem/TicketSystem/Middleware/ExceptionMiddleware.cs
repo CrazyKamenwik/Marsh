@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using TicketSystem.API.ViewModels.Exceptions;
-using TicketSystem.DAL.Exceptions;
 
 namespace TicketSystem.API.Middleware;
 
@@ -33,7 +32,6 @@ public class ExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = exception switch
         {
-            NotFoundException => (int)HttpStatusCode.NotFound,
             ArgumentException => (int)HttpStatusCode.BadRequest,
             _ => (int)HttpStatusCode.InternalServerError
         };

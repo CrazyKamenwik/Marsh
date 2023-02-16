@@ -8,7 +8,7 @@ public interface IGenericRepository<TEntity> where TEntity : IBaseEntity
     public Task UpdateAsync(TEntity item, CancellationToken cancellationToken);
     public Task RemoveAsync(int id, CancellationToken cancellationToken);
 
-    public Task<TEntity> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
+    public Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties);
 
     public Task<IEnumerable<TEntity>> GetWithInclude(CancellationToken cancellationToken,
