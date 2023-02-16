@@ -8,6 +8,6 @@ public interface ITicketService
     Task<Ticket> GetTicketByIdAsync(int id, CancellationToken cancellationToken);
     Task<IEnumerable<Ticket>> GetTicketsAsync(CancellationToken cancellationToken);
     Task<Ticket> UpdateTicketAsync(Ticket ticketModel, CancellationToken cancellationToken);
-    Task<Ticket> DeleteTicketAsync(int id, CancellationToken cancellationToken);
+    Task DeleteTicketAsync(int id, CancellationToken cancellationToken);
     Task CloseOpenTickets(CancellationToken cancellationToken = default);
 }

@@ -66,11 +66,9 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<UserViewModel> Delete(int id, CancellationToken cancellationToken)
+    public async Task Delete(int id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Delete user by id {id}", id);
-        var userModel = await _userService.DeleteUserAsync(id, cancellationToken);
-
-        return _mapper.Map<UserViewModel>(userModel);
+        await _userService.DeleteUserAsync(id, cancellationToken);
     }
 }

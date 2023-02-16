@@ -28,8 +28,13 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(TEntity item, CancellationToken cancellationToken)
+    public async Task RemoveAsync(int id, CancellationToken cancellationToken)
     {
+        var item = await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (item == null)
+            return;
+        
         _dbSet.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
     }
@@ -50,12 +55,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task<TEntity?> GetByIdWithIncludeAsync(int id, CancellationToken cancellationToken,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        var entity = _dbSet.AsNoTracking();
+        IQueryable<TEntity> entity = _dbSet;
 
         if (includeProperties.Length > 0)
             entity = Include(includeProperties);
 
-        return await entity.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+        return await entity.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
     public async Task SaveAsync()

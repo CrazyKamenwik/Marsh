@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using TicketSystem.BLL.Abstractions.Services;
-using TicketSystem.BLL.Exceptions;
 using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
@@ -45,9 +44,6 @@ public class TicketService : ITicketService
             t => t.Operator,
             t => t.TicketCreator);
 
-        if (ticketEntity == null)
-            throw new NotFoundException($"Ticket with id {id} not found");
-
         return _mapper.Map<Ticket>(ticketEntity);
     }
 
@@ -62,28 +58,18 @@ public class TicketService : ITicketService
         return _mapper.Map<IEnumerable<Ticket>>(ticketsEntity);
     }
 
-    public async Task<Ticket> UpdateTicketAsync(Ticket ticketModel, CancellationToken cancellationToken)
+    public async Task<Ticket> UpdateTicketAsync(Ticket ticket, CancellationToken cancellationToken)
     {
-        var ticketEntity =
-            await _ticketRepository.GetByIdWithIncludeAsync(ticketModel.Id, cancellationToken);
-
-        if (ticketEntity == null)
-            throw new NotFoundException($"Ticket with id {ticketModel.Id} not found");
+        var ticketEntity = _mapper.Map<TicketEntity>(ticket);
 
         await _ticketRepository.UpdateAsync(ticketEntity, cancellationToken);
 
         return _mapper.Map<Ticket>(ticketEntity);
     }
 
-    public async Task<Ticket> DeleteTicketAsync(int id, CancellationToken cancellationToken)
+    public async Task DeleteTicketAsync(int id, CancellationToken cancellationToken)
     {
-        var ticketEntity = await _ticketRepository.GetByIdWithIncludeAsync(id, cancellationToken);
-        if (ticketEntity == null)
-            throw new NotFoundException($"Ticket with id {id} not found");
-
-        await _ticketRepository.RemoveAsync(ticketEntity, cancellationToken);
-
-        return _mapper.Map<Ticket>(ticketEntity);
+        await _ticketRepository.RemoveAsync(id, cancellationToken);
     }
 
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
@@ -91,7 +77,7 @@ public class TicketService : ITicketService
         var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken,
             true,
             t => t is { TicketStatus: TicketStatusEnumEntity.Open, OperatorId: { } }
-                 && t.Messages.Last().CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now,
+                 && t.Messages.Last().CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now, // TODO #1: Move this check
             null,
             t => t.Messages);
 
