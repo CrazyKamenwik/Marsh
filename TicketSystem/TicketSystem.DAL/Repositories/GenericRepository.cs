@@ -22,9 +22,9 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Update(TEntity item, CancellationToken cancellationToken)
+    public async Task Update(CancellationToken cancellationToken, params object[] items)
     {
-        _context.Entry(item).State = EntityState.Modified;
+        _context.UpdateRange(items);
         await _context.SaveChangesAsync(cancellationToken);
     }
 
@@ -40,12 +40,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     }
 
     public async Task<IEnumerable<TEntity>> GetWithInclude(CancellationToken cancellationToken,
-        bool isTrack,
         Func<TEntity, bool>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         params Expression<Func<TEntity, object>>[] includeProperties)
     {
-        var query = isTrack ? Include(includeProperties) : Include(includeProperties).AsNoTracking();
+        var query = Include(includeProperties);
 
         if (orderBy != null) query = orderBy.Invoke(query);
 
@@ -60,12 +59,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         if (includeProperties.Length > 0)
             entity = Include(includeProperties);
 
-        return await entity.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
-    }
-
-    public async Task Save()
-    {
-        await _context.SaveChangesAsync();
+        return await entity.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
     private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)

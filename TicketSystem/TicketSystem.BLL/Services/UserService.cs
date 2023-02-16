@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TicketSystem.BLL.Abstractions.Services;
+using TicketSystem.BLL.Constants;
 using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
@@ -28,7 +29,6 @@ public class UserService : IUserService
     public async Task<IEnumerable<User>> GetUsers(CancellationToken cancellationToken)
     {
         var allUsers = await _userRepository.GetWithInclude(cancellationToken,
-            false,
             null,
             null,
             u => u.UserRole);
@@ -48,7 +48,7 @@ public class UserService : IUserService
     {
         var userEntity = _mapper.Map<UserEntity>(user);
 
-        await _userRepository.Update(userEntity, cancellationToken);
+        await _userRepository.Update(cancellationToken, userEntity);
 
         return _mapper.Map<User>(userEntity);
     }
@@ -61,8 +61,7 @@ public class UserService : IUserService
     public async Task<User?> GetAvailableOperator(CancellationToken cancellationToken)
     {
         var availableOperators = await _userRepository.GetWithInclude(cancellationToken,
-            false,
-            u => u.UserRole.Name == "Operator",
+            u => u.UserRole.Name == RolesConstants.Operator,
             q => q.OrderBy(u => u.Tickets.Count()),
             u => u.UserRole,
             u => u.Tickets);

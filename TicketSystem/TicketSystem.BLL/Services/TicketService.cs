@@ -49,7 +49,7 @@ public class TicketService : ITicketService
 
     public async Task<IEnumerable<Ticket>> GetTickets(CancellationToken cancellationToken)
     {
-        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, false, null, null,
+        var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken, null, null,
             t => t.Messages,
             t => t.Operator,
             t => t.TicketCreator
@@ -62,7 +62,7 @@ public class TicketService : ITicketService
     {
         var ticketEntity = _mapper.Map<TicketEntity>(ticket);
 
-        await _ticketRepository.Update(ticketEntity, cancellationToken);
+        await _ticketRepository.Update(cancellationToken, ticketEntity);
 
         return _mapper.Map<Ticket>(ticketEntity);
     }
@@ -75,7 +75,6 @@ public class TicketService : ITicketService
     public async Task CloseOpenTickets(CancellationToken cancellationToken = default)
     {
         var ticketsEntity = await _ticketRepository.GetWithInclude(cancellationToken,
-            true,
             t => t is { TicketStatus: TicketStatusEnumEntity.Open, OperatorId: { } }
                  && t.Messages.Last().CreatedAt.AddMinutes(MinutesToClose) < DateTime.Now, // TODO #1: Move this check
             null,
@@ -87,6 +86,6 @@ public class TicketService : ITicketService
             ticket.TicketStatus = TicketStatusEnumEntity.Closed;
         }
 
-        await _ticketRepository.Save();
+        await _ticketRepository.Update(cancellationToken, ticketsEntity);
     }
 }
