@@ -32,6 +32,9 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         var item = await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
+        if (item == null)
+            return;
+        
         _dbSet.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
     }
