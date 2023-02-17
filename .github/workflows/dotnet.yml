@@ -28,3 +28,7 @@ jobs:
       run: |
             cd ./TicketSystem
             dotnet build --no-restore
+    - name:  Test
+      run: |
+            cd ./TicketSystem
+            dotnet test
