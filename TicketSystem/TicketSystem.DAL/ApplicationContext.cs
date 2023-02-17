@@ -3,12 +3,13 @@ using TicketSystem.DAL.Entities;
 
 namespace TicketSystem.DAL;
 
-public class ApplicationContext : DbContext
+public sealed class ApplicationContext : DbContext
 {
     public ApplicationContext(DbContextOptions options)
         : base(options)
     {
         Database.EnsureCreated();
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public DbSet<UserEntity> Users { get; set; } = null!;
