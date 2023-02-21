@@ -44,8 +44,7 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"CrazyKamenwik_Marsh" /o:"crazykamenwik" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet tool install --global dotnet-coverage
-          dotnet sonarscanner begin /k:"CrazyKamenwik_Marsh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          dotnet sonarscanner begin /k:"CrazyKamenwik_Marsh" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           dotnet build --no-incremental ./TicketSystem/TicketSystem.sln
-          dotnet-coverage collect 'dotnet test' -o 'coverage.xml'
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
