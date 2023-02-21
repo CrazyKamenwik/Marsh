@@ -12,6 +12,14 @@ internal class MapperMock
     {
         var mapper = new Mock<IMapper>();
 
+        // MessageEntity -> Message
+        mapper.Setup(x => x.Map<Message>(It.IsAny<MessageEntity>()))
+            .Returns(InitializeData.GetMessageModelFromUser());
+
+        // Message -> MessageEntity
+        mapper.Setup(x => x.Map<MessageEntity>(It.IsAny<Message>()))
+            .Returns(InitializeData.GetMessageEntityFromUser);
+
         // UserEntity -> User
         mapper.Setup(x => x.Map<User>(It.IsAny<UserEntity>()))
             .Returns(InitializeData.GetUserModelUser());

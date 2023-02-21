@@ -154,6 +154,21 @@ public static class InitializeData
         }
     };
 
+    public static User GetUserModelUserWithOpenTicket() => new()
+    {
+        Id = UserId,
+        Name = UserName,
+        Tickets = new List<Ticket>()
+        {
+            GetTicketModel()
+        },
+        UserRole = new UserRole
+        {
+            Id = UserRoleId,
+            Name = RolesConstants.User
+        }
+    };
+
     public static User GetUserModelOperator() => new()
     {
         Id = OperatorId,
