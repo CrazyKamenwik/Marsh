@@ -8,14 +8,12 @@ namespace TicketSystem.BLL.Services;
 
 public class MessageService : IMessageService
 {
-    private readonly IMapper _mapper;
     private readonly IEnumerable<IMessageStrategy> _messageStrategies;
     private readonly IUserService _userService;
 
-    public MessageService(IUserService userService, IMapper mapper, IEnumerable<IMessageStrategy> messageStrategy)
+    public MessageService(IUserService userService, IEnumerable<IMessageStrategy> messageStrategy)
     {
         _userService = userService;
-        _mapper = mapper;
         _messageStrategies = messageStrategy;
     }
 

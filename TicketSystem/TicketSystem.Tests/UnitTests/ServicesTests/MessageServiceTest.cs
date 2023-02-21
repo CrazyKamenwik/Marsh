@@ -19,12 +19,10 @@ public class MessageServiceTest
     public MessageServiceTest()
     {
         _userServiceMock = new Mock<IUserService>();
-        var mapperMock = MapperMock.GetMapperMock();
         _messageStrategiesMock = new Mock<IEnumerable<IMessageStrategy>>();
         _userMessageStrategyMock = new Mock<IMessageStrategy>();
-
         _messageService =
-            new MessageService(_userServiceMock.Object, mapperMock.Object, _messageStrategiesMock.Object);
+            new MessageService(_userServiceMock.Object, _messageStrategiesMock.Object);
     }
 
     [Fact]

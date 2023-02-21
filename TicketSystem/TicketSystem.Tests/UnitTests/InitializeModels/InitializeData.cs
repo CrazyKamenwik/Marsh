@@ -26,7 +26,7 @@ public static class InitializeData
     private const string OperatorName = "Tanya";
 
     private const int UserRoleId = 1;
-    private const int OperatorRoleId = 1;
+    private const int OperatorRoleId = 2;
 
     private const int MessageIdFromUser = 1;
     private const int MessageIdFromOperator = 2;
