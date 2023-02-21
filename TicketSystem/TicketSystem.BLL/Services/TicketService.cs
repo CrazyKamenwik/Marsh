@@ -27,7 +27,7 @@ public class TicketService : ITicketService
 
     public async Task<Ticket> AddTicket(Ticket ticketModel, CancellationToken cancellationToken)
     {
-        var availableOperator = _userService.GetAvailableOperator(cancellationToken);
+        var availableOperator = await _userService.GetAvailableOperator(cancellationToken);
 
         ticketModel.OperatorId = availableOperator?.Id ?? null;
 
