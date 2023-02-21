@@ -1,16 +1,15 @@
-﻿using AutoMapper;
-using Moq;
+﻿using Moq;
 using TicketSystem.BLL.Abstractions.MessagesStrategy;
 using TicketSystem.BLL.Abstractions.Services;
-using TicketSystem.BLL.Constants;
 using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Services;
+using TicketSystem.Tests.UnitTests.InitializeModels;
+using TicketSystem.Tests.UnitTests.Moq;
 
 namespace TicketSystem.Tests.UnitTests.ServicesTests;
 
 public class MessageServiceTest
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly IMessageService _messageService;
     private readonly Mock<IEnumerable<IMessageStrategy>> _messageStrategiesMock;
 
@@ -20,31 +19,34 @@ public class MessageServiceTest
     public MessageServiceTest()
     {
         _userServiceMock = new Mock<IUserService>();
-        _mapperMock = new Mock<IMapper>();
+        var mapperMock = MapperMock.GetMapperMock();
         _messageStrategiesMock = new Mock<IEnumerable<IMessageStrategy>>();
         _userMessageStrategyMock = new Mock<IMessageStrategy>();
 
         _messageService =
-            new MessageService(_userServiceMock.Object, _mapperMock.Object, _messageStrategiesMock.Object);
+            new MessageService(_userServiceMock.Object, mapperMock.Object, _messageStrategiesMock.Object);
     }
 
     [Fact]
     public async Task Add_UserRoleIsUser_ReturnMessageAndCallCorrectMessageStrategy()
     {
         // Arrange
-        var message = new Message { Text = "Yup" };
+        var message = InitializeData.GetMessageModelFromUser();
+        var user = InitializeData.GetUserModelUser();
 
-        _mapperMock.Setup(x => x.Map<Message>(It.IsAny<Message>()))
-            .Returns(new Message());
         _userServiceMock.Setup(x => x.GetUserById(It.IsAny<int>(), CancellationToken.None))
-            .ReturnsAsync(new User
-                { Id = 1, Name = "Vlad", UserRole = new UserRole { Id = 1, Name = RolesConstants.User } });
+            .ReturnsAsync(user);
+
+        _userMessageStrategyMock.Setup(x => x.AddMessage(message, user, CancellationToken.None))
+            .ReturnsAsync(message);
         _userMessageStrategyMock.Setup(x => x.IsApplicable(It.IsAny<string>())).Returns(true);
+
         _messageStrategiesMock.Setup(x => x.GetEnumerator())
             .Returns(new List<IMessageStrategy>
             {
                 _userMessageStrategyMock.Object
             }.GetEnumerator());
+
 
         // Act
         var result = await _messageService.AddMessage(message, CancellationToken.None);
@@ -62,16 +64,16 @@ public class MessageServiceTest
     public async Task Add_UserRoleIsOperatorAndMessageHaveNoTicketId_ReturnArgumentExceptionWithMessage()
     {
         // Arrange
-        var message = new Message { Text = "Yup" };
+        var messageWithoutTicketId = InitializeData.GetMessageModelFromOperatorWithoutTicketId();
+        var userOperator = InitializeData.GetUserModelOperator();
 
         _userServiceMock.Setup(x => x.GetUserById(It.IsAny<int>(), CancellationToken.None))
-            .ReturnsAsync(new User
-                { Id = 1, Name = "Vlad", UserRole = new UserRole { Id = 1, Name = RolesConstants.Operator } });
+            .ReturnsAsync(userOperator);
+
 
         // Act
-        var result =
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _messageService.AddMessage(message, CancellationToken.None));
+        var result = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _messageService.AddMessage(messageWithoutTicketId, CancellationToken.None));
 
         // Assert
         Assert.IsType<ArgumentException>(result);

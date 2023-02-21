@@ -1,132 +1,108 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using Moq;
+using Shouldly;
 using TicketSystem.BLL.Abstractions.Services;
 using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Services;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
+using TicketSystem.Tests.UnitTests.InitializeModels;
 using TicketSystem.Tests.UnitTests.Moq;
 
 namespace TicketSystem.Tests.UnitTests.ServicesTests;
 
 public class UserServiceTest
 {
+    private const int UserId = 1;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IGenericRepository<UserEntity>> _userRepositoryMock;
-    private readonly IEnumerable<User> _users;
-    private readonly IEnumerable<UserEntity> _usersEntity;
     private readonly IUserService _userService;
 
     public UserServiceTest()
     {
-        GetValues(out _usersEntity, out _users);
-        _mapperMock = new Mock<IMapper>();
-        _userRepositoryMock = GenericRepositoryMock<UserEntity>.GetMock(_usersEntity);
+        _mapperMock = MapperMock.GetMapperMock();
+        _userRepositoryMock = GenericRepositoryMock<UserEntity>.GetMock(InitializeData.GetAllUsersEntities());
         _userService = new UserService(_userRepositoryMock.Object, _mapperMock.Object);
     }
 
     [Fact]
-    public async Task GetById_ReturnUserAndCorrectMapping()
+    public async Task GetById_CallCorrectMethodOfRepoWithCorrectTypeAndReturnUser()
     {
-        // Arrange
-        _mapperMock.Setup(x => x.Map<User>(_usersEntity.First()))
-            .Returns(_users.First());
-
         // Act
-        var result = await _userService.GetUserById(1, CancellationToken.None);
+        var result = await _userService.GetUserById(UserId, CancellationToken.None);
 
         // Assert
         Assert.IsType<User>(result);
-        _mapperMock.Verify(x => x.Map<User>(_usersEntity.First()), Times.Once);
-        _userRepositoryMock.Verify(x => x.GetByIdWithInclude(1, CancellationToken.None,
-            It.IsAny<Expression<Func<UserEntity, object>>[]>()), Times.Once);
+        _userRepositoryMock.Verify(x =>
+            x.GetByIdWithInclude(UserId, CancellationToken.None,
+                It.IsAny<Expression<Func<UserEntity, object>>[]>()), Times.Once);
     }
 
     [Fact]
-    public async Task Get_ReturnUsersAndCorrectMapping()
+    public async Task Get_CallCorrectMethodOfRepoWithCorrectTypeAndReturnAllUsers()
     {
-        // Arrange
-        _mapperMock.Setup(x => x.Map<IEnumerable<User>>(_usersEntity))
-            .Returns(_users);
-
         // Act
         var result = await _userService.GetUsers(CancellationToken.None);
 
         // Assert
         Assert.IsType<List<User>>(result);
-        Assert.Single(result);
-        _mapperMock.Verify(x => x.Map<IEnumerable<User>>(_usersEntity), Times.Once);
-        _userRepositoryMock.Verify(x => x.GetWithInclude(CancellationToken.None, null, null,
-            It.IsAny<Expression<Func<UserEntity, object>>>()), Times.Once);
+        Assert.Equal(2, result.Count());
+        _userRepositoryMock.Verify(x =>
+            x.GetWithInclude(CancellationToken.None, null, null,
+                It.IsAny<Expression<Func<UserEntity, object>>>()), Times.Once);
     }
 
     [Fact]
-    public async Task Add_ReturnUserAndCorrectMapping()
+    public async Task Add_CallCorrectMethodOfRepoWithCorrectTypeAndReturnUser()
     {
         // Arrange
-        _mapperMock.Setup(x => x.Map<User>(_usersEntity.First()))
-            .Returns(_users.First());
-        _mapperMock.Setup(x => x.Map<UserEntity>(_users.First()))
-            .Returns(_usersEntity.First());
+        var user = InitializeData.GetUserModelUser();
 
         // Act
-        var result = await _userService.AddUser(_users.First(), CancellationToken.None);
+        var result = await _userService.AddUser(user, CancellationToken.None);
 
         // Assert
         Assert.IsType<User>(result);
-        _mapperMock.Verify(x => x.Map<User>(_usersEntity.First()), Times.Once);
-        _mapperMock.Verify(x => x.Map<UserEntity>(_users.First()), Times.Once);
-        _userRepositoryMock.Verify(x => x.Create(_usersEntity.First(), CancellationToken.None)
-            , Times.Once);
+        result.ShouldBeEquivalentTo(user);
+        _userRepositoryMock.Verify(x =>
+            x.Create(It.IsAny<UserEntity>(), CancellationToken.None), Times.Once);
     }
 
     [Fact]
-    public async Task Update_ReturnUserAndCorrectMapping()
+    public async Task Update_CallCorrectMethodOfRepoWithCorrectTypeAndReturnUser()
     {
         // Arrange
-        _mapperMock.Setup(x => x.Map<User>(_usersEntity.First()))
-            .Returns(_users.First());
-        _mapperMock.Setup(x => x.Map<UserEntity>(_users.First()))
-            .Returns(_usersEntity.First());
+        var userToUpdate = InitializeData.GetUserModelUser();
 
         // Act
-        var result = await _userService.UpdateUser(_users.First(), CancellationToken.None);
+        var result = await _userService.UpdateUser(userToUpdate, CancellationToken.None);
 
         // Assert
         Assert.IsType<User>(result);
-        _mapperMock.Verify(x => x.Map<User>(_usersEntity.First()), Times.Once);
-        _mapperMock.Verify(x => x.Map<UserEntity>(_users.First()), Times.Once);
-        _userRepositoryMock.Verify(x => x.Update(CancellationToken.None, _usersEntity.First())
-            , Times.Once);
+        _userRepositoryMock.Verify(x =>
+            x.Update(CancellationToken.None, It.IsAny<UserEntity>()), Times.Once);
     }
 
     [Fact]
-    public async Task Delete_CallRemoveMethodOfRepository()
+    public async Task Delete_CallCorrectMethodOfRepoWithCorrectType()
     {
-        // Arrange
-
         // Act
-        await _userService.DeleteUser(1, CancellationToken.None);
+        await _userService.DeleteUser(UserId, CancellationToken.None);
 
         // Assert
-        _userRepositoryMock.Verify(x => x.Remove(It.IsAny<int>(),
-            CancellationToken.None), Times.Once);
+        _userRepositoryMock.Verify(x =>
+            x.Remove(It.IsAny<int>(), CancellationToken.None), Times.Once);
     }
 
     [Fact]
-    public async Task GetAvailableOperator_UserIsExist_ReturnUserAndCorrectMapping()
+    public async Task GetAvailableOperator_UserIsExist_CallCorrectMethodOfRepoWithCorrectTypeAndReturnUser()
     {
-        // Arrange
-        _mapperMock.Setup(x => x.Map<User>(_usersEntity.First()))
-            .Returns(_users.First());
-
         // Act
         var result = await _userService.GetAvailableOperator(CancellationToken.None);
 
         // Assert
         Assert.IsType<User>(result);
-        _mapperMock.Verify(x => x.Map<User>(_usersEntity.First()), Times.Once);
         _userRepositoryMock.Verify(x => x.GetWithInclude(CancellationToken.None,
             It.IsAny<Func<UserEntity, bool>>(),
             It.IsAny<Func<IQueryable<UserEntity>, IOrderedQueryable<UserEntity>>?>(),
@@ -134,7 +110,7 @@ public class UserServiceTest
     }
 
     [Fact]
-    public async Task GetAvailableOperator_UserDoesNotExist_ReturnNull()
+    public async Task GetAvailableOperator_UserDoesNotExist_CallCorrectMethodOfRepoWithCorrectTypeAndReturnNull()
     {
         // Arrange
         _userRepositoryMock.Setup(x => x.GetWithInclude(CancellationToken.None,
@@ -152,25 +128,5 @@ public class UserServiceTest
             It.IsAny<Func<UserEntity, bool>>(),
             It.IsAny<Func<IQueryable<UserEntity>, IOrderedQueryable<UserEntity>>?>(),
             It.IsAny<Expression<Func<UserEntity, object>>[]>()), Times.Once);
-    }
-
-    private static void GetValues(out IEnumerable<UserEntity> usersEntity, out IEnumerable<User> users)
-    {
-        var userEntity = new UserEntity
-        {
-            Id = 1,
-            Name = "Vlad",
-            UserRole = new UserRoleEntity { Id = 1, Name = "User" }
-        };
-
-        var user = new User
-        {
-            Id = 1,
-            Name = "Vlad",
-            UserRole = new UserRole { Id = 1, Name = "User" }
-        };
-
-        users = new List<User> { user };
-        usersEntity = new List<UserEntity> { userEntity };
     }
 }

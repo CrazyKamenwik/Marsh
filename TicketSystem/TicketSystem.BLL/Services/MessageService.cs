@@ -28,7 +28,7 @@ public class MessageService : IMessageService
         message = await _messageStrategies.First(x => x.IsApplicable(user.UserRole.Name))
             .AddMessage(message, user, cancellationToken);
 
-        return _mapper.Map<Message>(message);
+        return message;
     }
 
     private static void ThrowExceptionIfOperatorHasIncorrectTicketId(User user, Message message)
