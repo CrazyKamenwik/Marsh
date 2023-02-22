@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Newtonsoft.Json;
 using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.DAL;
+using TicketSystem.Tests.IntergationTests.InitializeModels;
 
 namespace TicketSystem.Tests.IntergationTests.ControllersTests;
 
@@ -35,7 +36,7 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
                     var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
                     db.Database.EnsureDeleted();
                     db.Database.EnsureCreated();
-                    InitializeData.Initialize(db);
+                    InitializeDb.Initialize(db);
                 }
             });
         });
