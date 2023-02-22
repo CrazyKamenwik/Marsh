@@ -9,6 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.3" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
 		<PackageReference Include="Moq" Version="4.18.4" />
 		<PackageReference Include="Shouldly" Version="4.1.0" />
@@ -27,10 +29,6 @@
 		<ProjectReference Include="..\TicketSystem.BLL\TicketSystem.BLL.csproj" />
 		<ProjectReference Include="..\TicketSystem.DAL\TicketSystem.DAL.csproj" />
 		<ProjectReference Include="..\TicketSystem\TicketSystem.API.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="IntergationTests\ControllersTests\" />
 	</ItemGroup>
 
 </Project>
