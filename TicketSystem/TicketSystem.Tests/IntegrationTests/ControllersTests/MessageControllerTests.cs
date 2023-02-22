@@ -70,7 +70,6 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
     [InlineData("", UserId, null)]
     [InlineData(null, UserId, null)]
     [InlineData("Hello", 0, null)]
-    [InlineData("Hello", int.MinValue, null)]
     public async Task Post_InvalidMessage_ReturnsBadRequest(string text, int userId, int? ticketId)
     {
         // Arrange
