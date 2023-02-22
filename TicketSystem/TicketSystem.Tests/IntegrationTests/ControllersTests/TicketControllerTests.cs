@@ -16,6 +16,8 @@ using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.API.ViewModels.Tickets;
 using TicketSystem.API;
 using System.Net;
+using System.Net.Http.Json;
+using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 {
@@ -26,24 +28,7 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 
         public TicketControllerTests(WebApplicationFactory<Program> factory)
         {
-            factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    var inMemoryRoot = new InMemoryDatabaseRoot();
-                    services.AddSingleton(inMemoryRoot);
-                    services.AddDbContext<ApplicationContext>(optionsBuilder =>
-                        optionsBuilder.UseInMemoryDatabase("MyDb", inMemoryRoot));
-
-                    using (var scoped = services.BuildServiceProvider().CreateScope())
-                    {
-                        var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
-                        InitializeDb.Initialize(db);
-                    }
-                });
-            });
-
-            _httpClient = factory.CreateClient();
+            _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
         }
 
         [Fact]
@@ -54,8 +39,7 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 
             // Assert
             response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var ticketsViewModel = JsonConvert.DeserializeObject<IEnumerable<TicketViewModel>>(responseContent);
+            var ticketsViewModel = await response.Content.ReadFromJsonAsync<IEnumerable<TicketViewModel>>();
             ticketsViewModel.Should().NotContainNulls(x => x.Messages);
             ticketsViewModel.Should().NotContainNulls(x => x.TicketCreator);
         }
@@ -68,8 +52,7 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 
             // Assert
             response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var ticketViewModel = JsonConvert.DeserializeObject<TicketViewModel>(responseContent);
+            var ticketViewModel = await response.Content.ReadFromJsonAsync<TicketViewModel>();
             ticketViewModel.ShouldNotBeNull();
             ticketViewModel.TicketCreator.Should().NotBeNull();
             ticketViewModel.Messages.ShouldNotBeNull();

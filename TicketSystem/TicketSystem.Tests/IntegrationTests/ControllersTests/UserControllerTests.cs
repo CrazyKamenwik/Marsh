@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,6 +11,7 @@ using Shouldly;
 using TicketSystem.API.ViewModels.Users;
 using TicketSystem.DAL;
 using TicketSystem.Tests.Initialize;
+using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
@@ -21,24 +23,7 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
     public UserControllerTests(WebApplicationFactory<Program> factory)
     {
-        factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                var inMemoryRoot = new InMemoryDatabaseRoot();
-                services.AddSingleton(inMemoryRoot);
-                services.AddDbContext<ApplicationContext>(optionsBuilder =>
-                    optionsBuilder.UseInMemoryDatabase("MyDb", inMemoryRoot));
-
-                using (var scoped = services.BuildServiceProvider().CreateScope())
-                {
-                    var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
-                    InitializeDb.Initialize(db);
-                }
-            });
-        });
-
-        _httpClient = factory.CreateClient();
+        _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
     }
 
     [Theory]
@@ -54,15 +39,12 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
             UserRole = userRole
         };
 
-        var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-
         // Act
-        var response = await _httpClient.PostAsync("/api/user", content);
+        var response = await _httpClient.PostAsJsonAsync("/api/user", user);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var userViewModel = JsonConvert.DeserializeObject<UserViewModel>(responseContent);
+        var userViewModel = await response.Content.ReadFromJsonAsync<UserViewModel>();
         userViewModel!.Name.ShouldBe(user.Name);
         userViewModel!.UserRole.ShouldBe(user.UserRole);
     }
@@ -99,8 +81,7 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var userViewModel = JsonConvert.DeserializeObject<IEnumerable<UserViewModel>>(responseContent);
+        var userViewModel = await response.Content.ReadFromJsonAsync<IEnumerable<UserViewModel>>();
         userViewModel.Should().NotContainNulls(x => x.UserRole);
         userViewModel.Should().NotContainNulls(x => x.Name);
     }
@@ -113,8 +94,7 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var userViewModel = JsonConvert.DeserializeObject<UserViewModel>(responseContent);
+        var userViewModel = await response.Content.ReadFromJsonAsync<UserViewModel>();
         userViewModel.ShouldNotBeNull();
         userViewModel.Id.ShouldNotBeInRange(int.MinValue, 0);
         userViewModel.Name.ShouldNotBeNullOrEmpty();
@@ -156,10 +136,8 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
             UserRole = userRole
         };
 
-        var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-
         // Act
-        var response = await _httpClient.PutAsync($"/api/user/{UserId}", content);
+        var response = await _httpClient.PutAsJsonAsync($"/api/user/{UserId}", user);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -178,15 +156,12 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
             UserRole = userRole
         };
 
-        var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
-
         // Act
-        var response = await _httpClient.PutAsync($"/api/user/{UserId}", content);
+        var response = await _httpClient.PutAsJsonAsync($"/api/user/{UserId}", user);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var userViewModel = JsonConvert.DeserializeObject<UserViewModel>(responseContent);
+        var userViewModel = await response.Content.ReadFromJsonAsync<UserViewModel>();
         userViewModel!.Name.ShouldBe(user.Name);
         userViewModel!.UserRole.ShouldBe(user.UserRole);
     }

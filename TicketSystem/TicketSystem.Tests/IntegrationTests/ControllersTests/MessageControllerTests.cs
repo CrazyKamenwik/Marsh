@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.DAL;
 using TicketSystem.Tests.Initialize;
+using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
@@ -21,25 +23,7 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
 
     public MessageControllerIntegrationTests(WebApplicationFactory<Program> factory)
     {
-
-        factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
-            {
-                var inMemoryRoot = new InMemoryDatabaseRoot();
-                services.AddSingleton(inMemoryRoot);
-                services.AddDbContext<ApplicationContext>(optionsBuilder =>
-                    optionsBuilder.UseInMemoryDatabase("MyDb", inMemoryRoot));
-
-                using (var scoped = services.BuildServiceProvider().CreateScope())
-                {
-                    var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
-                    InitializeDb.Initialize(db);
-                }
-            });
-        });
-
-        _httpClient = factory.CreateClient();
+        _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
     }
 
     [Theory]
@@ -49,15 +33,13 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
     {
         // Arrange
         var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
-        var content = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
 
         // Act
-        var response = await _httpClient.PostAsync("/api/message", content);
+        var response = await _httpClient.PostAsJsonAsync("/api/message", message);
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var messageViewModel = JsonConvert.DeserializeObject<MessageViewModel>(responseContent);
+        var messageViewModel = await response.Content.ReadFromJsonAsync<MessageViewModel>();
         messageViewModel!.Text.ShouldBeEquivalentTo(message.Text);
     }
 
@@ -69,10 +51,9 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
     {
         // Arrange
         var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
-        var content = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
 
         // Act
-        var response = await _httpClient.PostAsync("/api/message", content);
+        var response = await _httpClient.PostAsJsonAsync("/api/message", message);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
