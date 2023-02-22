@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Newtonsoft.Json;
+using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.DAL;
 using TicketSystem.Tests.IntergationTests.InitializeModels;
@@ -62,7 +63,7 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         var messageViewModel = JsonConvert.DeserializeObject<MessageViewModel>(responseContent);
-        Assert.Equal(message.Text, messageViewModel!.Text);
+        messageViewModel!.Text.ShouldBeEquivalentTo(message.Text);
     }
 
     [Theory]
@@ -80,6 +81,6 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
         var response = await _httpClient.PostAsync("/api/message", content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }

@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
+using TicketSystem.API.ViewModels.Users;
+using TicketSystem.BLL.Models;
 using TicketSystem.DAL;
 using TicketSystem.Tests.IntergationTests.InitializeModels;
 
@@ -43,39 +46,48 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Theory]
-    [InlineData("Hi", UserId, null)]
-    [InlineData("Hello", UserId, null)]
-    [InlineData("Hello", OperatorId, OpenTicketId)]
-    [InlineData("Hi", OperatorId, OpenTicketId)]
-    public async Task Post_ValidMessage_ReturnsMessageViewModel(string text, int userId, int? ticketId)
+    [InlineData("Vlad", "Admin")]
+    [InlineData("Olha", "Operator")]
+    [InlineData("Jo", "User")]
+    public async Task Post_ValidUser_ReturnUserViewModel(string name, string userRole)
     {
         // Arrange
-        var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
-        var content = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+        var user = new ShortUserViewModel()
+        {
+            Name = name,
+            UserRole = userRole
+        };
+
+        var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
         // Act
-        var response = await _httpClient.PostAsync("/api/message", content);
+        var response = await _httpClient.PostAsync("/api/user", content);
 
         // Assert
         response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
-        var messageViewModel = JsonConvert.DeserializeObject<MessageViewModel>(responseContent);
-        Assert.Equal(message.Text, messageViewModel!.Text);
+        var messageViewModel = JsonConvert.DeserializeObject<UserViewModel>(responseContent);
+        messageViewModel!.Name.ShouldBe(user.Name);
+        messageViewModel!.UserRole.ShouldBe(user.UserRole);
     }
 
     [Theory]
-    [InlineData("", UserId, null)]
-    [InlineData(null, UserId, null)]
-    [InlineData("Hello", 0, null)]
-    [InlineData("Hello", int.MinValue, null)]
-    public async Task Post_InvalidMessage_ReturnsBadRequest(string text, int userId, int? ticketId)
+    [InlineData("V", "Admin")]
+    [InlineData("Olha", "Operator")]
+    [InlineData("Jo", "User")]
+    public async Task Post_InvalidUser_ReturnsBadRequest(string name, string userRole)
     {
         // Arrange
-        var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
-        var content = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json");
+        var user = new ShortUserViewModel()
+        {
+            Name = name,
+            UserRole = userRole
+        };
+
+        var content = new StringContent(JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
 
         // Act
-        var response = await _httpClient.PostAsync("/api/message", content);
+        var response = await _httpClient.PostAsync("/api/user", content);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
