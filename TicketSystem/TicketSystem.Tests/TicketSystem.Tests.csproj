@@ -29,4 +29,8 @@
 		<ProjectReference Include="..\TicketSystem\TicketSystem.API.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="IntergationTests\ControllersTests\" />
+	</ItemGroup>
+
 </Project>
