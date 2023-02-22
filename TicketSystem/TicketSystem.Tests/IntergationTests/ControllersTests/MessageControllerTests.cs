@@ -1,19 +1,15 @@
 ﻿using System.Net;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Newtonsoft.Json;
-using TicketSystem.API;
 using TicketSystem.API.ViewModels.Messages;
-using TicketSystem.BLL.Models;
 using TicketSystem.DAL;
-using TicketSystem.Tests.IntegrationTests.Models;
 
-namespace TicketSystem.Tests.IntegrationTests.ControllerTests;
+namespace TicketSystem.Tests.IntergationTests.ControllersTests;
 
 public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
