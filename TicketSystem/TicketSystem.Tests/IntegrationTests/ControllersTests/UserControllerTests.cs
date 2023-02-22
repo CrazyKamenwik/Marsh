@@ -134,6 +134,7 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task Delete_CorrectId_ReturnUserViewModel()
     {
+        // Act
         var response = await _httpClient.DeleteAsync($"/api/user/{UserIdForDelete}");
 
         // Assert
