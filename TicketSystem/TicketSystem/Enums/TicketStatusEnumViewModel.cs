@@ -1,6 +1,6 @@
 ﻿namespace TicketSystem.API.Enums;
 
-public enum TicketStatusEnumVm
+public enum TicketStatusEnumViewModel
 {
     Open,
     Closed
