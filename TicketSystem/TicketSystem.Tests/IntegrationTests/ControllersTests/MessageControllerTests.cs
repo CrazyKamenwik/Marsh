@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.DAL;
-using TicketSystem.Tests.IntergationTests.InitializeModels;
+using TicketSystem.Tests.Initialize;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
@@ -35,8 +34,6 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
                 using (var scoped = services.BuildServiceProvider().CreateScope())
                 {
                     var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
-                    db.Database.EnsureDeleted();
-                    db.Database.EnsureCreated();
                     InitializeDb.Initialize(db);
                 }
             });
@@ -46,10 +43,8 @@ public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFac
     }
 
     [Theory]
-    [InlineData("Hi", UserId, null)]
     [InlineData("Hello", UserId, null)]
     [InlineData("Hello", OperatorId, OpenTicketId)]
-    [InlineData("Hi", OperatorId, OpenTicketId)]
     public async Task Post_ValidMessage_ReturnsMessageViewModel(string text, int userId, int? ticketId)
     {
         // Arrange

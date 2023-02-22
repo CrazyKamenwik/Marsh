@@ -14,7 +14,7 @@ using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Entities;
 using TicketSystem.DAL.Entities.Enums;
 
-namespace TicketSystem.Tests.UnitTests.InitializeModels;
+namespace TicketSystem.Tests.Initialize;
 public static class InitializeData
 {
     private const string TextMessage = "Hello";
@@ -238,54 +238,59 @@ public static class InitializeData
         CreatedAt = DateTime.Now,
         Text = TextMessage,
         TicketId = TicketId,
-            UserId = OperatorId
-        };
+        UserId = OperatorId
+    };
 
-        public static UserEntity GetUserEntityUser() => new()
+    public static UserEntity GetUserEntityUser() => new()
+    {
+        Id = UserId,
+        Name = UserName,
+        UserRole = new UserRoleEntity
         {
-            Id = UserId,
-            Name = UserName,
-            UserRole = new UserRoleEntity
-            {
-                Id = UserRoleId,
-                Name = RolesConstants.User
-            }
-        };
+            Id = UserRoleId,
+            Name = RolesConstants.User
+        }
+    };
 
-        public static UserEntity GetUserEntityOperator() => new()
+    public static UserEntity GetUserEntityOperator() => new()
+    {
+        Id = OperatorId,
+        Name = OperatorName,
+        UserRole = new UserRoleEntity
         {
-            Id = OperatorId,
-            Name = OperatorName,
-            UserRole = new UserRoleEntity
-            {
-                Id = OperatorRoleId,
-                Name = RolesConstants.Operator
-            }
-        };
+            Id = OperatorRoleId,
+            Name = RolesConstants.Operator
+        }
+    };
 
-        public static IEnumerable<UserEntity> GetAllUsersEntities() => new List<UserEntity>()
+    public static IEnumerable<UserEntity> GetAllUsersEntities() => new List<UserEntity>()
         {
             GetUserEntityUser(),
             GetUserEntityOperator()
         };
 
-        public static TicketEntity GetTicketEntity() => new()
-        {
-            Id = TicketId,
-            CreatedAt = DateTime.Now,
-            Messages = new List<MessageEntity>()
+    public static TicketEntity GetTicketEntity() => new()
+    {
+        Id = TicketId,
+        CreatedAt = DateTime.Now,
+        Messages = new List<MessageEntity>()
             {
                 GetMessageEntityFromUser(),
                 GetMessageEntityFromOperator()
             },
-            OperatorId = OperatorId,
-            TicketCreatorId = UserId,
-            TicketStatus = TicketStatusEnumEntity.Open
-        };
+        OperatorId = OperatorId,
+        TicketCreatorId = UserId,
+        TicketStatus = TicketStatusEnumEntity.Open
+    };
 
-        public static IEnumerable<TicketEntity> GetAllTicketsEntities() => new List<TicketEntity>()
-        {
-            GetTicketEntity()
-        };
+    public static IEnumerable<TicketEntity> GetAllTicketsEntities() => new List<TicketEntity>()
+    {
+        GetTicketEntity()
+    };
+    public static IEnumerable<MessageEntity> GetAllMessagesEntities() => new List<MessageEntity>()
+    {
+        GetMessageEntityFromUser(),
+        GetMessageEntityFromOperator()
+    };
     #endregion
 }
