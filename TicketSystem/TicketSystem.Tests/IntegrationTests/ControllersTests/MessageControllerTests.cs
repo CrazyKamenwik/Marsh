@@ -10,7 +10,7 @@ using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.DAL;
 using TicketSystem.Tests.IntergationTests.InitializeModels;
 
-namespace TicketSystem.Tests.IntergationTests.ControllersTests;
+namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
 public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {

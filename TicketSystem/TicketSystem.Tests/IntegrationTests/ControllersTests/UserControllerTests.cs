@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TicketSystem.Tests.IntergationTests.ControllersTests
+namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 {
     internal class UserControllerTests
     {
