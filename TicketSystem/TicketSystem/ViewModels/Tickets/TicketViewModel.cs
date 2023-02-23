@@ -7,7 +7,7 @@ namespace TicketSystem.API.ViewModels.Tickets;
 public class TicketViewModel
 {
     public int Id { get; set; }
-    public TicketStatusEnumVm TicketStatus { get; set; }
+    public TicketStatusEnumViewModel TicketStatus { get; set; }
 
     public UserViewModel TicketCreator { get; set; } = null!;
     public UserViewModel? Operator { get; set; }

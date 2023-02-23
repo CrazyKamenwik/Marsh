@@ -71,7 +71,7 @@ public static class InitializeData
 
     public static MessageViewModel GetMessageViewModelFromOperator() => new()
     {
-        Id = MessageIdFromUser,
+        Id = MessageIdFromOperator,
         Text = TextMessage,
         User = GetUserViewModelUser()
     };
@@ -106,7 +106,7 @@ public static class InitializeData
         },
         Operator = GetUserViewModelOperator(),
         TicketCreator = GetUserViewModelUser(),
-        TicketStatus = TicketStatusEnumVm.Open
+        TicketStatus = TicketStatusEnumViewModel.Open
     };
 
     public static IEnumerable<TicketViewModel> GetAllTicketsViewModel() => new List<TicketViewModel>()
