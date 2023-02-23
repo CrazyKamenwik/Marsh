@@ -21,7 +21,7 @@ public class TicketStatusEnumMapperTests
     }
 
     [Fact]
-    public Task FromTicketStatusEnumEntityToTicketStatusEnum_Success()
+    public void FromTicketStatusEnumEntityToTicketStatusEnum_Success()
     {
         // Arrange
         var ticketStatusEnumEntity = TicketStatusEnumEntity.Open;
@@ -31,11 +31,10 @@ public class TicketStatusEnumMapperTests
 
         // Assert
         result.Should().HaveSameNameAs(ticketStatusEnumEntity);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromTicketStatusEnumToTicketStatusEnumEntity_Success()
+    public void FromTicketStatusEnumToTicketStatusEnumEntity_Success()
     {
         // Arrange
         var ticketStatusEnum = TicketStatusEnumModel.Open;
@@ -45,6 +44,5 @@ public class TicketStatusEnumMapperTests
 
         // Assert
         result.Should().HaveSameNameAs(ticketStatusEnum);
-        return Task.CompletedTask;
     }
 }

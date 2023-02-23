@@ -23,7 +23,7 @@ public class MessageMapperTests
     }
 
     [Fact]
-    public Task FromShortMessageToMessage_AllFields_Success()
+    public void FromShortMessageToMessage_AllFields_Success()
     {
         // Arrange
         var shortMessage = InitializeData.GetShortMessageViewModelFromOperator();
@@ -33,11 +33,10 @@ public class MessageMapperTests
 
         // Assert
         message.Should().BeEquivalentTo(shortMessage);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromShortMessageToMessage_WithoutTicketId_Success()
+    public void FromShortMessageToMessage_WithoutTicketId_Success()
     {
         // Arrange
         var shortMessage = InitializeData.GetShortMessageViewModelFromUser();
@@ -52,11 +51,10 @@ public class MessageMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(expectedMessage, o => o.Excluding(m => m.CreatedAt));
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromMessageToMessageViewModel_Success()
+    public void FromMessageToMessageViewModel_Success()
     {
         // Arrange
         var shortMessage = InitializeData.GetMessageModelFromOperator();
@@ -71,11 +69,10 @@ public class MessageMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(expectedMessage);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromMessageEntityToMessage_Success()
+    public void FromMessageEntityToMessage_Success()
     {
         // Arrange
         var messageEntity = InitializeData.GetMessageEntityFromUser();
@@ -85,11 +82,10 @@ public class MessageMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(messageEntity);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromMessageToMessageEntity_Success()
+    public void FromMessageToMessageEntity_Success()
     {
         // Arrange
         var message = InitializeData.GetMessageModelFromUser();
@@ -99,6 +95,5 @@ public class MessageMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(message);
-        return Task.CompletedTask;
     }
 }

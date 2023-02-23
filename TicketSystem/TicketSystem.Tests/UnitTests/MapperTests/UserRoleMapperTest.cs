@@ -22,7 +22,7 @@ public class UserRoleMapperTest
     }
 
     [Fact]
-    public Task FromUserRoleEntityToTUserRole_Success()
+    public void FromUserRoleEntityToTUserRole_Success()
     {
         // Arrange
         var userRoleEntity = new UserRoleEntity
@@ -36,11 +36,10 @@ public class UserRoleMapperTest
 
         // Assert
         result.Should().BeEquivalentTo(userRoleEntity);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromUserRoleToTUserRoleEntity_Success()
+    public void FromUserRoleToTUserRoleEntity_Success()
     {
         // Arrange
         var userRole = new UserRole
@@ -54,6 +53,5 @@ public class UserRoleMapperTest
 
         // Assert
         result.Should().BeEquivalentTo(userRole);
-        return Task.CompletedTask;
     }
 }

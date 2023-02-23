@@ -23,7 +23,7 @@ public class TicketMapperTests
     }
 
     [Fact]
-    public Task FromTicketToTicketViewModel_Success()
+    public void FromTicketToTicketViewModel_Success()
     {
         // Arrange
         var ticketModelWithoutUsers = InitializeData.GetTicketModel();
@@ -40,11 +40,10 @@ public class TicketMapperTests
         result.Should().BeEquivalentTo(expectedTicket, options => options
             .For(t => t.Messages)
             .Exclude(m => m.User));
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromTicketEntityToTicket_Success()
+    public void FromTicketEntityToTicket_Success()
     {
         // Arrange
         var ticketEntity = InitializeData.GetTicketEntity();
@@ -58,11 +57,10 @@ public class TicketMapperTests
             .For(t => t.Messages)
             .Exclude(m => m.CreatedAt)
             .Excluding(t => t.CreatedAt));
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromTicketToTicketEntity_Success()
+    public void FromTicketToTicketEntity_Success()
     {
         // Arrange
         var ticket = InitializeData.GetTicketModel();
@@ -76,6 +74,5 @@ public class TicketMapperTests
             .For(t => t.Messages)
             .Exclude(m => m.CreatedAt)
             .Excluding(t => t.CreatedAt));
-        return Task.CompletedTask;
     }
 }

@@ -23,7 +23,7 @@ public class UserMapperTests
     }
 
     [Fact]
-    public Task FromShortUserToUser_Success()
+    public void FromShortUserToUser_Success()
     {
         // Arrange
         var shortUser = InitializeData.GetShortUserViewModelUser();
@@ -41,11 +41,10 @@ public class UserMapperTests
 
         // Assert
         message.Should().BeEquivalentTo(expectedUser);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromUserToUserViewModel_Success()
+    public void FromUserToUserViewModel_Success()
     {
         // Arrange
         var user = InitializeData.GetUserModelUser();
@@ -61,11 +60,10 @@ public class UserMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(userViewModel);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromUserEntityToUser_Success()
+    public void FromUserEntityToUser_Success()
     {
         // Arrange
         var userEntity = InitializeData.GetUserEntityOperator();
@@ -75,11 +73,10 @@ public class UserMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(result);
-        return Task.CompletedTask;
     }
 
     [Fact]
-    public Task FromUserToUserEntity_Success()
+    public void FromUserToUserEntity_Success()
     {
         // Arrange
         var user = InitializeData.GetUserModelUser();
@@ -100,6 +97,5 @@ public class UserMapperTests
 
         // Assert
         result.Should().BeEquivalentTo(expectedUserEntity);
-        return Task.CompletedTask;
     }
 }
