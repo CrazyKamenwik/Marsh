@@ -11,6 +11,7 @@ public class ShortMessageValidator : AbstractValidator<ShortMessageViewModel>
             .NotEmpty();
 
         RuleFor(x => x.UserId)
-            .NotEmpty();
+            .NotEmpty()
+            .GreaterThan(0);
     }
 }
