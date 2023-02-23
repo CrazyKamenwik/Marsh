@@ -119,7 +119,7 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
         var response = await _httpClient.DeleteAsync($"/api/user/{UserIdForDelete}");
 
         // Assert
-        response.EnsureSuccessStatusCode();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
     [Theory]
