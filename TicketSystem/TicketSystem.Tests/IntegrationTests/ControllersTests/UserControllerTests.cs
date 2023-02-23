@@ -15,15 +15,15 @@ using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
-public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
+public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
 {
     private readonly HttpClient _httpClient;
     private const int UserId = 1;
     private const int UserIdForDelete = 3;
 
-    public UserControllerTests(WebApplicationFactory<Program> factory)
+    public UserControllerTests(TestHttpClientFactory<Program> factory)
     {
-        _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
+        _httpClient = factory.CreateClient();
     }
 
     [Theory]
@@ -95,6 +95,7 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
         // Assert
         response.EnsureSuccessStatusCode();
         var userViewModel = await response.Content.ReadFromJsonAsync<UserViewModel>();
+
         userViewModel.ShouldNotBeNull();
         userViewModel.Id.ShouldNotBeInRange(int.MinValue, 0);
         userViewModel.Name.ShouldNotBeNullOrEmpty();
@@ -122,10 +123,10 @@ public class UserControllerTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Theory]
-    [InlineData("V", "Admin")]
+    [InlineData("X", "Admin")]
     [InlineData(null, "Operator")]
     [InlineData("", "User")]
-    [InlineData("Vlad", "")]
+    [InlineData("Vlados", "")]
     [InlineData("Vlad", null)]
     public async Task Put_InvalidUser_ReturnsBadRequest(string name, string userRole)
     {

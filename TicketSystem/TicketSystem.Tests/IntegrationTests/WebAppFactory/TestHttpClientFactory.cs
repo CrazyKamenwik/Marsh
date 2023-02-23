@@ -1,33 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using TicketSystem.DAL;
 using TicketSystem.Tests.Initialize;
 
 namespace TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
-public static class TestHttpClientFactory
+public class TestHttpClientFactory<TProgram> : WebApplicationFactory<TProgram>
+    where TProgram : class
 {
-    public static HttpClient CreateHttpClient(WebApplicationFactory<Program> factory)
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        factory.WithWebHostBuilder(builder =>
+        builder.ConfigureServices(services =>
         {
-            builder.ConfigureServices(services =>
+            var dbContextDescriptor =
+                services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationContext>));
+
+            if (dbContextDescriptor != null) services.Remove(dbContextDescriptor);
+
+            services.AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase("Data Source=MyDb.db"));
+
+            var sp = services.BuildServiceProvider();
+
+            using (var scope = sp.CreateScope())
             {
-                var inMemoryRoot = new InMemoryDatabaseRoot();
-                services.AddSingleton(inMemoryRoot);
-                services.AddDbContext<ApplicationContext>(optionsBuilder =>
-                    optionsBuilder.UseInMemoryDatabase("MyDb", inMemoryRoot));
+                var scopedServices = scope.ServiceProvider;
+                var db = scopedServices.GetRequiredService<ApplicationContext>();
 
-                using (var scoped = services.BuildServiceProvider().CreateScope())
-                {
-                    var db = scoped.ServiceProvider.GetRequiredService<ApplicationContext>();
-                    InitializeDb.Initialize(db);
-                }
-            });
+                db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+
+                InitializeDb.Initialize(db);
+            }
         });
-
-        return factory.CreateClient();
     }
 }

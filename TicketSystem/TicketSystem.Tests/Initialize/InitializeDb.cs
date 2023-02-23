@@ -14,6 +14,7 @@ public static class InitializeDb
 
         context.Users.AddRange(InitializeData.GetAllUsersEntities());
         context.Tickets.AddRange(InitializeData.GetAllTicketsEntities());
-        context.Messages.AddRange(InitializeData.GetAllMessagesEntities());
+
+        context.SaveChangesAsync();
     }
 }

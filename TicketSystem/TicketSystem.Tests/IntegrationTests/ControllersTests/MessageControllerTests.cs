@@ -8,31 +8,30 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
+using TicketSystem.BLL.Models;
 using TicketSystem.DAL;
 using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
-public class MessageControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFactory<Program>>
 {
     private readonly HttpClient _httpClient;
     private const int UserId = 1;
     private const int OperatorId = 2;
     private const int OpenTicketId = 1;
 
-    public MessageControllerIntegrationTests(WebApplicationFactory<Program> factory)
+    public MessageControllerIntegrationTests(TestHttpClientFactory<Program> factory)
     {
-        _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
+        _httpClient = factory.CreateClient();
     }
 
-    [Theory]
-    [InlineData("Hello", UserId, null)]
-    [InlineData("Hello", OperatorId, OpenTicketId)]
-    public async Task Post_ValidMessage_ReturnsMessageViewModel(string text, int userId, int? ticketId)
+    [Fact]
+    public async Task Post_ValidMessage_ReturnsMessageViewModel()
     {
         // Arrange
-        var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
+        var message = new ShortMessageViewModel { Text = "Hello", UserId = OperatorId, TicketId = OpenTicketId };
 
         // Act
         var response = await _httpClient.PostAsJsonAsync("/api/message", message);

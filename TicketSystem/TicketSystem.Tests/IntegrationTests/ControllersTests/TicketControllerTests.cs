@@ -21,14 +21,14 @@ using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests
 {
-    public class TicketControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     {
         private readonly HttpClient _httpClient;
         private const int OpenTicketId = 1;
 
-        public TicketControllerTests(WebApplicationFactory<Program> factory)
+        public TicketControllerTests(TestHttpClientFactory<Program> factory)
         {
-            _httpClient = TestHttpClientFactory.CreateHttpClient(factory);
+            _httpClient = factory.CreateClient();
         }
 
         [Fact]
