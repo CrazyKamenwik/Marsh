@@ -33,14 +33,13 @@ namespace TicketSystem.Tests.UnitTests.MessageStrategyTests
         [Theory]
         [InlineData(RolesConstants.Operator, true)]
         [InlineData(RolesConstants.User, false)]
-        public Task IsApplicable_StringIsOperator_ReturnTrue(string userRole, bool expected)
+        public void IsApplicable_StringIsOperator_ReturnTrue(string userRole, bool expected)
         {
             // Act
             var result = _messageStrategy.IsApplicable(userRole);
 
             // Assert
             Assert.Equal(result, expected);
-            return Task.CompletedTask;
         }
 
         [Fact]

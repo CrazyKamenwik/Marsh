@@ -31,14 +31,13 @@ public class UserMessageStrategyTest
     [Theory]
     [InlineData(RolesConstants.Operator, false)]
     [InlineData(RolesConstants.User, true)]
-    public Task IsApplicable_StringIsOperator_ReturnTrue(string userRole, bool expected)
+    public void IsApplicable_StringIsOperator_ReturnTrue(string userRole, bool expected)
     {
         // Act
         var result = _messageStrategy.IsApplicable(userRole);
 
         // Assert
         Assert.Equal(result, expected);
-        return Task.CompletedTask;
     }
 
     [Fact]
