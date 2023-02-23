@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using Shouldly;
 using TicketSystem.API.Validators;
 using TicketSystem.API.ViewModels.Messages;
 
@@ -33,7 +34,7 @@ public class ShortMessageValidatorTest
         var result = await _validator.TestValidateAsync(shortMessage);
 
         // Assert
-        Assert.True(result.IsValid);
+        result.IsValid.ShouldBeTrue();
     }
 
     [Theory]
@@ -56,6 +57,6 @@ public class ShortMessageValidatorTest
         var result = await _validator.TestValidateAsync(shortMessage);
 
         // Assert
-        Assert.False(result.IsValid);
+        result.IsValid.ShouldBeFalse();
     }
 }

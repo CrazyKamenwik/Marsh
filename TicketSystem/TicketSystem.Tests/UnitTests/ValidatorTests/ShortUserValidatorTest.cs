@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using Shouldly;
 using TicketSystem.API.Validators;
 using TicketSystem.API.ViewModels.Users;
 
@@ -30,7 +31,7 @@ public class ShortUserValidatorTest
         var result = await _validator.TestValidateAsync(user);
 
         // Assert
-        Assert.True(result.IsValid);
+        result.IsValid.ShouldBeTrue();
     }
 
     [Theory]
@@ -53,6 +54,6 @@ public class ShortUserValidatorTest
         var result = await _validator.TestValidateAsync(user);
 
         // Assert
-        Assert.False(result.IsValid);
+        result.IsValid.ShouldBeFalse();
     }
 }
