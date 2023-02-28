@@ -1,5 +1,4 @@
 ﻿using TS.MailService.Application.Enums;
-using TS.MailService.Domain.Enums;
 
 namespace TS.MailService.Application.Models;
 

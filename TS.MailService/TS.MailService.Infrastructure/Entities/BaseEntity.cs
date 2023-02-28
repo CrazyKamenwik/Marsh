@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TS.MailService.Infrastructure.Abstraction;
 
-namespace TS.MailService.Infrastructure.Entities
+namespace TS.MailService.Infrastructure.Entities;
+
+public class BaseEntity : IBaseEntity
 {
-    internal class BaseEntity
-    {
-    }
+    public int Id { get; set; }
 }
