@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TS.MailService.API", "TS.MailService.API\TS.MailService.API.csproj", "{AB5C7FEA-533D-4C72-9EFE-D4BE1F652FA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TS.MailService.Application", "TS.MailService.API\TS.MailService.Application.csproj", "{AB5C7FEA-533D-4C72-9EFE-D4BE1F652FA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TS.MailService.Tests", "TS.MailService.Tests\TS.MailService.Tests.csproj", "{929501E7-A58F-4583-B102-F5EDD3054DB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TS.MailService.Tests", "TS.MailService.Tests\TS.MailService.Tests.csproj", "{929501E7-A58F-4583-B102-F5EDD3054DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TS.MailService.Domain", "TS.MailService.Domain\TS.MailService.Domain.csproj", "{9201AF6E-4560-4E1F-A544-1E7C7347D7BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TS.MailService.Domain", "TS.MailService.Domain\TS.MailService.Domain.csproj", "{9201AF6E-4560-4E1F-A544-1E7C7347D7BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TS.MailService.Infrastructure", "TS.MailService.Infrastructure\TS.MailService.Infrastructure.csproj", "{8F2DA1E1-0ED6-43C2-810D-2E563855776B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TS.MailService.Infrastructure", "TS.MailService.Infrastructure\TS.MailService.Infrastructure.csproj", "{8F2DA1E1-0ED6-43C2-810D-2E563855776B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
