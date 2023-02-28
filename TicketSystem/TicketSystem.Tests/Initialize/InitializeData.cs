@@ -287,6 +287,7 @@ public static class InitializeData
     {
         GetTicketEntity()
     };
+
     public static IEnumerable<MessageEntity> GetAllMessagesEntities() => new List<MessageEntity>()
     {
         GetMessageEntityFromUser(),
