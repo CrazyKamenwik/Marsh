@@ -21,4 +21,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TS.MailService.API\TS.MailService.Application.csproj" />
+    <ProjectReference Include="..\TS.MailService.Domain\TS.MailService.Domain.csproj" />
+    <ProjectReference Include="..\TS.MailService.Infrastructure\TS.MailService.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
