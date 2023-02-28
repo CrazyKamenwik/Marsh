@@ -7,7 +7,7 @@ using TicketSystem.BLL.MessagesStrategy;
 using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.Tests.UnitTests.InitializeModels;
+using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.UnitTests.Moq;
 
 namespace TicketSystem.Tests.UnitTests.MessageStrategyTests;
