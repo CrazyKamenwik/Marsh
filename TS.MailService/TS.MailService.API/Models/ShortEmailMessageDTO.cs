@@ -8,6 +8,5 @@ namespace TS.MailService.Application.Models
         public IEnumerable<string> Recipients { get; set; } = null!;
         public string Subject { get; set; } = null!;
         public string? Body { get; set; }
-        public IEnumerable<object>? Attachments { get; set; }
     }
 }

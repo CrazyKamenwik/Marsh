@@ -6,29 +6,31 @@ using TS.MailService.Domain.Abstraction.Services;
 
 namespace TS.MailService.Application.Endpoints.EmailEndpoints;
 
-public class PostEmailEndpoint : Endpoint<ShortEmailMessageDto, EmailMessageDto, EmailWithRequestMapper>
+public class GetEmailEndpoint : Endpoint<EmailMessageRequest, EmailMessageDto, EmailWithRequestMapper>
 {
     private readonly IEmailService _emailService;
 
-    public PostEmailEndpoint(IEmailService emailService)
+    public GetEmailEndpoint(IEmailService emailService)
     {
         _emailService = emailService;
     }
 
     public override void Configure()
     {
-        Post("api/email");
+        Get("api/email/{Id}");
         Description(b => b.WithTags("Email"));
-        Summary(s => s.Summary = "Post new email.");
+        Summary(s =>
+        {
+            s.Summary = "Get email by id.";
+            s.Params["Id"] = "Email unique identifier";
+        });
     }
 
-    public override async Task HandleAsync(ShortEmailMessageDto shortEmail, CancellationToken cancellationToken)
+    public override async Task HandleAsync(EmailMessageRequest emailRequest, CancellationToken cancellationToken)
     {
-        Logger.LogInformation($"{JsonConvert.SerializeObject(shortEmail)}");
+        Logger.LogInformation($"Get email by id: {emailRequest.Id}");
 
-        var emailMessage = Map.ToEntity(shortEmail);
-
-        emailMessage = await _emailService.SendEmail(emailMessage, cancellationToken);
+        var emailMessage = await _emailService.GetEmail(emailRequest.Id, cancellationToken);
 
         var emailMessageDto = Map.FromEntity(emailMessage);
 
