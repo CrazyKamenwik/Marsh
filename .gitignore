@@ -3,3 +3,13 @@
 ################################################################################
 
 /.vs
+/TS.MailService/.vs
+/TS.MailService/TS.MailService.Domain/obj
+/TS.MailService/TS.MailService.Domain/bin/Debug/net7.0
+/TS.MailService/TS.MailService.API/.vs
+/TS.MailService/TS.MailService.API/bin/Debug/net7.0
+/TS.MailService/TS.MailService.API/obj
+/TS.MailService/TS.MailService.Tests/bin/Debug/net7.0
+/TS.MailService/TS.MailService.Tests/obj
+/TS.MailService/TS.MailService.Infrastructure/bin/Debug/net7.0
+/TS.MailService/TS.MailService.Infrastructure/obj
