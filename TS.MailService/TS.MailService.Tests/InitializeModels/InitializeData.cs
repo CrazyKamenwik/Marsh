@@ -1,17 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TS.MailService.Application.Enums;
-using TS.MailService.Application.Models;
-using TS.MailService.Domain.Enums;
+﻿using TS.MailService.Application.Models;
 using TS.MailService.Domain.Models;
 using TS.MailService.Infrastructure.Entities;
-using TS.MailService.Infrastructure.Enums;
 
-namespace TS.MailService.Tests.UnitTests.InitializeModels
+namespace TS.MailService.Tests.InitializeModels
 {
     public static class InitializeData
     {

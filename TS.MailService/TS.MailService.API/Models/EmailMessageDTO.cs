@@ -1,6 +1,4 @@
-﻿using TS.MailService.Application.Enums;
-
-namespace TS.MailService.Application.Models;
+﻿namespace TS.MailService.Application.Models;
 
 public class EmailMessageDto
 {

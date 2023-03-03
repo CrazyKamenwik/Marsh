@@ -1,6 +1,4 @@
-﻿using TS.MailService.Infrastructure.Enums;
-
-namespace TS.MailService.Infrastructure.Entities;
+﻿namespace TS.MailService.Infrastructure.Entities;
 
 public class EmailMessageEntity : BaseEntity
 {

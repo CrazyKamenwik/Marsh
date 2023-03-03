@@ -5,7 +5,7 @@ using TS.MailService.Application.Mappers.EmailMappers;
 using TS.MailService.Domain.MapperProfiles;
 using TS.MailService.Domain.Models;
 using TS.MailService.Infrastructure.Entities;
-using TS.MailService.Tests.UnitTests.InitializeModels;
+using TS.MailService.Tests.InitializeModels;
 
 namespace TS.MailService.Tests.UnitTests.MapperTests
 {

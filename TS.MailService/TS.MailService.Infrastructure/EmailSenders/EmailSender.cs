@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using TS.MailService.Infrastructure.Abstraction.EmailSenders;
 using TS.MailService.Infrastructure.Entities;
 
@@ -10,16 +11,12 @@ internal class EmailSender : IEmailSender
 {
     private readonly SmtpClient _smtpClient;
 
-    public EmailSender(IConfiguration configuration)
+    public EmailSender(IOptions<SmtpEntity> smtp)
     {
-        var emailSender = configuration["Smtp:Username"];
-        var senderPassword = configuration["Smtp:Password"];
-        var smtpHost = configuration["Smtp:Host"];
-        var smtpPort = int.Parse(configuration["Smtp:Port"] ?? throw new ArgumentException());
-
-        _smtpClient = new SmtpClient(smtpHost, smtpPort);
+        var smtpEntity = smtp.Value;
+        _smtpClient = new SmtpClient(smtpEntity.Host, smtpEntity.Port);
         _smtpClient.EnableSsl = true;
-        _smtpClient.Credentials = new NetworkCredential(emailSender, senderPassword);
+        _smtpClient.Credentials = new NetworkCredential(smtpEntity.Username, smtpEntity.Password);
     }
 
     public async Task SendEmail(MailMessage message)

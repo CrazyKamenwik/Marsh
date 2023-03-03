@@ -1,43 +1,34 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using TS.MailService.Application.Middleware;
+using TS.MailService.Application.SwaggerOperationProcessors;
 using TS.MailService.Domain.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-
-var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["X-Api-Key"]));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = symmetricSecurityKey
-        };
-    });
-
 builder.Services.AddDomainLayerServices(configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerDoc();
+builder.Services.AddSwaggerDoc(addJWTBearerAuth: false, settings: opt =>
+    opt.OperationProcessors.Add(new AddRequiredHeaderParameter()));
 builder.Services.AddFastEndpoints();
 
 var app = builder.Build();
 
-app.UseFastEndpoints();
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseFastEndpoints(opt =>
+{
+    opt.Endpoints.Configurator = ept => ept.AllowAnonymous();
+});
+
 app.UseSwaggerGen();
-
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<ApiKeyMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

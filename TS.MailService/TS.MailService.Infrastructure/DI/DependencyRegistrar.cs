@@ -23,6 +23,11 @@ namespace TS.MailService.Infrastructure.DI
             services.AddTransient<IGenericRepository<EmailMessageEntity>, GenericRepository<EmailMessageEntity>>();
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.Configure<SmtpEntity>(
+                configuration.GetSection(SmtpEntity.Position));
+
+            services.AddTransient<IEmailSender, EmailSender>();
+
             return services;
         }
     }

@@ -1,9 +1,7 @@
 ﻿using System.Net.Mail;
 using AutoMapper;
-using TS.MailService.Domain.Enums;
 using TS.MailService.Domain.Models;
 using TS.MailService.Infrastructure.Entities;
-using TS.MailService.Infrastructure.Enums;
 
 namespace TS.MailService.Domain.MapperProfiles;
 
@@ -21,7 +19,5 @@ public class MapperProfile : Profile
 
 
         CreateMap<EmailMessageEntity, EmailMessage>();
-
-        CreateMap<EmailStatus, EmailStatusEntity>().ReverseMap();
     }
 }

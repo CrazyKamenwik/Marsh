@@ -1,6 +1,4 @@
-﻿using TS.MailService.Domain.Enums;
-
-namespace TS.MailService.Domain.Models;
+﻿namespace TS.MailService.Domain.Models;
 
 public class EmailMessage : BaseModel
 {

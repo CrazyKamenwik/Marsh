@@ -1,5 +1,4 @@
 ﻿using FastEndpoints;
-using TS.MailService.Application.Enums;
 using TS.MailService.Application.Models;
 using TS.MailService.Domain.Models;
 

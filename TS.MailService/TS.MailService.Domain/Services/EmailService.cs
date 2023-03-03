@@ -10,9 +10,9 @@ namespace TS.MailService.Domain.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IGenericRepository<EmailMessageEntity> _repository;
-    private readonly IMapper _mapper;
     private readonly IEmailSender _emailSender;
+    private readonly IMapper _mapper;
+    private readonly IGenericRepository<EmailMessageEntity> _repository;
 
     public EmailService(IGenericRepository<EmailMessageEntity> repository, IMapper mapper, IEmailSender emailSender)
     {

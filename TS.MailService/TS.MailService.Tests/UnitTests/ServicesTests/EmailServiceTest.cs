@@ -6,7 +6,7 @@ using TS.MailService.Domain.Models;
 using TS.MailService.Domain.Services;
 using TS.MailService.Infrastructure.Abstraction.Repository;
 using TS.MailService.Infrastructure.Entities;
-using TS.MailService.Tests.UnitTests.InitializeModels;
+using TS.MailService.Tests.InitializeModels;
 using TS.MailService.Tests.UnitTests.Moq;
 using IEmailSender = TS.MailService.Infrastructure.Abstraction.EmailSenders.IEmailSender;
 
