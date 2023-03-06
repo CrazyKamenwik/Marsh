@@ -9,5 +9,4 @@
   <ItemGroup>
     <ProjectReference Include="..\TS.MailService.Infrastructure\TS.MailService.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>
