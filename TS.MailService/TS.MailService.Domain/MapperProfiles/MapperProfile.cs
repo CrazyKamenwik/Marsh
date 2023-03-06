@@ -17,7 +17,6 @@ public class MapperProfile : Profile
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => new MailAddress(src.Sender)))
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Recipients));
 
-
         CreateMap<EmailMessageEntity, EmailMessage>();
     }
 }
