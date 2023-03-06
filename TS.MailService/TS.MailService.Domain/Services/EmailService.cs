@@ -25,7 +25,7 @@ public class EmailService : IEmailService
     {
         var mailMessage = _mapper.Map<MailMessage>(emailMessage);
 
-        await _emailSender.SendEmail(mailMessage);
+        await _emailSender.SendEmail(mailMessage, cancellationToken);
 
         var emailMessageEntity = _mapper.Map<EmailMessageEntity>(emailMessage);
 

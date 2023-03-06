@@ -21,7 +21,6 @@ namespace TS.MailService.Infrastructure.DI
         {
             services.AddSingleton<IMongoClient>(new MongoClient(configuration["MongoDb:MongoDbConnectionString"]));
             services.AddTransient<IGenericRepository<EmailMessageEntity>, GenericRepository<EmailMessageEntity>>();
-            services.AddTransient<IEmailSender, EmailSender>();
 
             services.Configure<SmtpEntity>(
                 configuration.GetSection(SmtpEntity.Position));

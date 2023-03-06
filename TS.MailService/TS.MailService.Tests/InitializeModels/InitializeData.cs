@@ -6,6 +6,8 @@ namespace TS.MailService.Tests.InitializeModels
 {
     public static class InitializeData
     {
+        public static readonly Guid UserEmailGuidForGetByIdTest = new Guid("0e1f6906-4efd-4ba6-9f47-e0d7d3240d21");
+
         public static readonly Guid UserEmailId = Guid.NewGuid();
         public static readonly Guid SupportEmailId = Guid.NewGuid();
 

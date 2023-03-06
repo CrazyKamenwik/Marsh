@@ -10,6 +10,6 @@ namespace TS.MailService.Infrastructure.Abstraction.EmailSenders
 {
     public interface IEmailSender
     {
-        public Task SendEmail(MailMessage message);
+        public Task SendEmail(MailMessage message, CancellationToken cancellationToken);
     }
 }

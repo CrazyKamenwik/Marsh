@@ -19,8 +19,8 @@ internal class EmailSender : IEmailSender
         _smtpClient.Credentials = new NetworkCredential(smtpEntity.Username, smtpEntity.Password);
     }
 
-    public async Task SendEmail(MailMessage message)
+    public async Task SendEmail(MailMessage message, CancellationToken cancellationToken)
     {
-        await _smtpClient.SendMailAsync(message);
+        await _smtpClient.SendMailAsync(message, cancellationToken);
     }
 }
