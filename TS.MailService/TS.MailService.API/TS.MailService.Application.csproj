@@ -18,5 +18,4 @@
   <ItemGroup>
     <ProjectReference Include="..\TS.MailService.Domain\TS.MailService.Domain.csproj" />
   </ItemGroup>
-
 </Project>

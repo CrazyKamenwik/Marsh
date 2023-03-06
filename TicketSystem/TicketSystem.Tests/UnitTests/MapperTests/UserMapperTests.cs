@@ -3,7 +3,7 @@ using FluentAssertions;
 using TicketSystem.API.ViewModels.Users;
 using TicketSystem.BLL.Models;
 using TicketSystem.DAL.Entities;
-using TicketSystem.Tests.UnitTests.InitializeModels;
+using TicketSystem.Tests.Initialize;
 
 namespace TicketSystem.Tests.UnitTests.MapperTests;
 
