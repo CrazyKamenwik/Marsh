@@ -7,7 +7,7 @@ using TicketSystem.BLL.Models;
 using TicketSystem.BLL.Services;
 using TicketSystem.DAL.Abstractions;
 using TicketSystem.DAL.Entities;
-using TicketSystem.Tests.UnitTests.InitializeModels;
+using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.UnitTests.Moq;
 
 namespace TicketSystem.Tests.UnitTests.ServicesTests;

@@ -12,5 +12,4 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
   </ItemGroup>
-
 </Project>
