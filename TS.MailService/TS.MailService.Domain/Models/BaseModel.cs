@@ -4,5 +4,5 @@ namespace TS.MailService.Domain.Models;
 
 public class BaseModel : IBaseModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 }

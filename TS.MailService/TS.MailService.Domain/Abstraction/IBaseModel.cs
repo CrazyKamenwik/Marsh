@@ -1,6 +1,6 @@
 ﻿namespace TS.MailService.Domain.Abstraction;
 
-internal interface IBaseModel
+public interface IBaseModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }
