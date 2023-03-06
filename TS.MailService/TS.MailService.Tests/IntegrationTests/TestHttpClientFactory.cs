@@ -57,7 +57,7 @@ public class TestHttpClientFactory<TProgram> : WebApplicationFactory<TProgram>
 
     private IMongoClient GetMongloClientWithData()
     {
-        var mongoClient = new MongoClient(_runner.ConnectionString);
+        var mongoClient = new MongoClient(_runner!.ConnectionString);
 
         var entity = InitializeData.GetEmailMessageEntityFromUser();
         entity.Id = InitializeData.UserEmailGuidForGetByIdTest;
