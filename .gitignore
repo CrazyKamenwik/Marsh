@@ -13,3 +13,7 @@
 /TS.MailService/TS.MailService.Tests/obj
 /TS.MailService/TS.MailService.Infrastructure/bin/Debug/net7.0
 /TS.MailService/TS.MailService.Infrastructure/obj
+/TS.ApiGateway/.vs/TS.ApiGateway
+/TS.ApiGateway/.vs/ProjectEvaluation
+/TS.ApiGateway/TS.ApiGateway/obj
+/TS.ApiGateway/TS.ApiGateway/bin/Debug/net7.0
