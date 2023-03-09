@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Users;
@@ -24,7 +25,7 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
 
         var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
 
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        return accessToken;
     }
 
     [Theory]
@@ -34,6 +35,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Post_ValidUser_ReturnUserViewModel(string name, string userRole)
     {
         // Arrange
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -59,6 +63,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Post_InvalidUser_ReturnBadRequest(string name, string userRole)
     {
         // Arrange
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -78,6 +85,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task GetAllUsers_ReturnIEnumerableUserViewModels()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync("/api/user");
 
         // Assert
@@ -91,6 +101,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task GetUserById_CorrectId_ReturnUserViewModel()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/user/{UserId}");
 
         // Assert
@@ -107,6 +120,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task GetUserById_IncorrectId_ReturnNoContent()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/user/{int.MaxValue}");
 
         // Assert
@@ -117,6 +133,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Delete_CorrectId_ReturnUserViewModel()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.DeleteAsync($"/api/user/{UserIdForDelete}");
 
         // Assert
@@ -132,6 +151,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Put_InvalidUser_ReturnsBadRequest(string name, string userRole)
     {
         // Arrange
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -152,6 +174,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Put_ValidUser_ReturnUserViewModel(string name, string userRole)
     {
         // Arrange
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,

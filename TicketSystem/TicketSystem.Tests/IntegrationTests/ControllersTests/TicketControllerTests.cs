@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http.Json;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
@@ -21,13 +22,21 @@ public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program
 
         var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
 
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        tokenResponse.EnsureSuccessStatusCode();
+
+        var tokenData = await tokenResponse.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+        var accessToken = tokenData?["access_token"].ToString() ?? throw new ArgumentNullException(nameof(tokenData));
+
+        return accessToken;
     }
 
     [Fact]
     public async Task GetAllTickets_ReturnIEnumerableTicketViewModels()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync("/api/ticket");
 
         // Assert
@@ -41,6 +50,9 @@ public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program
     public async Task GetTicketById_CorrectId_ReturnTicketViewModels()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/ticket/{OpenTicketId}");
 
         // Assert
@@ -55,6 +67,9 @@ public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program
     public async Task GetTicketById_IncorrectId_ReturnTicketViewModels()
     {
         // Act
+        var accessToken = await GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/ticket/{int.MaxValue}");
 
         // Assert
