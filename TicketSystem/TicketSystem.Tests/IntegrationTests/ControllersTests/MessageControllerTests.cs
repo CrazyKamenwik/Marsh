@@ -1,12 +1,6 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
-using Microsoft.Extensions.Configuration;
 using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
@@ -17,7 +11,6 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
 {
     private readonly AutorizationForTests _autorizationForTests;
     private readonly HttpClient _httpClient;
-    private readonly IConfiguration _config;
     private const int UserId = 1;
     private const int OperatorId = 2;
     private const int OpenTicketId = 1;
@@ -28,17 +21,13 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
         _autorizationForTests = new();
 
         var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
-
-        return accessToken;
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
     [Fact]
     public async Task Post_ValidMessage_ReturnsMessageViewModel()
     {
         // Arrange
-        var accessToken = await GetAccessToken();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
         var message = new ShortMessageViewModel { Text = "Hello", UserId = OperatorId, TicketId = OpenTicketId };
 
         // Act
@@ -57,10 +46,6 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
     public async Task Post_InvalidMessage_ReturnsBadRequest(string text, int userId, int? ticketId)
     {
         // Arrange
-        var accessToken = await GetAccessToken();
-
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
         var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
 
         // Act
