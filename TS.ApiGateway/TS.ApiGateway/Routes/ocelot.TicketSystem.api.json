@@ -1,0 +1,69 @@
+{  
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/message",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7127"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/message",
+      "UpstreamHttpMethod": [ "Post" ],
+      "SwaggerKey": "TicketSystem"
+    },
+    {
+      "DownstreamPathTemplate": "/api/ticket",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7127"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ticket",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "TicketSystem"
+    },
+    {
+      "DownstreamPathTemplate": "/api/ticket/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7127"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ticket/{id}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "TicketSystem"
+    },
+    {
+      "DownstreamPathTemplate": "/api/user",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7127"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/user",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "TicketSystem"
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7127"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/user/{id}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
+      "SwaggerKey": "TicketSystem"
+    }
+  ]
+}

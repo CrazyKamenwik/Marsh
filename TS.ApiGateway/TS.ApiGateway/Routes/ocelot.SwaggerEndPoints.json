@@ -1,0 +1,15 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "TicketSystem",
+      "TransformByOcelotConfig": true,
+      "Config": [
+        {
+          "Name": "TicketSystems",
+          "Version": "1.0",
+          "Url": "https://localhost:7127/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
