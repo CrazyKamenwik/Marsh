@@ -10,14 +10,16 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
 public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program>>
 {
+    private readonly AutorizationForTests _autorizationForTests;
     private readonly HttpClient _httpClient;
     private const int OpenTicketId = 1;
 
     public TicketControllerTests(TestHttpClientFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
+        _autorizationForTests = new();
 
-        var accessToken = AutorizationForTests.GetAccessToken().GetAwaiter().GetResult();
+        var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }

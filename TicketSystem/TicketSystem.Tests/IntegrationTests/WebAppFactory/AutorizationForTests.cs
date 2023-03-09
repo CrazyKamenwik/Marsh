@@ -10,34 +10,31 @@ using System.Net.Http.Json;
 
 namespace TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
-internal static class AutorizationForTests
+internal class AutorizationForTests
 {
     private const string GrantType = "client_credentials";
+    private readonly IConfiguration _config;
+    private readonly HttpClient _httpClient;
 
-    private static IConfiguration Init()
+    public AutorizationForTests()
     {
-        var config = new ConfigurationBuilder()
+        _httpClient = new HttpClient();
+        _config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.test.json")
             .AddEnvironmentVariables()
             .Build();
-
-        return config;
     }
 
-    public static async Task<string> GetAccessToken()
+    public async Task<string> GetAccessToken()
     {
-        var config = Init();
-
-        var httpClient = new HttpClient();
-
-        var tokenResponse = await httpClient.PostAsync(
-            config["Authentication:Domain"] + "oauth/token",
+        var tokenResponse = await _httpClient.PostAsync(
+            _config["Authentication:Domain"] + "oauth/token",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", GrantType },
-                { "client_id", config["Authentication:ClientId"]! },
-                { "client_secret", config["Authentication:ClientSecret"]! },
-                { "audience", config["Authentication:Audience"]! }
+                { "client_id", _config["Authentication:ClientId"]! },
+                { "client_secret", _config["Authentication:ClientSecret"]! },
+                { "audience", _config["Authentication:Audience"]! }
             }));
 
         tokenResponse.EnsureSuccessStatusCode();

@@ -12,6 +12,7 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
 public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
 {
+    private readonly AutorizationForTests _autorizationForTests;
     private readonly HttpClient _httpClient;
     private const int UserId = 1;
     private const int UserIdForDelete = 3;
@@ -19,8 +20,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public UserControllerTests(TestHttpClientFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
+        _autorizationForTests = new();
 
-        var accessToken = AutorizationForTests.GetAccessToken().GetAwaiter().GetResult();
+        var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
