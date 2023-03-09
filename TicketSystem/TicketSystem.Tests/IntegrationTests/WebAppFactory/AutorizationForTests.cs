@@ -8,34 +8,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
 using Castle.Core.Logging;
+using Microsoft.AspNetCore.SignalR;
 
 namespace TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
-internal class AutorizationForTests
+internal static class AutorizationForTests
 {
     private const string GrantType = "client_credentials";
-    private readonly IConfiguration _config;
-    private readonly HttpClient _httpClient;
 
-    public AutorizationForTests()
+    private static IConfiguration GetConfig()
     {
-        _httpClient = new HttpClient();
-        _config = new ConfigurationBuilder()
+        return new ConfigurationBuilder()
             .AddJsonFile("appsettings.test.json")
             .AddEnvironmentVariables()
             .Build();
     }
 
-    public async Task<string> GetAccessToken()
+    public static async Task<string> GetAccessToken()
     {
-        var tokenResponse = await _httpClient.PostAsync(
-            _config["Authentication:Domain"] + "oauth/token",
+        var httpClient = new HttpClient();
+        var config = GetConfig();
+
+        var tokenResponse = await httpClient.PostAsync(
+            config["Authentication:Domain"] + "oauth/token",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", GrantType },
-                { "client_id", _config["Authentication:ClientId"]! },
-                { "client_secret", _config["Authentication:ClientSecret"]! },
-                { "audience", _config["Authentication:Audience"]! }
+                { "client_id", config["Authentication:ClientId"]! },
+                { "client_secret", config["Authentication:ClientSecret"]! },
+                { "audience", config["Authentication:Audience"]! }
             }));
 
         tokenResponse.EnsureSuccessStatusCode();

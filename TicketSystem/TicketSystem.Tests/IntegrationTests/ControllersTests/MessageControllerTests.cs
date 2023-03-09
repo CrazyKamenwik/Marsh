@@ -9,7 +9,6 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
 public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFactory<Program>>
 {
-    private readonly AutorizationForTests _autorizationForTests;
     private readonly HttpClient _httpClient;
     private const int UserId = 1;
     private const int OperatorId = 2;
@@ -18,16 +17,15 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
     public MessageControllerIntegrationTests(TestHttpClientFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
-        _autorizationForTests = new();
-
-        var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
     [Fact]
     public async Task Post_ValidMessage_ReturnsMessageViewModel()
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var message = new ShortMessageViewModel { Text = "Hello", UserId = OperatorId, TicketId = OpenTicketId };
 
         // Act
@@ -46,6 +44,9 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
     public async Task Post_InvalidMessage_ReturnsBadRequest(string text, int userId, int? ticketId)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
 
         // Act

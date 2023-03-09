@@ -10,23 +10,21 @@ namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
 
 public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program>>
 {
-    private readonly AutorizationForTests _autorizationForTests;
     private readonly HttpClient _httpClient;
     private const int OpenTicketId = 1;
 
     public TicketControllerTests(TestHttpClientFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
-        _autorizationForTests = new();
-
-        var accessToken = _autorizationForTests.GetAccessToken().GetAwaiter().GetResult();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
     [Fact]
     public async Task GetAllTickets_ReturnIEnumerableTicketViewModels()
     {
         // Act
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync("/api/ticket");
 
         // Assert
@@ -40,6 +38,9 @@ public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program
     public async Task GetTicketById_CorrectId_ReturnTicketViewModels()
     {
         // Act
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/ticket/{OpenTicketId}");
 
         // Assert
@@ -54,6 +55,9 @@ public class TicketControllerTests : IClassFixture<TestHttpClientFactory<Program
     public async Task GetTicketById_IncorrectId_ReturnTicketViewModels()
     {
         // Act
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var response = await _httpClient.GetAsync($"/api/ticket/{int.MaxValue}");
 
         // Assert
