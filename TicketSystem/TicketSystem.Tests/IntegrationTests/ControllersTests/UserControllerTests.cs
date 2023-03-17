@@ -1,16 +1,11 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Users;
-using TicketSystem.DAL;
-using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
@@ -33,6 +28,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Post_ValidUser_ReturnUserViewModel(string name, string userRole)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -58,6 +56,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Post_InvalidUser_ReturnBadRequest(string name, string userRole)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -76,6 +77,10 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     [Fact]
     public async Task GetAllUsers_ReturnIEnumerableUserViewModels()
     {
+        // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         // Act
         var response = await _httpClient.GetAsync("/api/user");
 
@@ -89,6 +94,10 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     [Fact]
     public async Task GetUserById_CorrectId_ReturnUserViewModel()
     {
+        // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         // Act
         var response = await _httpClient.GetAsync($"/api/user/{UserId}");
 
@@ -105,6 +114,10 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     [Fact]
     public async Task GetUserById_IncorrectId_ReturnNoContent()
     {
+        // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         // Act
         var response = await _httpClient.GetAsync($"/api/user/{int.MaxValue}");
 
@@ -115,6 +128,10 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     [Fact]
     public async Task Delete_CorrectId_ReturnUserViewModel()
     {
+        // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         // Act
         var response = await _httpClient.DeleteAsync($"/api/user/{UserIdForDelete}");
 
@@ -131,6 +148,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Put_InvalidUser_ReturnsBadRequest(string name, string userRole)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,
@@ -151,6 +171,9 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public async Task Put_ValidUser_ReturnUserViewModel(string name, string userRole)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var user = new ShortUserViewModel()
         {
             Name = name,

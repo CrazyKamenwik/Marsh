@@ -1,16 +1,8 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Messages;
-using TicketSystem.BLL.Models;
-using TicketSystem.DAL;
-using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
@@ -31,6 +23,9 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
     public async Task Post_ValidMessage_ReturnsMessageViewModel()
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var message = new ShortMessageViewModel { Text = "Hello", UserId = OperatorId, TicketId = OpenTicketId };
 
         // Act
@@ -49,6 +44,9 @@ public class MessageControllerIntegrationTests : IClassFixture<TestHttpClientFac
     public async Task Post_InvalidMessage_ReturnsBadRequest(string text, int userId, int? ticketId)
     {
         // Arrange
+        var accessToken = await AutorizationForTests.GetAccessToken();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var message = new ShortMessageViewModel { Text = text, UserId = userId, TicketId = ticketId };
 
         // Act
