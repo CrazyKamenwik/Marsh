@@ -1,16 +1,11 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Shouldly;
 using TicketSystem.API.ViewModels.Users;
-using TicketSystem.DAL;
-using TicketSystem.Tests.Initialize;
 using TicketSystem.Tests.IntegrationTests.WebAppFactory;
 
 namespace TicketSystem.Tests.IntegrationTests.ControllersTests;
@@ -24,6 +19,10 @@ public class UserControllerTests : IClassFixture<TestHttpClientFactory<Program>>
     public UserControllerTests(TestHttpClientFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
+
+        var accessToken = AutorizationForTests.GetAccessToken().GetAwaiter().GetResult();
+
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
     }
 
     [Theory]
